@@ -290,7 +290,7 @@ document.body.appendChild(msg);
 	
 	} 
 
-	limite de caracteres no borrar
+	
 		
 			if (strlen($usuario) > $limiteUsuario) {
 				echo '<script>						
