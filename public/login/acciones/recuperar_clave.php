@@ -77,7 +77,7 @@ include './../../connect.php';
     <div>
         <label for="usuario" class="block text-sm font-medium text-gray-700">Usuario</label>
         <div class="mt-1">
-            <input id="usuario" name="usuario" type="text" required 
+            <input id="usuario" name="usuario" type="text" 
                 class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
                 placeholder="Ingrese su usuario"
                 maxlength="20" 
@@ -90,7 +90,7 @@ include './../../connect.php';
     <div>
         <label for="p1" class="block text-sm font-medium text-gray-700">¿Cuál es el nombre de su madre o padre?</label>
         <div class="mt-1">
-            <input id="p1" name="pregunta1" type="text" required 
+            <input id="p1" name="pregunta1" type="text" 
                 class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
                 placeholder="Ingrese su respuesta"
                 maxlength="50"
@@ -102,7 +102,7 @@ include './../../connect.php';
     <div>
         <label for="p2" class="block text-sm font-medium text-gray-700">¿Cuál es su animal favorito?</label>
         <div class="mt-1">
-            <input id="p2" name="pregunta2" type="text" required 
+            <input id="p2" name="pregunta2" type="text"  
                 class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
                 placeholder="Ingrese su respuesta"
                 maxlength="50"
@@ -115,7 +115,7 @@ include './../../connect.php';
     <div>
         <label for="contraseña" class="block text-sm font-medium text-gray-700">Nueva Contraseña</label>
         <div class="mt-1">
-            <input id="contraseña" name="contraseña" type="password" required 
+            <input id="contraseña" name="contraseña" type="password" 
                 class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
                 placeholder="Ingrese la nueva contraseña (mínimo 8 caracteres)"
                 maxlength="30"
