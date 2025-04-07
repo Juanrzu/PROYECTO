@@ -1,13 +1,14 @@
 <?php
-    session_start();
-    error_reporting(0);
-    $usuario = $_SESSION['nombre_usuario'];
-    if ($usuario == null || $usuario == ''){
-          header('location:login/login.php');
-          die();
-    }
-    include 'connect.php';
-    include 'contador_sesion.php';
+
+session_start();
+error_reporting(0);
+$usuario = $_SESSION['nombre_usuario'];
+if ($usuario == null || $usuario == '') {
+  header('location:./login/login.php');
+  die();
+}
+include 'connect.php';
+
 
     $id=$_GET['editarid'];
     $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
@@ -22,7 +23,7 @@
 
     $result=mysqli_query($connect,$sql);
     $row=mysqli_fetch_assoc($result);
-         $nombre=$row['nombre'];
+        $nombre=$row['nombre'];
          $apellido=$row['apellido'];
          $cen=$row['cen'];
          $nacimiento=$row['nacimiento'];
@@ -37,22 +38,6 @@
          $idrepresentante = $row ['representante.id'];
          $volver=$grado;
          $volver2=$seccion;
-
-        //guardar datos viejos
-        $nombre_anterior = $nombre;
-        $apellido_anterior = $apellido;
-        $cen_anterior = $cen;
-        $nacimiento_anterior = $nacimiento;
-        $sexo_anterior = $sexo;
-        $grado_anterior = $grado;
-        $seccion_anterior = $seccion;
-        $representante_anterior = $representante;
-        $representante_apellido_anterior = $representante_apellido;
-        $cedularepre_anterior = $cedularepre;
-        $codigo_anterior = $telefono;
-        $correo_anterior = $correo;
-
-        //fin
          
 ?>
 
@@ -64,13 +49,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crud</title>
-    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/assets/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" href="http://localhost/dashboard/Proyecto/assets/styles.css">
+    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
 </head>
 
-<body>
+<body class="bg-ghost">
+    <div class="container-lg w-full flex flex-col">
 
-    <div class="container-all">
+
+<div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700">
+            <div role="status">
+                <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                    viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                        fill="currentColor" />
+                    <path
+                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                        fill="currentFill" />
+                </svg>
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+
+        <?php
+        if ($nombre == "admin" || $nombre == "Admin") {
+            include('./header_admin.php');
+        } else {
+            include('./header.php');
+        }
+
+        ?>
+
+
+
+   
         <main class="container-sm">
            
                      <!-- Mostrar el mensaje de error aquí con echo -->
@@ -78,7 +91,7 @@
                         <p class="text-danger"><?php echo $error[0]; ?></p>
                     <?php endif; ?>
                 
-                <form method="post" class="col mx-auto" id="formulario" novalidate>
+                <form method="post" class="w-80 rounded-xl p-4 py-8 shadow-lg bg-gray-100" id="formulario" novalidate>
                     <div class="mb-3">
                         <label>Nombres</label>
                         <input type="text" class="form-control" placeholder="Nombres del Alumno" name="nombre" autocomplete="off" value=<?php echo "$nombre"; ?> id="nombre" required>
@@ -182,7 +195,7 @@
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                              <button type="submit" class="btn btn-primary" name="submit" >Si</button>
+                              <button type="submit" class="btn btn-primary" name="submit" id="btn">Si</button>
                             </div>
                           </div>
                         </div>
@@ -191,16 +204,73 @@
                     
                 </form>
 
-        </main>
+            </main>  
 
-    </div>    
+    </div>
+
         <script>
-              function regresarPaginaAnterior() {
-              window.history.back();
-                  }
-              </script>
- <script src="http://localhost/dashboard/Proyecto/assets/bootstrap/js/bootstrap.min.js"></script>  
- <script src="http://localhost/dashboard/Proyecto/assets/validacion-estudiante.js"></script>  
+			const form = document.getElementById('formulario');
+			const btn = document.getElementById('btn');
+			const nombre = document.getElementById('nombre');
+			const apellido = document.getElementById('apellido');
+
+
+
+
+			form.addEventListener("submit", (e) => {
+				const regex = /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]*$/;
+				var error = "";
+				var msg = document.createElement("div");
+
+
+				if (nombre.value == "" || apellido.value == "") {
+					error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
+                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
+                                            <p class=" text-xs text-principal pb-1">Los campos no pueden estar vacios</p> 
+                                            </div>`;
+					nombre.classList.add('invalid');
+					apellido.classList.add('invalid');
+
+				} else {
+					if (!regex.test(nombre.value)) {
+						error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
+                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
+                                            <p class=" text-xs text-principal pb-1">ingrese un nombre con caracteres validos</p> 
+                                            </div>`;
+						nombre.classList.add('invalid')
+					} else {
+						nombre.classList.remove('invalid');
+						nombre.classList.add('valid');
+
+					}
+				}
+
+
+
+				if (nombre.classList.contains("invalid") || apellido.classList.contains("invalid")) {
+					msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">${error}</div>`;
+					document.body.appendChild(msg);
+
+					// Selecciona el elemento div que deseas eliminar
+					var elemento = msg;
+
+					// Configura el timeout para eliminar el div después de 5 segundos (5000 milisegundos)
+					setTimeout(function() {
+						msg = ""
+						elemento.remove();
+					}, 4000);
+
+
+
+					e.preventDefault();
+					e.stopPropagation();
+				}
+			})
+		</script>
+
+
+ <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
+ <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
 </body>
 
 </html>
@@ -227,7 +297,6 @@ if (isset($_POST['submit'])){
         $seccion= strtoupper($seccion);
         $sexo=strtoupper($sexo);
         $error=[];
-
 
 
         //  Validar que ningún campo esté vacío
@@ -334,13 +403,6 @@ if (isset($_POST['submit'])){
 
 
 
-
-
-
-
-           
-
-
         $row_grado = mysqli_fetch_assoc($result_grado_exist);
         $grado_id = $row_grado['id'];
 
@@ -353,60 +415,8 @@ if (isset($_POST['submit'])){
             $sql3 = "UPDATE representante SET nombre = '$representante',  apellido='$representante_apellido',cedula ='$cedularepre', telefono = '$codigo', correo = '$correo' WHERE cedula = $cedula";
             
             // Ejecutar todas las consultas
-           
-            
-            //agregar datos a la bitacora
-            $cambios = [];
-            
-                if ($apellido_anterior != $apellido_nuevo) {
-                    $cambios[] = "Apellido anterior = $apellido_anterior, Apellido actualizado = $apellido_nuevo";
-                }
-                if ($nombre_anterior != $nombre_nuevo) {
-                    $cambios[] = "Nombre anterior = $nombre_anterior, Nombre actualizado = $nombre_nuevo";
-                }
-                if ($cen_anterior != $cen_nuevo) {
-                    $cambios[] = "CEN anterior = $cen_anterior, CEN actualizado = $cen_nuevo";
-                }
-                if ($nacimiento_anterior != $nacimiento_nuevo) {
-                    $cambios[] = "Fecha de nacimiento anterior = $nacimiento_anterior, Fecha de nacimiento actualizado = $nacimiento_nuevo";
-                }
-                if ($sexo_anterior != $sexo_nuevo) {
-                    $cambios[] = "Sexo anterior = $sexo_anterior, Sexo actualizado = $sexo_nuevo";
-                }
-                if ($grado_anterior != $grado_nuevo) {
-                    $cambios[] = "Grado anterior = $grado_anterior, Grado actualizado = $grado_nuevo";
-                }
-                if ($seccion_anterior != $seccion_nuevo) {
-                    $cambios[] = "Sección anterior = $seccion_anterior, Sección actualizada = $seccion_nuevo";
-                }
-                if ($representante_anterior != $representante_nuevo) {
-                    $cambios[] = "Representante anterior = $representante_anterior, Representante actualizado = $representante_nuevo";
-                }
-                if ($representante_apellido_anterior != $representante_apellido_nuevo) {
-                    $cambios[] = "Apellido del representante anterior = $representante_apellido_anterior, Apellido del representante actualizado = $representante_apellido_nuevo";
-                }
-                if ($cedularepre_anterior != $cedularepre_nuevo) {
-                    $cambios[] = "Cédula de representante anterior = $cedularepre_anterior, Cédula representante actualizado = $cedularepre_nuevo";
-                }
-                if ($codigo_anterior != $codigo_nuevo) {
-                    $cambios[] = "Teléfono anterior = $codigo_anterior, Teléfono actualizado = $codigo_nuevo";
-                }
-                if ($correo_anterior != $correo_nuevo) {
-                    $cambios[] = "Correo anterior = $correo_anterior, Correo actualizado = $correo_nuevo";
-                }
-        
-                    // Unir todos los cambios en un string
-                    $datos_accion = implode(", ", $cambios);
-                    $datos_accion = "Nombre: $nombre_anterior, Apellido: $apellido_anterior, CEN: $cen_anterior. Cambios: " . $datos_accion;
-
-                    // insertar en la bitácora
-                    $sql4 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES ('Se actualizaron los datos de un estudiante.', 
-                    '$datos_accion', '$usuario')";
-                    
-                    $result = mysqli_multi_query($connect, $sql3 . ";" . $sql1. ";" . $sql2 . ";" . $sql4);
-               
-                    
-                    //fin
+            $result = mysqli_multi_query($connect, $sql3 . ";" . $sql1. ";" . $sql2);
+         
     
             if ($result) {
             

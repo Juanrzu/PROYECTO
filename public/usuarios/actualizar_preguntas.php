@@ -8,7 +8,6 @@ if ($usuario == null || $usuario == '') {
     die();
 }
 include './../connect.php';
-include '../contador_sesion.php';
 ?>
 
 <!DOCTYPE html>
@@ -84,7 +83,7 @@ include '../contador_sesion.php';
                 </div>
 
                 <div class="mb-2">
-                    <button type="button" onclick="window.location='http:localhost/dashboard/Proyecto/public/usuarios/usuarios.php'" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 ghost bg-blue-700 shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Regresar a la página anterior</button>
+                    <button type="button" onclick="window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 ghost bg-blue-700 shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Regresar a la página anterior</button>
                 </div>
 
 

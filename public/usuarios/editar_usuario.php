@@ -2,12 +2,12 @@
 session_start();
 error_reporting(0);
 $usuario = $_SESSION['nombre_usuario'];
-if ($usuario == null || $usuario == '' || ($usuario != 'admin' && $usuario != 'Admin')) {
-    header('location: ../login/login.php');
-    die();
+if ($usuario == null || $usuario == '') {
+	header('location: ./../login/login.php');
+	die();
 }
-include '../connect.php';
-include '../contador_sesion.php';
+include './../connect.php';
+
 
    $id=$_GET['editarid'];
    $sql = "SELECT * FROM usuario WHERE id = $id ";
@@ -35,7 +35,7 @@ include '../contador_sesion.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuarios</title>
-	<link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
+	<link rel="stylesheet" href="http://localhost/dashboard/Proyecto/assets/styles.css">
 </head>
 
 <body>
@@ -97,8 +97,9 @@ include '../contador_sesion.php';
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Finalizar</button>
             </div>
             <div class="mb-3">
-                        <button type="button" onclick="window.location='http:localhost/dashboard/Proyecto/public/display.php'" class="btn btn-primary">Regresar a la página anterior</button></div>
-                     
+                        <button type="button" onclick="window.location='http://localhost/dashboard/Proyecto/usuarios/usuarios.php'" class="btn btn-primary">Regresar a la página anterior</button>
+            </div>
+
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog">
                           <div class="modal-content">
@@ -123,8 +124,8 @@ include '../contador_sesion.php';
 </div>    
 </body>
 
-  <script src="http://localhost/dashboard/Proyecto/src/bootstrap/js/bootstrap.min.js"></script>
-  <script src="http://localhost/dashboard/Proyecto/src/js/validacion-register-edit.js"></script>
+  <script src="http://localhost/dashboard/Proyecto/assets/bootstrap/js/bootstrap.min.js"></script>
+  <script src="http://localhost/dashboard/Proyecto/assets/validacion-register-edit.js"></script>
 
 </html>
 

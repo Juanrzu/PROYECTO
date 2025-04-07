@@ -7,7 +7,6 @@ if (!isset($usuario)) {
     header("location: login.php");
 } else {
     include('connect.php');
-    include 'contador_sesion.php';
 }
 
 ?>
@@ -49,12 +48,12 @@ if (!isset($usuario)) {
 
         ?>
 
-        <main class=" flex justify-center items-center xl:px-56 mt-8">
+        <main class="flex justify-between flex-col mt-4">
 
             <?php if (!empty($error)): ?>
                 <p class="text-danger"><?php echo $error[0]; ?></p>
             <?php endif; ?>
-            <form method="post" class="w-80 rounded-xl p-4 py-8 shadow-lg bg-gray-100" id="formulario" novalidate>
+            <form method="post" class="w-80 rounded-xl p-4 py-8 shadow-lg bg-gray-100" id="formulario">
                 <div class="mb-3">
                     <label>Nombres</label>
                     <input type="text" class="form-control form-control w-full mt-2 rounded-lg" placeholder="Nombres del Alumno" name="nombre" id="nombre"
@@ -395,13 +394,6 @@ if (isset($_POST['submit'])) {
                         VALUES ('$nombre', '$apellido', '$cen', '$nacimiento', '$sexo', $idgrado , $idseccion, $idRepre)";
 
     $resultInsert = mysqli_query(mysql: $connect, query: $sql);
-     
-    //ingresar insert en bitacora
-    $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES ('Se Insertó un nuevo estudiante.', 
-    'Informacion: nombre = $nombre, apellido = $apellido , cen = $cen , nacimiento = $nacimiento, sexo = $sexo , grado = $grado, seccion = $seccion, 
-    representante = $representante , Apellido del representante = $representante_apellido , cedula representante = $cedularepre, telefono = $codigo , correo = $correo', 
-    '$usuario')";
-    $resultInsert2 = mysqli_query(mysql: $connect, query: $sql2);
     //aqui termina
 
 

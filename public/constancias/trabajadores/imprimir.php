@@ -36,29 +36,12 @@ $row=mysqli_fetch_assoc($result);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Display</title>
     <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/constancias/trabajadores/styles.css">
+  <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/constancias/styles.css">
 </head>
 
 <body>
   <div class="d-flex flex-column flex-shrink-0" style="height: 100vh; justify-content: flex-start; align-items: stretch;">
   <header class="d-flex align-items-center bg-dark text-white px-4 py-2" style="justify-content: space-between; align-items: center;">
-  
-  <div class="prueba">
-  <img class="imagen" src="http://localhost/dashboard/Proyecto/src/1er_grado.jpg" align= "right" style="
-  width: 15%;
-  height: 9%;
-  
-  
-  
-  ">
-<img class="imagen2" src="http://localhost/dashboard/Proyecto/src/1er_grado.jpg" align= "left" style="
-  width: 15%;
-  height: 9%;
-  "></div>
-
-
-
-
   <div class="encabezado" style="text-align: center;">
      <h5> REPÚBLICA BOLIVARIANA DE VENEZUELA</h5>
      <h5>  MINISTERIO DEL PODER POPILAR PARA LA EDUCACION</h5>
@@ -68,6 +51,7 @@ $row=mysqli_fetch_assoc($result);
     <br>
     <br>
     <br>
+
   </div>
 
   <div class="titulo" style="text-align: center;">
@@ -104,19 +88,16 @@ $row=mysqli_fetch_assoc($result);
 <?php
 $html = ob_get_clean();
 
-require_once 'C:\xampp\htdocs\dashboard\Proyecto\pdf\dompdf\autoload.inc.php';
-
+require_once 'D:\Programas\Xammp\htdocs\dashboard\Proyecto\pdf\dompdf\autoload.inc.php';
 use Dompdf\Dompdf;
 $dompdf = new Dompdf();
 
 $options = $dompdf->getOptions();
-$options->set(array('isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true));
-
+$options->set(array('isHtml5ParserEnabled' => true));
 $dompdf->setOptions($options);
+
 $dompdf->loadHtml($html);
 $dompdf->setPaper('letter', 'portrait ');
 $dompdf->render();
 $dompdf->stream("archivo.pdf", array("Attachment" => false));
-
-
 ?>
