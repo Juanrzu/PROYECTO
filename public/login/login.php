@@ -1,9 +1,27 @@
+<<<<<<< HEAD
+	<?php
+=======
+<<<<<<< HEAD
+<?php
+>>>>>>> d0c1013743a0885e4fdf0f56f3fdcbd84973225b
+	include('./../connect.php');
+	session_start();
+
+	?>
+
+<<<<<<< HEAD
+=======
+
+
+=======
 	<?php
 	include('./../connect.php');
 	session_start();
 
 	?>
 
+>>>>>>> 93714df4763a5bfe83a7bc8c4be46920b181c657
+>>>>>>> d0c1013743a0885e4fdf0f56f3fdcbd84973225b
 	<!DOCTYPE html>
 	<html lang="es">
 
