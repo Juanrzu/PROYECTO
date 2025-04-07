@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 	include('./../connect.php');
 	session_start();
@@ -8,6 +9,14 @@
 
 
 
+=======
+	<?php
+	include('./../connect.php');
+	session_start();
+
+	?>
+
+>>>>>>> 93714df4763a5bfe83a7bc8c4be46920b181c657
 	<!DOCTYPE html>
 	<html lang="es">
 
