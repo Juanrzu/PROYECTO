@@ -14,7 +14,7 @@ const loader = document.querySelector(".container-loading");
 
         setTimeout(() => {
             loader.remove()
-        }, 500);
+        }, 700);
     });
 
 
