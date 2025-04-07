@@ -11,20 +11,32 @@
     
     
     $id=$_GET['editarid'];
-    $sql = "SELECT profesor.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre 
-    FROM profesor 
-    JOIN seccion ON profesor.idseccion = seccion.id 
-    JOIN grados ON profesor.idgrado = grados.id 
-    WHERE profesor.id = $id";
-    $result=mysqli_query($connect,$sql);
-    $row=mysqli_fetch_assoc($result);
-        $nombre=$row['nombre'];
-         $apellido=$row['apellido'];
-         $cedula=$row['cedula'];
-         $grado = $row['grado_nombre'];  
-         $seccion = $row['seccion_nombre'];
-         $volver=$grado;
-         $volver2=$seccion;
+
+    //sentencia preparada
+   
+     
+        $sql = "SELECT profesor.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre 
+                FROM profesor 
+                JOIN seccion ON profesor.idseccion = seccion.id 
+                JOIN grados ON profesor.idgrado = grados.id 
+                WHERE profesor.id = ?";
+        $stmt = $connect->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($row = $result->fetch_assoc()) {
+            $nombre = $row['nombre'];
+            $apellido = $row['apellido'];
+            $cedula = $row['cedula'];
+            $grado = $row['grado_nombre'];
+            $seccion = $row['seccion_nombre'];
+            $volver = $grado;
+            $volver2 = $seccion;
+        } $stmt->close();
+        
+    
+    //fin
     ?>
 
 
@@ -157,55 +169,78 @@ if (isset($_POST['submit'])){
         
         //Verificar Sección
         if (empty($error)) {
-        if ($seccion === 'A' || $seccion === 'B') {
-     $sql_grado_exist = "SELECT id FROM grados WHERE nombre = '$grado'";
-    $result_grado_exist = mysqli_query($connect, $sql_grado_exist);
-  
-    $sql_seccion_exist = "SELECT id FROM seccion WHERE nombre = '$seccion'";
-    $result_seccion_exist = mysqli_query($connect, $sql_seccion_exist);
+            if ($seccion === 'A' || $seccion === 'B') {
 
-    $sqlprofe = "SELECT * FROM profesor WHERE cedula = '$cedula' ";
-    $resultadoprofesor = mysqli_query($connect, $sqlprofe);
-
-    $row_profe = mysqli_fetch_assoc($resultadoprofesor);
-    $profesor = $row_profe['id'];
-
-
-    if (mysqli_num_rows($result_grado_exist) > 0 && mysqli_num_rows($result_seccion_exist) > 0) {
-      
-        $row_grado = mysqli_fetch_assoc($result_grado_exist);
-        $grado_id = $row_grado['id'];
-
-        $row_seccion = mysqli_fetch_assoc($result_seccion_exist);
-        $seccion_id = $row_seccion['id'];
-
-        $sql_verificar_estudiante = "SELECT * FROM profesor WHERE cedula = '$cedula' AND id != $id";
-        $resultado_estudiante = mysqli_query($connect, $sql_verificar_estudiante);
-        if(mysqli_num_rows($resultado_estudiante) > 0){
-            echo "<footer class='error'>
-                    <div class='container_title btn btn-danger'>
-                        <h5>La nueva cedula ingresada coincide con otro profesor</h5>
-                    </div>
+                $sql_grado_exist = "SELECT id FROM grados WHERE nombre = ?";
+                $stmt_grado = $connect->prepare($sql_grado_exist);
+                $stmt_grado->bind_param("s", $grado);
+                $stmt_grado->execute();
+                $result_grado_exist = $stmt_grado->get_result();
             
-                </footer>";
-                        exit;
-            }     
-        $sql= "
-        update profesor set id='$id',nombre='$nombre', apellido='$apellido', cedula='$cedula_nueva', idgrado = $grado_id, idseccion = $seccion_id where id=$id
-        ";
+                $sql_seccion_exist = "SELECT id FROM seccion WHERE nombre = ?";
+                $stmt_seccion = $connect->prepare($sql_seccion_exist);
+                $stmt_seccion->bind_param("s", $seccion);
+                $stmt_seccion->execute();
+                $result_seccion_exist = $stmt_seccion->get_result();
+            
+                $sqlprofe = "SELECT * FROM profesor WHERE cedula = ?";
+                $stmt_profe = $connect->prepare($sqlprofe);
+                $stmt_profe->bind_param("s", $cedula);
+                $stmt_profe->execute();
+                $resultadoprofesor = $stmt_profe->get_result();
+            
+                if ($row_profe = $resultadoprofesor->fetch_assoc()) {
+                    $profesor = $row_profe['id'];
+                }
+            
+                $stmt_grado->close();
+                $stmt_seccion->close();
+                $stmt_profe->close();
+            }}
 
-        $result= mysqli_query($connect, $sql);
+          
+            if ($result_grado_exist->num_rows > 0 && $result_seccion_exist->num_rows > 0) {
+            
+                // Obtener IDs de grado y sección
+                $row_grado = $result_grado_exist->fetch_assoc();
+                $grado_id = $row_grado['id'];
+            
+                $row_seccion = $result_seccion_exist->fetch_assoc();
+                $seccion_id = $row_seccion['id'];
+            
+                // Verificar si la nueva cédula ya existe en otro profesor
+                $sql_verificar_estudiante = "SELECT * FROM profesor WHERE cedula = ? AND id != ?";
+                $stmt_verificar = $connect->prepare($sql_verificar_estudiante);
+                $stmt_verificar->bind_param("si", $cedula_nueva, $id);
+                $stmt_verificar->execute();
+                $resultado_estudiante = $stmt_verificar->get_result();
+            
+                if ($resultado_estudiante->num_rows > 0) {
+                    echo "<footer class='error'>
+                            <div class='container_title btn btn-danger'>
+                                <h5>La nueva cédula ingresada coincide con otro profesor</h5>
+                            </div>
+                          </footer>";
+                    $stmt_verificar->close();
+                    exit;
+                }
+                $stmt_verificar->close();
+            
+                // Actualizar profesor
+                $sql = "UPDATE profesor SET nombre = ?, apellido = ?, cedula = ?, idgrado = ?, idseccion = ? WHERE id = ?";
+                $stmt = $connect->prepare($sql);
+                if ($stmt) {
+                    $stmt->bind_param("sssiii", $nombre, $apellido, $cedula_nueva, $grado_id, $seccion_id, $id);
+                    }
     
-        if($result){
+        if($stmt->execute()){
             //echo "Se ha editado el profesor";
             echo" <script> window.location='ver_grado.php? gradonombre= $volver && seccion= $volver2 '</script>";
+            $stmt->close();
         }else{
             die (mysqli_error($connect));
         } include 'connect.php';
     } else {
         array_push ($error, "Error, La sección no existe. Ingrese al alumno en la sección 'A' o 'B'.");
-        }
-    }
-}
-}
+        }}
 ?>

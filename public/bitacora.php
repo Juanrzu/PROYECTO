@@ -60,10 +60,12 @@ include 'contador_sesion.php';
           </thead>
           <tbody class="table-group-divider">
             <?php
-
-            $sql = "SELECT accion,fecha_hora,usuario FROM bitacora";
-
-            $result = mysqli_query($connect, $sql);
+            //consulta preparada
+            $sql = "SELECT accion, fecha_hora, usuario FROM bitacora";
+            $stmt = $connect->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
             if ($result) {
               while ($row = mysqli_fetch_assoc($result)) {
                 $accion = $row['accion'];
@@ -80,7 +82,7 @@ include 'contador_sesion.php';
 
 
               }
-            }
+            }$stmt->close();
             ?>
 
           </tbody>

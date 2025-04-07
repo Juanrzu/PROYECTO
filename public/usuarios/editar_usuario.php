@@ -10,10 +10,14 @@ include '../connect.php';
 include '../contador_sesion.php';
 
    $id=$_GET['editarid'];
-   $sql = "SELECT * FROM usuario WHERE id = $id ";
-
-   $result=mysqli_query($connect,$sql);
-   $row=mysqli_fetch_assoc($result);
+   //preparar sentencia 1
+   $sql = "SELECT * FROM usuario WHERE id = ?";
+   $stmt = $connect->prepare($sql);
+   $stmt->bind_param("i", $id);
+   $stmt->execute();
+   $result = $stmt->get_result();
+   $row = $result->fetch_assoc();
+   
        $usuario = $row['nombre_usuario'];  
        $contraseña = $row['contraseña'];
        $estado = $row['estado'];
@@ -24,7 +28,7 @@ include '../contador_sesion.php';
        $gmail = $row['correo'];
        $intentos_fallidos= $row['intentos_fallidos'];
 
-
+//fin
 ?>
 
 
@@ -155,33 +159,46 @@ include '../contador_sesion.php';
             
             }
 
-            $sql_verificar_usuario = "SELECT * FROM usuario WHERE nombre_usuario = '$usuario'  AND id != $id";
-            $resultado_usuario = mysqli_query($connect, $sql_verificar_usuario);
-            if(mysqli_num_rows($resultado_usuario) > 0){
-                $errores[] = "Este usuario ya se encuentra registrado";
+           // Verificar usuario existente 
+                $sql_verificar_usuario = "SELECT * FROM usuario WHERE nombre_usuario = ? AND id != ?";
+                $stmt_usuario = $connect->prepare($sql_verificar_usuario);
+                $stmt_usuario->bind_param("si", $usuario, $id);
+                $stmt_usuario->execute();
+                if ($stmt_usuario->get_result()->num_rows > 0) {
+                    $errores[] = "Este usuario ya se encuentra registrado";
+                }
+                $stmt_usuario->close();
 
+                // Verificar cédula existente 
+                $sql_verificar_cedula = "SELECT * FROM usuario WHERE cedula = ? AND id != ?";
+                $stmt_cedula = $connect->prepare($sql_verificar_cedula);
+                $stmt_cedula->bind_param("si", $cedula, $id);
+                $stmt_cedula->execute();
+                if ($stmt_cedula->get_result()->num_rows > 0) {
+                    $errores[] = "La cédula ya se encuentra registrada";
+                }
+                $stmt_cedula->close();
 
-            }  $sql_verificar_cedula = "SELECT * FROM usuario WHERE cedula = '$cedula'  AND id != $id";
-            $resultado_cedula = mysqli_query($connect, $sql_verificar_cedula);
-            if(mysqli_num_rows($resultado_cedula) > 0){
-                $errores[] = "La cedula ya se encuentra registrada";
+                // Verificar teléfono existente 
+                $sql_verificar_telefono = "SELECT * FROM usuario WHERE telefono = ? AND id != ?";
+                $stmt_telefono = $connect->prepare($sql_verificar_telefono);
+                $stmt_telefono->bind_param("si", $codigo, $id);
+                $stmt_telefono->execute();
+                if ($stmt_telefono->get_result()->num_rows > 0) {
+                    $errores[] = "El teléfono ya se encuentra registrado";
+                }
+                $stmt_telefono->close();
 
+                // Verificar correo existente 
+                $sql_verificar_correo = "SELECT * FROM usuario WHERE correo = ? AND id != ?";
+                $stmt_correo = $connect->prepare($sql_verificar_correo);
+                $stmt_correo->bind_param("si", $correo, $id);
+                $stmt_correo->execute();
+                if ($stmt_correo->get_result()->num_rows > 0) {
+                    $errores[] = "Este correo ya se encuentra registrado";
+                }
+                $stmt_correo->close();
 
-            }
-            $sql_verificar_telefono = "SELECT * FROM usuario WHERE telefono = '$codigo'  AND id != $id";
-            $resultado_telefono = mysqli_query($connect, $sql_verificar_telefono);
-            if(mysqli_num_rows($resultado_telefono) > 0){
-                $errores[] = "El telefono ya se encuentra registrado";
-
-
-            }
-            $sql_verificar_correo = "SELECT * FROM usuario WHERE correo = '$correo'  AND id != $id";
-            $resultado_correo = mysqli_query($connect, $sql_verificar_correo);
-            if(mysqli_num_rows($resultado_correo) > 0){
-                $errores[] = "Este correo ya se encuentra registrado";
-
-
-            }
             
                 if(!empty($errores)){
                     echo "<div >
@@ -198,25 +215,77 @@ include '../contador_sesion.php';
                     exit;
                 }
            
-
+                //sentencia 2
                 if ($estado == "Activo"){
-                    $sql1 = "UPDATE usuario SET nombre = '$nombre', apellido = '$apellido', cedula = $cedula, telefono = '$codigo', correo = '$gmail', nombre_usuario = '$usuario', contraseña = '$contraseña',intentos_fallidos = 0, estado = '$estado' WHERE id = $id";
-                    // Ejecutar todas las consultas
-                    $result = mysqli_multi_query($connect, $sql1);
+                    $sql1 = "UPDATE usuario SET 
+                                nombre = ?, 
+                                apellido = ?, 
+                                cedula = ?, 
+                                telefono = ?, 
+                                correo = ?, 
+                                nombre_usuario = ?, 
+                                contraseña = ?,
+                                intentos_fallidos = 0, 
+                                estado = ? 
+                            WHERE id = ?";
+
+                    $stmt = $connect->prepare($sql1);
+                    if ($stmt) {
+                        $stmt->bind_param("ssssssssi", 
+                            $nombre, 
+                            $apellido, 
+                            $cedula, 
+                            $codigo, 
+                            $gmail, 
+                            $usuario, 
+                            $contraseña,
+                            $estado, 
+                            $id
+                        );}
+    
             
-                    if ($result) {
+                    if ($$stmt->execute()) {
                         echo"<script> window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'</script>";
+                        $stmt->close();
                     } else {
                         die(mysqli_error($connect));
                     }
                 }
+                //sentencia 3
                 if  ($estado == "Inactivo"){
-                $sql1 = "UPDATE usuario SET nombre = '$nombre', apellido = '$apellido', cedula = $cedula, telefono = '$codigo', correo = '$gmail', nombre_usuario = '$usuario', contraseña = '$contraseña',intentos_fallidos = '$intentos_fallidos', estado = '$estado' WHERE id = $id";
-                // Ejecutar todas las consultas
-                $result = mysqli_multi_query($connect, $sql1);
+
+                        $sql1 = "UPDATE usuario SET 
+                            nombre = ?, 
+                            apellido = ?, 
+                            cedula = ?, 
+                            telefono = ?, 
+                            correo = ?, 
+                            nombre_usuario = ?, 
+                            contraseña = ?,
+                            intentos_fallidos = ?, 
+                            estado = ? 
+                        WHERE id = ?";
+
+                $stmt = $connect->prepare($sql1);
+                    if ($stmt) {
+                        $stmt->bind_param("ssssssssi", 
+                            $nombre, 
+                            $apellido, 
+                            $cedula, 
+                            $codigo, 
+                            $gmail, 
+                            $usuario, 
+                            $contraseña,
+                            $intentos_fallidos,
+                            $estado,
+                            $id
+                        );}
+                
+
         
-                if ($result) {
+                if ($stmt->execute()) {
                     echo"<script> window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'</script>";
+                    $stmt->close();
                 } else {
                     die(mysqli_error($connect));
                 }

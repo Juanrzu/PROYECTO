@@ -95,9 +95,11 @@ include '../contador_sesion.php';
                     </thead>
                     <tbody>
                         <?php
+                        // 1. PREPARED STATEMENT PARA LA CONSULTA
                         $sql = "SELECT * FROM usuario ORDER BY nombre_usuario ASC";
-
-                        $result = mysqli_query($connect, $sql);
+                        $stmt = $connect->prepare($sql);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
                         $mostrar_clave = $row['contraseña'];
                         if ($result) {
                             while ($row = mysqli_fetch_assoc($result)) {
@@ -209,7 +211,7 @@ include '../contador_sesion.php';
                   </tr>';
                                 }
                             }
-                        }
+                        }  $stmt->close();
                         ?>
                     </tbody>
                 </table>

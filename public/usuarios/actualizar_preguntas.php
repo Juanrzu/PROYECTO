@@ -322,28 +322,43 @@ if (isset($_POST['registrar'])) {
 
 
 
-
+//prerarar sentencia 1
 // Consulta para verificar las respuestas de seguridad
-$sql = "SELECT * FROM usuario WHERE nombre_usuario = '$usuario'";
-$result = $connect->query($sql);
+        $sql = "SELECT * FROM usuario WHERE nombre_usuario = ?";
+        $stmt = $connect->prepare($sql);
+        $stmt->bind_param("s", $usuario);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+//fin
 
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $pregunta1_bd = $row['respuesta_seguridad1'];
     $pregunta2_bd = $row['respuesta_seguridad2'];
-
+    $stmt->close();
 
     // Verificar las respuestas de seguridad y actualizar la contraseña
     if (password_verify($pregunta1, $pregunta1_bd) && password_verify($pregunta2, $pregunta2_bd)) {
-
+        
+        //preparar sentencia 2
         // Las respuestas coinciden, actualiza la contraseña
         $pregunta1_cifrada = password_hash($pregunta_nueva1, PASSWORD_ARGON2ID);
         $pregunta2_cifrada = password_hash($pregunta_nueva2, PASSWORD_ARGON2ID);
-        $update_sql = "UPDATE usuario SET respuesta_seguridad1 = '$pregunta1_cifrada',  respuesta_seguridad2 = '$pregunta2_cifrada' WHERE nombre_usuario = '$usuario'";
-
-        if ($connect->query($update_sql) === TRUE) {
-            header("location: usuarios.php");
-        } else {
+        $update_sql = "UPDATE usuario SET respuesta_seguridad1 = ?, respuesta_seguridad2 = ? WHERE nombre_usuario = ?";
+        $stmt = $connect->prepare($update_sql);
+        $stmt->bind_param("sss", $pregunta1_cifrada, $pregunta2_cifrada, $usuario);
+        //fin
+        if ($stmt->execute()) {
+            if($usuario === 'admin'){
+                echo"<script> window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuario.php'</script>";
+                exit();
+            }else{
+                echo"<script> window.location='http://localhost/dashboard/Proyecto/public/display.php'</script>";
+                exit();
+            }
+            
+        }else {
 
             echo '<script>						
 		var msg = document.createElement("div");
@@ -362,7 +377,7 @@ if ($result->num_rows > 0) {
 	document.body.appendChild(msg);
 
 </script>' . $connect->error;
-        }
+        } $stmt->close();
     } else {
         echo '<script>						
 		var msg = document.createElement("div");
