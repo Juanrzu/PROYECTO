@@ -19,116 +19,116 @@
 	<script src="http://localhost/dashboard/Proyecto/node_modules/flowbite/dist/flowbite.min.js"></script>
 	<body class="bg-login" id="body">
 
-		<div class="container-lg w-full max-w-7xl flex justify-center items-center h-full mx-auto">
-			<main class=" w-full flex justify-center items-center p-8">
-
-				<div class="container-login h-[35em] bg-white md:bg-[url(http://localhost/dashboard/Proyecto/src/wave-bg.png)] bg-no-repeat bg-center bg-cover w-full space-y-6 p-4 rounded-xl drop-shadow-2xl flex justify-center items-center flex-col md:flex-row">
-
-				<div id="default-carousel" class="w-full relative hidden md:block" data-carousel="slide">
-					<!-- Carousel wrapper -->
-					<div class="relative w-full overflow-hidden rounded-lg md:h-96">
-						<!-- Item 1 -->
-						<div class="hidden duration-900 ease-in-out" data-carousel-item>
-							<div class="absolute w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 flex justify-center items-center flex-col x">
-
-								<img src="http://localhost/dashboard/Proyecto/src/escudo.png" class="w-44" alt="...">
-								<div class="container-text">
-									<h2 class="w-full text-xl font-bold text-center text-pretty">E.P.N Cesar Arteaga Castro</h2>
-								</div>
-							</div>
-						</div>
-						<!-- Item 2 -->
-						<div class="hidden duration-900 ease-in-out" data-carousel-item>
-							<img src="http://localhost/dashboard/Proyecto/src/timeline.png" class="absolute block h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-						</div>
-						<!-- Item 3 -->
-						<div class="hidden duration-900 ease-in-out" data-carousel-item>
-							<img src="http://localhost/dashboard/Proyecto/src/3.png" class="absolute block h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
-						</div>
-					</div>
-					<!-- Slider indicators -->
-					<div class="absolute z-30 flex -translate-x-1/2 translate-y-10  bottom-5 left-1/2 space-x-3  rtl:space-x-reverse">
-						<button type="button" class="bg-white w-3 h-3 rounded-full" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
-						<button type="button" class="bg-white w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
-						<button type="button" class="bg-white w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
-					</div>
-					<!-- Slider controls -->
-					<button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
-						<span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-800/30 group-hover:bg-gray-400 dark:group-hover:bg-gray-800/60 group-focus:ring-4">
-							<svg class="w-4 h-4 text-black dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
-							</svg>
-							<span class="sr-only">Previous</span>
-						</span>
-					</button>
-					<button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
-						<span class="inline-flex items-center justify-center w-10 h-10 rounded-full c-principal dark:bg-gray-800/30 group-hover:bg-gray-400 dark:group-hover:bg-gray-800/60 group-focus:ring-4">
-							<svg class="w-4 h-4 text-black dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-							</svg>
-							<span class="sr-only">Next</span>
-						</span>
-					</button>
-				</div>
-
-
-					<form class="w-full max-w-md mx-auto bg-white p-8 rounded-lg shadow-md" id="formulario" method="POST">
-    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">BIENVENIDO!</h2>
-    
-    <!-- Campo de Usuario -->
-    <div class="mb-4">
-        <label for="usuario" class="block text-sm font-medium text-gray-700 mb-2">Usuario</label>
-        <div class="relative">
-            <input name="usuario" type="text" id="usuario" placeholder="Ingrese su usuario" 
-                class="w-full px-4 py-2 pl-3 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-				maxlength="20" oninput="updateCounter('usuario', 20)">
-        </div>
-    </div>
-
-    <!-- Campo de Contraseña -->
-    <div class="mb-4">
-        <label for="contraseña" class="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
-        <div class="relative">
-            <input type="password" name="contraseña" id="contraseña" placeholder="Ingrese su contraseña" 
-                class="w-full px-4 py-2 pl-3 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-				maxlength="30" oninput="updateCounter('contraseña', 30)">
-        </div>
-    </div>
-
-    <!-- CAPTCHA mejorado -->
-    <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Verificación CAPTCHA</label>
-        <div class="flex items-center gap-3">
-            <div class="flex-1 border rounded-md p-1 bg-gray-50">
-                <img src="../captcha/captcha.php" class="w-full h-16">
+	<div class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-xl shadow-2xl bg-[url('http://localhost/dashboard/Proyecto/src/wave-bg.png')] bg-no-repeat bg-cover bg-right-bottom overflow-hidden">
+        <!-- Carousel Section -->
+        <div class="hidden md:block md:w-1/2  p-8">
+            <div id="default-carousel" class="h-full relative" data-carousel="slide">
+                <!-- Carousel wrapper -->
+                <div class="relative h-full overflow-hidden rounded-lg">
+                    <!-- Item 1 -->
+                    <div class="hidden duration-900 ease-in-out" data-carousel-item>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <img src="http://localhost/dashboard/Proyecto/src/escudo.png" class="w-44" alt="Escudo de la institución">
+                            <h2 class="mt-4 text-xl font-bold text-center text-gray-800">E.P.N Cesar Arteaga Castro</h2>
+                        </div>
+                    </div>
+                    <!-- Item 2 -->
+                    <div class="hidden duration-900 ease-in-out" data-carousel-item>
+                        <img src="http://localhost/dashboard/Proyecto/src/timeline.png" class="absolute inset-0 w-full h-full object-contain" alt="Línea de tiempo">
+                    </div>
+                    <!-- Item 3 -->
+                    <div class="hidden duration-900 ease-in-out" data-carousel-item>
+                        <img src="http://localhost/dashboard/Proyecto/src/3.png" class="absolute inset-0 w-full h-full object-contain" alt="Imagen informativa">
+                    </div>
+                </div>
+                <!-- Slider indicators -->
+                <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex space-x-3">
+                    <button type="button" class="w-3 h-3 rounded-full bg-white" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
+                    <button type="button" class="w-3 h-3 rounded-full bg-white" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
+                    <button type="button" class="w-3 h-3 rounded-full bg-white" aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
+                </div>
+                <!-- Slider controls -->
+                <button type="button" class="absolute top-1/2 left-4 transform -translate-y-1/2 z-30 flex items-center justify-center w-10 h-10 rounded-full bg-white/80 hover:bg-white" data-carousel-prev>
+                    <svg class="w-4 h-4 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                    </svg>
+                    <span class="sr-only">Previous</span>
+                </button>
+                <button type="button" class="absolute top-1/2 right-4 transform -translate-y-1/2 z-30 flex items-center justify-center w-10 h-10 rounded-full bg-blue-600/80 hover:bg-blue-600" data-carousel-next>
+                    <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                    </svg>
+                    <span class="sr-only">Next</span>
+                </button>
             </div>
-            <button type="button" id="btn_recargar" class="p-2 text-gray-600 hover:text-blue-500 transition-colors rounded-md hover:bg-gray-100">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
-                </svg>
-            </button>
         </div>
-        <input type="text" name="captcha" id="captcha" placeholder="Ingrese el código CAPTCHA"
-            class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-			maxlength="6" oninput="updateCounter('captcha', 6)">
+
+        <!-- Form Section -->
+        <div class="w-full md:w-1/2 p-8 md:p-12  ml-20">
+            <form id="formulario" method="POST" class="space-y-6">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-gray-900">Bienvenido!</h2>
+                    <p class="mt-2 text-gray-600">Inicie sesión para continuar</p>
+                </div>
+
+                <!-- Campo de Usuario -->
+                <div>
+                    <label for="usuario" class="block text-sm font-medium text-gray-700">Usuario</label>
+                    <div class="mt-1 relative">
+                        <input name="usuario" type="text" id="usuario" required
+                            class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+                            placeholder="Ingrese su usuario" maxlength="20" oninput="updateCounter('usuario', 20)">
+                    </div>
+                </div>
+
+                <!-- Campo de Contraseña -->
+                <div>
+                    <label for="contraseña" class="block text-sm font-medium text-gray-700">Contraseña</label>
+                    <div class="mt-1 relative">
+                        <input type="password" name="contraseña" id="contraseña" required
+                            class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+                            placeholder="Ingrese su contraseña" maxlength="30" oninput="updateCounter('contraseña', 30)">
+                    </div>
+                </div>
+
+                <!-- CAPTCHA mejorado -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Verificación CAPTCHA</label>
+                    <div class="mt-2 flex items-center gap-3">
+                        <div class="flex-1 border rounded-md p-1 bg-gray-50">
+                            <img src="../captcha/captcha.php" class="w-full h-16 object-contain">
+                        </div>
+                        <button type="button" id="btn_recargar" class="p-2 text-gray-600 hover:text-blue-500 transition-colors rounded-md hover:bg-gray-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                    <input type="text" name="captcha" id="captcha" required
+                        class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+                        placeholder="Ingrese el código CAPTCHA" maxlength="6" oninput="updateCounter('captcha', 6)">
+                </div>
+
+                <!-- Enlace de recuperación -->
+                <div class="flex items-center justify-between">
+                    <a href="http://localhost/dashboard/Proyecto/public/login/acciones/recuperar_clave.php" 
+                        class="text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors">
+                        ¿Olvidó su contraseña?
+                    </a>
+                </div>
+
+                <!-- Botón de envío -->
+                <div>
+                    <button type="submit" name="registrar" id="btn"
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                        Iniciar sesión
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <!-- Enlace de recuperación -->
-    <div class="text-left mb-6">
-        <a href="http://localhost/dashboard/Proyecto/public/login/acciones/recuperar_clave.php" 
-            class="text-sm text-blue-600 hover:text-blue-800 transition-colors">¿Olvidó su contraseña?</a>
-    </div>
-
-    <!-- Botón de envío -->
-    <button type="submit" name="registrar" id="btn" 
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
-        Iniciar sesión
-    </button>
-</form>
-
-				</div>
-			</main>
-		</div>
+</div>
 		
 		<script>
 const form = document.getElementById('formulario');
