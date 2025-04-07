@@ -72,59 +72,56 @@
 				</div>
 
 
-					<form class="w-full h-full md:ml-8 md:w-1/2" id="formulario" method="POST">
-						<h2 class="text-xl font-semibold w-full text-center">BIENVENIDO!</h2>
-						<div>
-							<label for="usuario" class="block text-sm font-medium leading-6">Usuario</label>
+					<form class="w-full max-w-md mx-auto bg-white p-8 rounded-lg shadow-md" id="formulario" method="POST">
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">BIENVENIDO!</h2>
+    
+    <!-- Campo de Usuario -->
+    <div class="mb-4">
+        <label for="usuario" class="block text-sm font-medium text-gray-700 mb-2">Usuario</label>
+        <div class="relative">
+            <input name="usuario" type="text" id="usuario" placeholder="Ingrese su usuario" 
+                class="w-full px-4 py-2 pl-3 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+        </div>
+    </div>
 
-							<div class="mt-2 relative">
-								<svg class="absolute right-0 bottom-0 text-gray-600" width="34px" height="34px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-									<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-									<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-									<g id="SVGRepo_iconCarrier">
-										<g id="User / User_Square">
-											<path id="Vector" d="M17 21C17 18.2386 14.7614 16 12 16C9.23858 16 7 18.2386 7 21M17 21H17.8031C18.921 21 19.48 21 19.9074 20.7822C20.2837 20.5905 20.5905 20.2837 20.7822 19.9074C21 19.48 21 18.921 21 17.8031V6.19691C21 5.07899 21 4.5192 20.7822 4.0918C20.5905 3.71547 20.2837 3.40973 19.9074 3.21799C19.4796 3 18.9203 3 17.8002 3H6.2002C5.08009 3 4.51962 3 4.0918 3.21799C3.71547 3.40973 3.40973 3.71547 3.21799 4.0918C3 4.51962 3 5.08009 3 6.2002V17.8002C3 18.9203 3 19.4796 3.21799 19.9074C3.40973 20.2837 3.71547 20.5905 4.0918 20.7822C4.5192 21 5.07899 21 6.19691 21H7M17 21H7M12 13C10.3431 13 9 11.6569 9 10C9 8.34315 10.3431 7 12 7C13.6569 7 15 8.34315 15 10C15 11.6569 13.6569 13 12 13Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-										</g>
-									</g>
-								</svg>
-								<input name="usuario" type="text" id="usuario" placeholder="Ingrese el usuario" class=" rounded-md border-0 px-2 py-1.5 w-full  drop-shadow-2xl ring-1 ring-inset ring-gray-300 placeholder:text-principal focus:ring-2 focus:ring-inset focus:ring-blue-400 sm:text-sm sm:leading-6 outline outline-2 outline-gray-400">
-							</div>
-						</div>
+    <!-- Campo de Contraseña -->
+    <div class="mb-4">
+        <label for="contraseña" class="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
+        <div class="relative">
+            <input type="password" name="contraseña" id="contraseña" placeholder="Ingrese su contraseña" 
+                class="w-full px-4 py-2 pl-3 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+        </div>
+    </div>
 
-						<div class="mt-4">
-							<label for="contraseña" class="block text-sm font-medium leading-6">Contraseña</label>
+    <!-- CAPTCHA mejorado -->
+    <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Verificación CAPTCHA</label>
+        <div class="flex items-center gap-3">
+            <div class="flex-1 border rounded-md p-1 bg-gray-50">
+                <img src="../captcha/captcha.php" class="w-full h-10 object-contain">
+            </div>
+            <button type="button" id="btn_recargar" class="p-2 text-gray-600 hover:text-blue-500 transition-colors rounded-md hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+        <input type="text" name="captcha" id="captcha" placeholder="Ingrese el código CAPTCHA" required
+            class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+    </div>
 
-							<div class="mt-2 relative">
-								<svg class="absolute right-0 bottom-0 text-gray-600" width="34px" height="34px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-									<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-									<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-									<g id="SVGRepo_iconCarrier">
-										<g id="Interface / Lock">
-											<path id="Vector" d="M9.23047 9H7.2002C6.08009 9 5.51962 9 5.0918 9.21799C4.71547 9.40973 4.40973 9.71547 4.21799 10.0918C4 10.5196 4 11.0801 4 12.2002V17.8002C4 18.9203 4 19.4801 4.21799 19.9079C4.40973 20.2842 4.71547 20.5905 5.0918 20.7822C5.5192 21 6.07902 21 7.19694 21H16.8031C17.921 21 18.48 21 18.9074 20.7822C19.2837 20.5905 19.5905 20.2842 19.7822 19.9079C20 19.4805 20 18.9215 20 17.8036V12.1969C20 11.079 20 10.5192 19.7822 10.0918C19.5905 9.71547 19.2837 9.40973 18.9074 9.21799C18.4796 9 17.9203 9 16.8002 9H14.7689M9.23047 9H14.7689M9.23047 9C9.10302 9 9 8.89668 9 8.76923V6C9 4.34315 10.3431 3 12 3C13.6569 3 15 4.34315 15 6V8.76923C15 8.89668 14.8964 9 14.7689 9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-										</g>
-									</g>
-								</svg>
-								<input type="password" name="contraseña" id="contraseña" placeholder="Igrese la contraseña" class="block w-full rounded-md border-0 px-2 py-1.5 drop-shadow-2xl ring-1 ring-inset ring-gray-300 placeholder:text-principal focus:ring-2 focus:ring-inset focus:ring-blue-400 sm:text-sm sm:leading-6 outline outline-2 outline-gray-400">
-							</div>
-						</div>
+    <!-- Enlace de recuperación -->
+    <div class="text-right mb-6">
+        <a href="http://localhost/dashboard/Proyecto/public/login/acciones/recuperar_clave.php" 
+            class="text-sm text-blue-600 hover:text-blue-800 transition-colors">¿Olvidó su contraseña?</a>
+    </div>
 
-						<!-- Inicio de Captcha-->
-						<div class="mt-4">
-						<tr>
-							<td><img src="../captcha/captcha.php"></td>
-							<td><input type="text" name="captcha"  id="captcha" placeholder="Igrese el captcha" required ></td><br>
-							<td><button id="btn_recargar">Recargar</button></td>
-						</tr>
-						</div>		
-					<!-- Fin del Captcha---->
-
-						<div class="text-sm mt-2">
-							<a href="http://localhost\dashboard\Proyecto\public\login\acciones\recuperar_clave.php" class="font-semibold text-xs hover:text-blue-400 shadow-sm">¿Ha Olvidado Su Contraseña?</a>
-						</div>
-						<div class="mt-4">
-							<button type="submit" name="registrar" id="btn" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6  drop-shadow-xl bg-white hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 outline outline-2 outline-gray-400">Iniciar sesion</button>
-						</div>
-					</form>
+    <!-- Botón de envío -->
+    <button type="submit" name="registrar" id="btn" 
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+        Iniciar sesión
+    </button>
+</form>
 
 				</div>
 			</main>
