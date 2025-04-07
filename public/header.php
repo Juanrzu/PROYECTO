@@ -16,8 +16,6 @@
 		  <img class=" object-cover w-10 h-8" src="http://localhost/dashboard/Proyecto/src/escudo.png" alt="">
 	  </div>
 
-  
-
 
 <!-- drawer component -->
 <div id="drawer-navigation" class="fixed top-0 left-0 z-50 w-64 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-white dark:bg-gray-800 overflow-hidden" tabindex="-1" aria-labelledby="drawer-navigation-label">
