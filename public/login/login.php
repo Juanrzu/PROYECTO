@@ -364,7 +364,7 @@ document.body.appendChild(msg);
 								document.body.appendChild(msg);
 						</script>'; exit;
 			}
-	//seleccionar datos de usuario
+	//preparar seleccion datos de usuario
 
 	$q = "SELECT * FROM usuario WHERE nombre_usuario = ?";
 	$stmt = $connect->prepare($q);
@@ -408,18 +408,24 @@ document.body.appendChild(msg);
 
 			$_SESSION['nombre_usuario'] = $usuario;
 			$intentos_fallidos = 0;
-			//actualizar intentos fallidos
 
+			//preparar actualizacion intentos fallidos
+				$update_query = "UPDATE usuario SET intentos_fallidos = 0 WHERE nombre_usuario = ?";
+				$stmt = $connect->prepare($update_query);
 
+				if (!$stmt) {
+					die("Error al preparar la consulta: " . $connect->error);
+				}
 
+				$stmt->bind_param("s", $usuario);
+				$stmt->execute();
+				$stmt->close();
+				echo "<script> window.location='http://localhost/dashboard/Proyecto/public/display.php'</script>";
 
 
 			//fin
-			$update_query = "UPDATE usuario SET intentos_fallidos = 0  WHERE nombre_usuario = '$usuario'";
-			mysqli_query($connect, $update_query);
-			echo "<script> window.location='http://localhost/dashboard/Proyecto/public/display.php'</script>";
 
-			//ingresar inicio de sesion en bitacora
+			//preparar insersion inicio de sesion en bitacora
 			
 				$accion = "Se ha iniciado la sesión";
 			
@@ -462,9 +468,25 @@ document.body.appendChild(msg);
 		} else {
 			$intentos_fallidos++;
 			if ($intentos_fallidos >= 3) {
+				//preparar sentencia
+				$update_query = "UPDATE usuario SET estado = ?, intentos_fallidos = ? WHERE nombre_usuario = ?";
+				$stmt = $connect->prepare($update_query);
 
-				$update_query = "UPDATE usuario SET estado = 'Inactivo', intentos_fallidos = 0  WHERE nombre_usuario = '$usuario'";
-				mysqli_query($connect, $update_query);
+				if (!$stmt) {
+					die("Error al preparar la consulta: " . $connect->error);
+				}
+
+				$cambiarEstado = "Inactivo";
+				$intentos_fallidos = 0;
+				$stmt->bind_param("sis", $cambiarEstado, $intentos_fallidos, $usuario);
+				if ($stmt->execute()) {
+				} else {
+					die("Error al ejecutar: " . $stmt->error);
+				}
+
+				$stmt->close();
+				//fin
+
 				echo '<script>						
 								var msg = document.createElement("div");
 
@@ -499,9 +521,24 @@ document.body.appendChild(msg);
 						</script>'; 
 						
 			}
-			// Actualizar el número de intentos fallidos en la base de datos
-$update = "UPDATE usuario SET intentos_fallidos = $intentos_fallidos WHERE nombre_usuario = '$usuario'";
-mysqli_query($connect, $update);
+			//Preparar actualizacion del número de intentos fallidos en la base de datos
+			
+				$update = "UPDATE usuario SET intentos_fallidos = ? WHERE nombre_usuario = ?";
+				$stmt = $connect->prepare($update);
+
+				if (!$stmt) {
+					die("Error al preparar la consulta: " . $connect->error);
+				}
+
+				$stmt->bind_param("is", $intentos_fallidos, $usuario);
+
+				if ($stmt->execute()) {
+				} else {
+					die("Error al ejecutar: " . $stmt->error);
+				}
+
+				$stmt->close();
+			//fin
 		}
 	} else { // Usuario no encontrado
 		echo '<script>						
