@@ -3,11 +3,6 @@
 	session_start();
 //hola roberto
 
-// hola JUancho aqui estoy
-
-
-
-// buenas tardes, espero que estes bien, si necesitas algo no dudes en decirmelo, estoy para ayudarte.
 
 	?>
 
