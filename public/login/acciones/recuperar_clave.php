@@ -1,5 +1,6 @@
 <?php
 include './../../connect.php';
+
 ?>
 
 
@@ -190,11 +191,16 @@ include './../../connect.php';
                         exit;
                 }
             }
-
+                //preparar sentencia 1
                 // Consulta para verificar las respuestas de seguridad
-                $sql = "SELECT * FROM usuario WHERE nombre_usuario = '$usuario'";
-                $result = $connect->query($sql);
-
+                $sql = "SELECT * FROM usuario WHERE nombre_usuario = ?";
+                $stmt = $connect->prepare($sql);
+                $stmt->bind_param("s", $usuario);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $stmt->close();
+                
+                //fin
                 if ($result->num_rows > 0) {
                     $row = $result->fetch_assoc();
                     $pregunta1_bd = $row['respuesta_seguridad1'];
@@ -204,19 +210,26 @@ include './../../connect.php';
                 // Verificar las respuestas de seguridad y actualizar la contraseña
                 if (password_verify($pregunta1, $pregunta1_bd) && password_verify($pregunta2, $pregunta2_bd)) {
 
+                    //preparar sentencia 2
                     // Las respuestas coinciden, actualiza la contraseña
+            
                     $contraseña_cifrada = password_hash($nueva_contraseña, PASSWORD_ARGON2ID);
-                    $update_sql = "UPDATE usuario SET contraseña = '$contraseña_cifrada' WHERE nombre_usuario = '$usuario'";
-
-                    if ($connect->query($update_sql) === TRUE) {
-                        echo"<script> window.location='http://localhost/dashboard/Proyecto/public/login/login.php'</script>";
-                    } else {
+                    $update_sql = "UPDATE usuario SET contraseña = ? WHERE nombre_usuario = ?";
+                    $stmt = $connect->prepare($update_sql);
+                    $stmt->bind_param("ss", $contraseña_cifrada, $usuario);
+                    if ($stmt->execute() === TRUE) {
+                    
+                    echo"<script> window.location='http://localhost/dashboard/Proyecto/public/login/login.php'</script>";
+                    
+                    }
+                    else {
 
                         echo '<div class="error mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
 							<svg fill="#f00505" width="40px" height="26px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path> </g></svg>
 						    <p class="mx-auto text-xs">La contraseña es incorrecta</p>
 						</div>'. $connect->error;
-                    }
+                    } $stmt->close();
+                     //fin
                 } else {
                     echo '<div class="error mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
 							<svg fill="#f00505" width="40px" height="26px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path> </g></svg>

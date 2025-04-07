@@ -456,9 +456,28 @@ if (isset($_POST['registrar'])) {
 		</script>';
 		exit;
 	}
+
+	//preparar sentencia 1
 	// Verificar usuario 
-	$sql_verificar_usuario = "SELECT * FROM usuario WHERE nombre_usuario = '$usuario'";
-	$resultado_usuario = mysqli_query($connect, $sql_verificar_usuario);
+			
+		$sql_verificar_usuario = "SELECT * FROM usuario WHERE nombre_usuario = ?";
+		$stmt = $connect->prepare($sql_verificar_usuario);
+		if (!$stmt) {
+			die("Error al preparar la consulta: " . $connect->error);
+		}
+		$stmt->bind_param("s", $usuario);  
+		$stmt->execute();
+		$resultado_usuario = $stmt->get_result();
+
+		if ($resultado_usuario->num_rows > 0) {
+		 
+			$datos_usuario = $resultado_usuario->fetch_assoc();
+		} else {
+			die("El usuario no existe");
+		}
+		$stmt->close();
+	//fin
+
 	if (mysqli_num_rows($resultado_usuario) > 0) {
 		echo '<script>						
 				var msg = document.createElement("div");
@@ -479,10 +498,22 @@ if (isset($_POST['registrar'])) {
 		</script>';
 		exit;
 	}
-
+	//preparar sentencia 2
 	// Verificar gmail
-	$sql_verificar_correo = "SELECT * FROM usuario WHERE correo = '$correo'";
-	$resultado_correo = mysqli_query($connect, $sql_verificar_correo);
+		$sql_verificar_correo = "SELECT * FROM usuario WHERE correo = ?";
+		$stmt = $connect->prepare($sql_verificar_correo);
+		$stmt->bind_param("s", $correo);
+		$stmt->execute();
+		$resultado_correo = $stmt->get_result();
+
+		if ($resultado_correo->num_rows > 0) {
+			$datos_correo = $resultado_correo->fetch_assoc();
+		} else {
+			die("El correo no existe");
+		}
+
+		$stmt->close();
+	//fin
 	if (mysqli_num_rows($resultado_correo) > 0) {
 		echo '<script>						
 				var msg = document.createElement("div");
@@ -523,10 +554,22 @@ if (isset($_POST['registrar'])) {
 		exit;
 	}
 
-
+	//preparar sentencia 3
 	// Verificar teléfono
-	$sql_verificar_telefono = "SELECT * FROM usuario WHERE telefono = '$codigo'";
-	$resultado_telefono = mysqli_query($connect, $sql_verificar_telefono);
+		$sql_verificar_telefono = "SELECT * FROM usuario WHERE telefono = ?";
+		$stmt = $connect->prepare($sql_verificar_telefono);
+		$stmt->bind_param("s", $codigo);
+		$stmt->execute();
+		$resultado_telefono = $stmt->get_result();
+		
+		if ($resultado_telefono->num_rows > 0) {
+			$datos_telefono = $resultado_telefono->fetch_assoc();
+		} else {
+			die("El teléfono no existe");
+		}
+		
+		$stmt->close();
+	//fin
 	if (!is_numeric($telefono)) {
 		echo '<script>						
 		var msg = document.createElement("div");
@@ -606,10 +649,20 @@ if (isset($_POST['registrar'])) {
 	}
 
 
-
+	//preparar sentencia 4
 	// Verificar cédula 
-	$sql_verificar_cedula = "SELECT * FROM usuario WHERE cedula = '$cedula'";
-	$resultado_cedula = mysqli_query($connect, $sql_verificar_cedula);
+		$sql_verificar_cedula = "SELECT * FROM usuario WHERE cedula = ?";
+		$stmt = $connect->prepare($sql_verificar_cedula);
+		$stmt->bind_param("s", $cedula);
+		$stmt->execute();
+		$resultado_cedula = $stmt->get_result();
+
+		if ($resultado_cedula->num_rows > 0) {
+			$datos_cedula = $resultado_cedula->fetch_assoc();
+		}
+		$stmt->close();
+
+	//fin
 	if (mysqli_num_rows($resultado_cedula) > 0) {
 		echo '<script>						
 		var msg = document.createElement("div");
@@ -691,16 +744,23 @@ if (isset($_POST['registrar'])) {
 	}
 
 
+		//preparar sentencia 5
 
-		$sqlusuario = "INSERT INTO usuario (id, nombre, apellido, cedula, telefono, correo ,nombre_usuario,contraseña,intentos_fallidos,estado, respuesta_seguridad1, respuesta_seguridad2) 
-							VALUES ('','$nombre','$apellido','$cedula','$codigo','$correo','$usuario','$contraseña_cifrada', 0 ,'Activo', '$pregunta1_cifrada', '$pregunta2_cifrada')";
-		$ejecutar = mysqli_query($connect, $sqlusuario);
-
-		if ($ejecutar) {
-			echo "<script> window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'</script>";
+		$sqlusuario = "INSERT INTO usuario (id, nombre, apellido, cedula, telefono, correo, nombre_usuario, contraseña, intentos_fallidos, estado, respuesta_seguridad1, respuesta_seguridad2) 
+		VALUES ('', ?, ?, ?, ?, ?, ?, ?, 0, 'Activo', ?, ?)";
+		$stmt = $connect->prepare($sqlusuario);
+		$stmt->bind_param("sssssssss", $nombre, $apellido, $cedula, $codigo, $correo, $usuario, $contraseña_cifrada, $pregunta1_cifrada, $pregunta2_cifrada);
+		$stmt->execute();
+		if ($stmt->execute()) {
+			header("Location: http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php");
+			exit();
 		} else {
-			die(mysqli_error($connect));
+			die("Error: " . $stmt->error);
 		}
+		
+		$stmt->close();
+		//fin
+		
 	}
 
 
