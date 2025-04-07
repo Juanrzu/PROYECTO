@@ -1,5 +1,6 @@
 <?php
     include 'connect.php';
+    
     if (isset($_POST['submit'])){
         $grado= $_POST['grado'];
         $seccion= $_POST['seccion'];

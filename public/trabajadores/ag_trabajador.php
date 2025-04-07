@@ -8,6 +8,7 @@ if ($usuario == null || $usuario == '') {
     die();
 }
 include './../connect.php';
+include '../contador_sesion.php';
 ?>
 
 <!DOCTYPE html>

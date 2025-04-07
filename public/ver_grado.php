@@ -8,9 +8,7 @@ if ($usuario == null || $usuario == '') {
   die();
 }
 include 'connect.php';
-
-
-
+include 'contador_sesion.php';
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +22,9 @@ include 'connect.php';
 </head>
 
 <body class="bg-ghost">
-<div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 z-50">
+  <div class="container-lg w-full flex flex-col">
+
+    <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700">
       <div role="status">
         <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
           viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -39,8 +39,6 @@ include 'connect.php';
       </div>
     </div>
 
-  <div class="container w-full max-w-7xl h-full mx-auto">
-
     <?php
     if ($usuario == "admin" || $usuario == "Admin") {
       include('./header_admin.php');
@@ -50,24 +48,24 @@ include 'connect.php';
 
     ?>
 
-    <main class="flex justify-between flex-col mt-4">
+    <main class=" mb-4 xl:px-56 mt-8">
 
 
-    <div class="container-buttons flex justify-start mx-4">
+    <div class="container-buttons flex justify-start items-stretch mx-5">
       <?php
        $grado = $_GET['gradonombre'];
        $seccion = $_GET['seccion'];
 
-      echo '<button class=" p-4 rounded-md text-white bg-blue-700 shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 drop-shadow-lg"><a target="_blank" href="ver_pdf.php?gradonombre=' . $grado . '&seccion=' . $seccion . '" class="text-light">Descargar PDF</a></button>';
-      echo ' <button class=" p-4 rounded-md text-white bg-blue-700 shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 drop-shadow-lg mx-3 "><a href="http://localhost/dashboard/Proyecto/public/profesor.php" class="text-light">Agregar Profesor</a></button>';
-      echo ' <button class=" p-4 rounded-md text-white bg-blue-700 shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 drop-shadow-lg"><a href="http://localhost/dashboard/Proyecto/public/estudiante.php" class="text-light">Agregar Estudiante</a></button>';
+      echo '<button class=" p-4 rounded-md ghost bg-blue-400 shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 drop-shadow-lg"><a target="_blank" href="ver_pdf.php?gradonombre=' . $grado . '&seccion=' . $seccion . '" class="text-light">Descargar PDF</a></button>';
+      echo ' <button class=" p-4 rounded-md ghost bg-blue-400 shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 drop-shadow-lg mx-3 "><a href="http://localhost/dashboard/Proyecto/public/profesor.php" class="text-light">Agregar Profesor</a></button>';
+      echo ' <button class=" p-4 rounded-md ghost bg-blue-400 shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 drop-shadow-lg"><a href="http://localhost/dashboard/Proyecto/public/estudiante.php" class="text-light">Agregar Estudiante</a></button>';
 
       ?>
     </div>
 
-    <div class="w-full mt-4">
-      <table class="w-11/12 mx-auto rounded-lg text-xs text-left rtl:text-right dark:text-gray-400 z-50">
-        <thead class=" uppercase dark:text-gray-400">
+    <div class=" shadow-md sm:rounded-lg -z-10 m-10 xl:m-4">
+      <table class=" w-full text-md text-left rtl:text-right text-black dark:text-gray-400">
+        <thead class="text-xs text-black uppercase dark:text-gray-400">
           <tr>
             <th scope="col" class="px-3 py-2 bg-gray-200 dark:bg-gray-800">Nombre</th>
             <th scope="col" class="px-3 py-2 ">Apellido</th>
@@ -78,7 +76,7 @@ include 'connect.php';
             <th scope="col" class="px-3 py-2 bg-red-500 dark:bg-red-800">Borrar</th>
           </tr>
         </thead>
-        <tbody class="text-md">
+        <tbody>
           <?php
 
           $secc = strtoupper(trim($seccion));
@@ -116,17 +114,17 @@ include 'connect.php';
                             <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $cedula . '</td>
                             <td class="px-3 py-2">' . $grado . '</td>
                             <td class="px-3 py-2  bg-gray-200 dark:bg-gray-800">' . $secc . '</td>
-                            <td class="text-center bg-blue-400 dark:bg-blue-800 hover:bg-blue-500">
-                                <button class="w-1/2">
+                            <td class="bg-blue-400 dark:bg-blue-800 hover:bg-blue-500">
+                                <button class=" w-full">
                                   <a href="editar_profesor.php? editarid=' . $id . ' " class="px-3 py-2">
                                   <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" id="edit-alt" data-name="Flat Line" class="icon flat-line"><path id="secondary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"/><path id="primary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"/></svg>
                                   </a>
                                 </button>
                                 </td>
 
-                                <td class="text-center px-3 py-2 bg-red-500 dark:bg-red-800">
+                                <td class="px-3 py-2 bg-red-500 dark:bg-red-800">
                                 
-                                <button class="w-1/2">
+                                <button class="w-full">
                                 <a href="eliminar_profesor.php? eliminarid=' . $id . '" class="px-3 py-2">
                                   <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 -0.5 21 21" version="1.1">
   
@@ -158,29 +156,15 @@ include 'connect.php';
           ?>
         </tbody>
       </table>
-    </div>
-
-    <div class="container-buscador w-full m-8">
-
-    
-        <form  method="post" class="max-w-md ">   
-            <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-            <div class="relative">
-                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                    </svg>
-                </div>
-                <input type="search" name="buscador"  class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ingrese Un Nombre"/>
-                <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
-            </div>
-        </form>
-
       </div>
 
-      <div class="overflow-x-auto shadow-md sm:rounded-lg mx-4">
 
-        <table class="w-full text-xs text-left rtl:text-right text-black dark:text-gray-400 z-50">
+
+
+
+      <div class="overflow-x-auto shadow-md sm:rounded-lg -z-10 m-10 xl:m-4">
+
+        <table class=" text-xs text-left rtl:text-right text-black dark:text-gray-400">
           <thead class="text-xs text-black uppercase dark:text-gray-400">
             <tr>
               <th scope="col" class="px-3 py-2 bg-gray-200 dark:bg-gray-800">Nombres</th>
@@ -195,409 +179,162 @@ include 'connect.php';
               <th scope="col" class="px-3 py-2 ">Grado</th>
               <th scope="col" class="px-3 py-2 bg-gray-200 dark:bg-gray-800">Sección</th>
               <th scope="col" class="px-3 py-2 bg-blue-400 dark:bg-blue-800">Editar</th>
-              <th scope="col" class="px-3 py-2 bg-red-500 dark:bg-red-800">Borrar</th>
+              <th scope="col" class="px-3 py-2 bg-red-500 dark:bg-red-800">Retirar</th>
+              <th scope="col" class="px-3 py-2 bg-red-500 dark:bg-red-800">Eliminar del Sistema</th>
             </tr>
           </thead>
-          <tbody class="text-md">
+          <tbody>
             <?php
 
             $secc = strtoupper(trim($seccion));
 
+            if ($secc === "A") {
+              $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
+            representante.nombre as representante_nombre, representante.cedula as cedularepre, 
+            representante.telefono as telefono, representante.correo as correo
+            FROM estudiantes  
+            JOIN seccion ON estudiantes.idseccion = seccion.id 
+            JOIN grados ON estudiantes.idgrado = grados.id
+            JOIN representante On estudiantes.idrepresentante = representante.id
+            WHERE seccion.nombre = '$secc' and grados.nombre = $grado
+            ORDER BY estudiantes.nombre ASC";
 
+            } else {
+              $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
+            representante.nombre as representante_nombre, representante.cedula as cedularepre, 
+            representante.telefono as telefono, representante.correo as correo
+            FROM estudiantes 
+            JOIN seccion ON estudiantes.idseccion = seccion.id 
+            JOIN grados ON estudiantes.idgrado = grados.id
+            JOIN representante ON estudiantes.idrepresentante = representante.id
+            WHERE seccion.nombre = '$secc' and grados.nombre = $grado
+            ORDER BY estudiantes.nombre ASC";
+            }
+            $result = mysqli_query($connect, $sql);
+            if ($result) {
+              while ($row = mysqli_fetch_assoc($result)) {
+                $id = $row['id'];
+                $nombre = $row['nombre'];
+                $apellido = $row['apellido'];
+                $cen = $row['cen'];
+                $nacimiento = $row['nacimiento'];
+                $sexo = $row['sexo'];
+                $representante = $row['representante_nombre'];
+                $cedularepre = $row['cedularepre'];
+                $telefono = $row['telefono'];
+                $correo = $row['correo'];
+                $grado = $row['grado_nombre'];
+                $seccion = $row['seccion_nombre'];
 
-
-            if (isset($_POST['buscador'])) {
-
-              $nombre = $_POST['buscador'];
-
-
-              $limit = "SELECT estudiantes.*, representante.nombre as representante_nombre, representante.cedula as cedularepre, 
-                      representante.telefono as telefono, representante.correo as correo
-                      FROM estudiantes 
-                      join seccion on estudiantes.idseccion = seccion.id
-                      join grados on estudiantes.idgrado = grados.id
-                      JOIN representante ON estudiantes.idrepresentante = representante.id
-                      WHERE estudiantes.nombre LIKE '%$nombre%' or estudiantes.cen LIKE '%$nombre%'
-                      or estudiantes.apellido LIKE '%$nombre%' or representante.nombre LIKE '%$nombre%'
-                      or representante.correo LIKE '%$nombre%' or representante.cedula LIKE '%$nombre%'";
-          
-          $resultado = mysqli_query($connect, $limit);
-
-              if(!empty($nombre) && $connect->real_escape_string($nombre)){
-          
-              if ($resultado && mysqli_num_rows($resultado) > 0) {
-
-                    while ($row = mysqli_fetch_assoc($resultado)) {
-                      $id = $row['id'];
-                      $nombre = $row['nombre'];
-                      $apellido = $row['apellido'];
-                      $cen = $row['cen'];
-                      $nacimiento = $row['nacimiento'];
-                      $sexo = $row['sexo'];
-                      $representante = $row['representante_nombre'];
-                      $cedularepre = $row['cedularepre'];
-                      $telefono = $row['telefono'];
-                      $correo = $row['correo'];
-          
-          
-                      echo '<tr class="border-b border-gray-900 dark:border-gray-700">
-                    <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $nombre . '</td>
-                    <td class="px-3 py-2 ">' . $apellido . '</td>
-                    <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $cen . '</td>
-                    <td class="px-3 py-2">' . $nacimiento . '</td>
-                    <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $sexo . '</td>
-                    <td class="px-3 py-2 ">' . $representante . '</td>
-                    <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $cedularepre . '</td>
-                    <td class="px-3 py-2 ">' . $telefono . '</td>
-                    <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $correo . '</td>
-                    <td class="px-3 py-2 ">' . $grado . '</td>
-                    <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $secc . '</td>
-                    <td class="text-center bg-blue-400 dark:bg-blue-800 hover:bg-blue-500">
-                      <button class="w-1/2">
-                        <a href="editar.php? editarid= ' . $id . '" class="px-3 py-2">
-                        <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" id="edit-alt" data-name="Flat Line" class="icon flat-line"><path id="secondary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"/><path id="primary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"/></svg>
+                echo '<tr class="border-b border-gray-900 dark:border-gray-700">
+                <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $nombre . '</td>
+                <td class="px-3 py-2">' . $apellido . '</td>
+                <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $cen . '</td>
+                <td class="px-3 py-2">' . $nacimiento . '</td>
+                <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $sexo . '</td>
+                <td class="px-3 py-2 ">' . $representante . '</td>
+                <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $cedularepre . '</td>
+                <td class="px-3 py-2">' . $telefono . '</td>
+                <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $correo . '</td>
+                <td class="px-3 py-2">' . $grado . '</td>
+                <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $seccion . '</td>
+                <td class="bg-blue-400 dark:bg-blue-800 hover:bg-blue-500">
+                    <button class="w-full">
+                        <a href="editar.php?editarid=' . $id . '" class="px-3 py-2">
+                            <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" id="edit-alt" class="icon flat-line">
+                                <path d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"/>
+                                <path d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"/>
+                            </svg>
                         </a>
-                      </button>
-                    </td>
-          
-                    <td class="text-center bg-red-500 dark:bg-red-800 hover:bg-red-400"> 
-                      <button class="w-1/2">
-                      <a href="eliminar.php? eliminarid=' . $id . '" class="px-3 py-2">
-                          <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 -0.5 21 21" version="1.1">
-                
-                              <title>delete [#1487]</title>
-                              <desc>Created with Sketch.</desc>
-                              <defs>
-                          
-                          </defs>
-                              <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                  <g id="Dribbble-Light-Preview" transform="translate(-179.000000, -360.000000)" fill="#000000">
-                                      <g id="icons" transform="translate(56.000000, 160.000000)">
-                                          <path d="M130.35,216 L132.45,216 L132.45,208 L130.35,208 L130.35,216 Z M134.55,216 L136.65,216 L136.65,208 L134.55,208 L134.55,216 Z M128.25,218 L138.75,218 L138.75,206 L128.25,206 L128.25,218 Z M130.35,204 L136.65,204 L136.65,202 L130.35,202 L130.35,204 Z M138.75,204 L138.75,200 L128.25,200 L128.25,204 L123,204 L123,206 L126.15,206 L126.15,220 L140.85,220 L140.85,206 L144,206 L144,204 L138.75,204 Z" id="delete-[#1487]">
-                          
-                          </path>
-                                      </g>
-                                  </g>
-                              </g>
-                          </svg>
-                      </a>
-                      </button>
-                    </td>
-                  </tr>';}
-          
-          
-                } else{
-
-                  // Notificacion diciendo que no se encontro nada
-                echo "no se encontro nada";
-              }
-
-
-              } else {
-
-
-                $contador = "SELECT COUNT(*) AS total 
-                FROM estudiantes 
-                JOIN seccion ON estudiantes.idseccion = seccion.id 
-                JOIN grados ON estudiantes.idgrado = grados.id 
-                JOIN representante ON estudiantes.idrepresentante = representante.id 
-                WHERE seccion.nombre = '$secc' and grados.nombre = '$grado'";
-
-              $consulta = $connect->query($contador); 
-              $row = $consulta->fetch_assoc(); 
-              $total_registros = $row['total'];
-
-              $registros_por_pagina = 10;
-
-              $total_paginas = ceil($total_registros / $registros_por_pagina);
-
-
-              $pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-              if ($pagina_actual < 1) {
-                  $pagina_actual = 1;
-              } elseif ($pagina_actual > $total_paginas) {
-                  $pagina_actual = $total_paginas;
-              }
-
-              $offset = ($pagina_actual - 1) * $registros_por_pagina;
-
-              if ($total_registros == 0) {
-                $offset = 1;
-            }
-
-
-
-                if ($secc === "A") {
-                  $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
-                representante.nombre as representante_nombre, representante.cedula as cedularepre, 
-                representante.telefono as telefono, representante.correo as correo
-                FROM estudiantes  
-                JOIN seccion ON estudiantes.idseccion = seccion.id 
-                JOIN grados ON estudiantes.idgrado = grados.id
-                JOIN representante On estudiantes.idrepresentante = representante.id
-                WHERE seccion.nombre = '$secc' and grados.nombre = $grado
-                ORDER BY estudiantes.nombre ASC
-                LIMIT $offset, $registros_por_pagina";
-    
-                } else {
-                  $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
-                representante.nombre as representante_nombre, representante.cedula as cedularepre, 
-                representante.telefono as telefono, representante.correo as correo
-                FROM estudiantes 
-                JOIN seccion ON estudiantes.idseccion = seccion.id 
-                JOIN grados ON estudiantes.idgrado = grados.id
-                JOIN representante ON estudiantes.idrepresentante = representante.id
-                WHERE seccion.nombre = '$secc' and grados.nombre = $grado
-                ORDER BY estudiantes.nombre ASC
-                LIMIT $offset, $registros_por_pagina";
-                }
-
-                $result = mysqli_query($connect, $sql);
-                if ($result) {
-                  while ($row = mysqli_fetch_assoc($result)) {
-                    $id = $row['id'];
-                    $nombre = $row['nombre'];
-                    $apellido = $row['apellido'];
-                    $cen = $row['cen'];
-                    $nacimiento = $row['nacimiento'];
-                    $sexo = $row['sexo'];
-                    $representante = $row['representante_nombre'];
-                    $cedularepre = $row['cedularepre'];
-                    $telefono = $row['telefono'];
-                    $correo = $row['correo'];
-                    $grado = $row['grado_nombre'];
-                    $seccion = $row['seccion_nombre'];
-    
-    
-                    echo '<tr class="border-b border-gray-900 dark:border-gray-700">
-                  <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $nombre . '</td>
-                  <td class="px-3 py-2 ">' . $apellido . '</td>
-                  <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $cen . '</td>
-                  <td class="px-3 py-2">' . $nacimiento . '</td>
-                  <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $sexo . '</td>
-                  <td class="px-3 py-2 ">' . $representante . '</td>
-                  <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $cedularepre . '</td>
-                  <td class="px-3 py-2 ">' . $telefono . '</td>
-                  <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $correo . '</td>
-                  <td class="px-3 py-2 ">' . $grado . '</td>
-                  <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $seccion . '</td>
-                  <td class="text-center bg-blue-400 dark:bg-blue-800 hover:bg-blue-500">
-                    <button class="w-1/2">
-                      <a href="editar.php? editarid= ' . $id . '" class="px-3 py-2">
-                      <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" id="edit-alt" data-name="Flat Line" class="icon flat-line"><path id="secondary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"/><path id="primary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"/></svg>
-                      </a>
                     </button>
-                  </td>
-    
-                  <td class="text-center bg-red-500 dark:bg-red-800 hover:bg-red-400"> 
-                    <button class="w-1/2">
-                    <a href="eliminar.php? eliminarid=' . $id . '" class="px-3 py-2">
-                        <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 -0.5 21 21" version="1.1">
-              
-                            <title>delete [#1487]</title>
-                            <desc>Created with Sketch.</desc>
-                            <defs>
-                        
-                        </defs>
-                            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <g id="Dribbble-Light-Preview" transform="translate(-179.000000, -360.000000)" fill="#000000">
-                                    <g id="icons" transform="translate(56.000000, 160.000000)">
-                                        <path d="M130.35,216 L132.45,216 L132.45,208 L130.35,208 L130.35,216 Z M134.55,216 L136.65,216 L136.65,208 L134.55,208 L134.55,216 Z M128.25,218 L138.75,218 L138.75,206 L128.25,206 L128.25,218 Z M130.35,204 L136.65,204 L136.65,202 L130.35,202 L130.35,204 Z M138.75,204 L138.75,200 L128.25,200 L128.25,204 L123,204 L123,206 L126.15,206 L126.15,220 L140.85,220 L140.85,206 L144,206 L144,204 L138.75,204 Z" id="delete-[#1487]">
-                        
-                        </path>
-                                    </g>
-                                </g>
-                            </g>
-                        </svg>
-                    </a>
-                    </button>
-                  </td>
-                </tr>';
-    
-    
-    
-    
-                  }
-                }
-
-
-              }
-
-
-              } else {
-
-                
-                $contador = "SELECT COUNT(*) AS total 
-                FROM estudiantes 
-                JOIN seccion ON estudiantes.idseccion = seccion.id 
-                JOIN grados ON estudiantes.idgrado = grados.id 
-                JOIN representante ON estudiantes.idrepresentante = representante.id 
-                WHERE seccion.nombre = '$secc' and grados.nombre = '$grado'"; 
-
-              $consulta = $connect->query($contador); 
-              $row = $consulta->fetch_assoc(); 
-              $total_registros = $row['total'];
-
-              $registros_por_pagina = 10;
-
-              $total_paginas = ceil($total_registros / $registros_por_pagina);
-
-
-              $pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-              if ($pagina_actual < 1) {
-                  $pagina_actual = 1;
-              } elseif ($pagina_actual > $total_paginas) {
-                  $pagina_actual = $total_paginas;
-              }
-
-              $offset = ($pagina_actual - 1) * $registros_por_pagina;
-
-              if ($total_registros == 0) {
-                $offset = 1;
-            }
-
+                </td>
+                <td class="bg-red-500 dark:bg-red-800 hover:bg-red-400"> 
+                    <form method="POST" action="retirar_estudiante.php?eliminarid=' . $id . '">
+                        <button type="button" class="w-full" data-modal-target="modal-retirar-' . $id . '" data-modal-toggle="modal-retirar-' . $id . '">
+                            <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" width="32px" height="32px" viewBox="0 0 21 21">
+                                <!-- SVG contenido -->
+                            </svg>
+                        </button>
+            
+                        <div id="modal-retirar-' . $id . '" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
+                            <div class="relative p-4 max-h-full">
+                                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 mt-28">
+                                    <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
+                                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Sistema</h3>
+                                        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="modal-retirar-' . $id . '">
+                                            <svg class="w-4 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                            </svg>
+                                            <span class="sr-only">Close modal</span>
+                                        </button>
+                                    </div>
+                                    <div class="p-4 md:p-5 space-y-4">
+                                        <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">¿Dinos el motivo?</p>
+                                        <div class="mb-2">
+                                            <input type="text" class="w-full mt-2 rounded-lg" name="motivo" id="motivo-retirar-' . $id . '" autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center p-4 border-t border-gray-200 rounded-b dark:border-gray-600">
+                                        <button type="submit" name="registrar" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Retirar</button>
+                                        <button type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" data-modal-hide="modal-retirar-' . $id . '">Cancelar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </td>
+            
+                <td class="bg-red-500 dark:bg-red-800 hover:bg-red-400"> 
+                    <form method="POST" action="eliminar.php?eliminarid=' . $id . '">
+                        <button type="button" class="w-full" data-modal-target="modal-eliminar-' . $id . '" data-modal-toggle="modal-eliminar-' . $id . '">
+                            <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" width="32px" height="32px" viewBox="0 0 21 21">
+                                <!-- SVG contenido -->
+                            </svg>
+                        </button>
+            
+                        <div id="modal-eliminar-' . $id . '" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
+                            <div class="relative p-4 max-h-full">
+                                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 mt-28">
+                                    <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
+                                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Sistema</h3>
+                                        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="modal-eliminar-' . $id . '">
+                                            <svg class="w-4 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                            </svg>
+                                            <span class="sr-only">Close modal</span>
+                                        </button>
+                                    </div>
+                                    <div class="p-4 md:p-5 space-y-4">
+                                        <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">¿Está seguro?</p>
+                                    </div>
+                                    <div class="flex items-center p-4 border-t border-gray-200 rounded-b dark:border-gray-600">
+                                        <button type="submit" name="registrar" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Sí</button>
+                                        <button type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" data-modal-hide="modal-eliminar-' . $id . '">No</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </td>
+            </tr>';
             
 
-                if ($secc === "A") {
-          
-                  $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
-                representante.nombre as representante_nombre, representante.cedula as cedularepre, 
-                representante.telefono as telefono, representante.correo as correo
-                FROM estudiantes  
-                JOIN seccion ON estudiantes.idseccion = seccion.id 
-                JOIN grados ON estudiantes.idgrado = grados.id
-                JOIN representante On estudiantes.idrepresentante = representante.id
-                WHERE seccion.nombre = '$secc' and grados.nombre = $grado
-                ORDER BY estudiantes.nombre ASC
-                LIMIT $offset, $registros_por_pagina";
 
-    
-                } else {
 
-                  
-                  $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
-                representante.nombre as representante_nombre, representante.cedula as cedularepre, 
-                representante.telefono as telefono, representante.correo as correo
-                FROM estudiantes 
-                JOIN seccion ON estudiantes.idseccion = seccion.id 
-                JOIN grados ON estudiantes.idgrado = grados.id
-                JOIN representante ON estudiantes.idrepresentante = representante.id
-                WHERE seccion.nombre = '$secc' and grados.nombre = $grado
-                ORDER BY estudiantes.nombre ASC
-                LIMIT $offset, $registros_por_pagina";
-                  
-                }
 
-                $result = mysqli_query($connect, $sql);
-                
-                if ($result) {
-                  while ($row = mysqli_fetch_assoc($result)) {
-                    $id = $row['id'];
-                    $nombre = $row['nombre'];
-                    $apellido = $row['apellido'];
-                    $cen = $row['cen'];
-                    $nacimiento = $row['nacimiento'];
-                    $sexo = $row['sexo'];
-                    $representante = $row['representante_nombre'];
-                    $cedularepre = $row['cedularepre'];
-                    $telefono = $row['telefono'];
-                    $correo = $row['correo'];
-                    $grado = $row['grado_nombre'];
-                    $seccion = $row['seccion_nombre'];
-    
-                    
 
-                    echo '<tr class="border-b border-gray-900 dark:border-gray-700">
-                  <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $nombre . '</td>
-                  <td class="px-3 py-2 ">' . $apellido . '</td>
-                  <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $cen . '</td>
-                  <td class="px-3 py-2">' . $nacimiento . '</td>
-                  <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $sexo . '</td>
-                  <td class="px-3 py-2 ">' . $representante . '</td>
-                  <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $cedularepre . '</td>
-                  <td class="px-3 py-2 ">' . $telefono . '</td>
-                  <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $correo . '</td>
-                  <td class="px-3 py-2 ">' . $grado . '</td>
-                  <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $seccion . '</td>
-                  <td class="text-center bg-blue-400 dark:bg-blue-800 hover:bg-blue-500">
-                    <button class="w-1/2">
-                      <a href="editar.php? editarid= ' . $id . '" class="px-3 py-2">
-                      <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" id="edit-alt" data-name="Flat Line" class="icon flat-line"><path id="secondary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"/><path id="primary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"/></svg>
-                      </a>
-                    </button>
-                  </td>
-    
-                  <td class="text-center bg-red-500 dark:bg-red-800 hover:bg-red-400"> 
-                    <button class="w-1/2">
-                    <a href="eliminar.php? eliminarid=' . $id . '" class="px-3 py-2">
-                        <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 -0.5 21 21" version="1.1">
-              
-                            <title>delete [#1487]</title>
-                            <desc>Created with Sketch.</desc>
-                            <defs>
-                        
-                        </defs>
-                            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <g id="Dribbble-Light-Preview" transform="translate(-179.000000, -360.000000)" fill="#000000">
-                                    <g id="icons" transform="translate(56.000000, 160.000000)">
-                                        <path d="M130.35,216 L132.45,216 L132.45,208 L130.35,208 L130.35,216 Z M134.55,216 L136.65,216 L136.65,208 L134.55,208 L134.55,216 Z M128.25,218 L138.75,218 L138.75,206 L128.25,206 L128.25,218 Z M130.35,204 L136.65,204 L136.65,202 L130.35,202 L130.35,204 Z M138.75,204 L138.75,200 L128.25,200 L128.25,204 L123,204 L123,206 L126.15,206 L126.15,220 L140.85,220 L140.85,206 L144,206 L144,204 L138.75,204 Z" id="delete-[#1487]">
-                        
-                        </path>
-                                    </g>
-                                </g>
-                            </g>
-                        </svg>
-                    </a>
-                    </button>
-                  </td>
-                </tr>';
-    
-    
-    
-    
-                  }
-                }
+
+
+
 
               }
-
-                ?>
-
-              
+            }
             
+            ?>
+
           </tbody>
         </table>
       </div>
-
-
-      <div aria-label="Page navigation example w-full">
-        <ul class="flex items-center justify-center -space-x-px h-10 text-base py-8">
-
-        <?php 
-
-          for ($i = 1; $i <= $total_paginas; $i++) {
-            if ($i == $pagina_actual) {
-                echo "
-                          <li>
-                      <a href='#' class='flex items-center justify-center px-4 h-10 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'>$i</a>
-                    </li>
-                ";
-            } else {
-                echo "
-
-                          <li>
-                      <a href='ver_grado.php?gradonombre=$grado & seccion=$secc & pagina=$i' aria-current='page' class='z-10 flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700  dark:border-gray-700 dark:bg-gray-700 dark:text-white'>$i</a>
-                      </li>
-                ";
-            }
-          }
-
-        ?>
-
-        </ul>
-      </div>
-
-
-
     </main>
 
     <footer class="flex justify-between items-center w-full px-8 py-4 mt-[20%]">
@@ -613,14 +350,5 @@ include 'connect.php';
   </div>
   <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
   <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
-  
-
-
-
-
-
-
-
-
 
 </html>

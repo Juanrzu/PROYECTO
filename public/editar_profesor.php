@@ -7,7 +7,7 @@
           die();
     }
     include 'connect.php';
-    
+    include 'contador_sesion.php';
     
     
     $id=$_GET['editarid'];

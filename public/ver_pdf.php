@@ -203,7 +203,7 @@ include 'connect.php';
 <?php
 $html = ob_get_clean();
 
-require_once 'D:\Programas\Xammp\htdocs\dashboard\Proyecto\pdf\dompdf\autoload.inc.php';
+require_once 'C:\xampp\htdocs\dashboard\Proyecto\pdf\dompdf\autoload.inc.php';
 use Dompdf\Dompdf;
 $dompdf = new Dompdf();
 

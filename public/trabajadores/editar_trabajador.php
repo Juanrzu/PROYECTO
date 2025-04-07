@@ -8,7 +8,7 @@ if ($usuario == null || $usuario == '') {
     die();
 }
 include './../connect.php';
-
+include '../contador_sesion.php';
     
     $id=$_GET['editarid'];
     $sql = "SELECT trabajadores.*, rol.nombre as rol_nombre
