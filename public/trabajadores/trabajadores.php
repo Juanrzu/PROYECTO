@@ -8,7 +8,6 @@ if ($usuario == null || $usuario == '') {
 	die();
 }
 include './../connect.php';
-include '../contador_sesion.php';
 ?>
 
 <!DOCTYPE html>
@@ -22,8 +21,9 @@ include '../contador_sesion.php';
 </head>
 
 <body class="bg-ghost">
-  <div class="container-lg w-full flex flex-col">
-    <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 z-50">
+
+
+<div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 z-50">
       <div role="status">
         <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600 z-50"
           viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -39,6 +39,9 @@ include '../contador_sesion.php';
     </div>
 
 
+
+  <div class="container w-full max-w-7xl h-full mx-auto">
+
     <?php
     if ($usuario == "admin" || $usuario == "Admin" ) {
       include('../header_admin.php');
@@ -47,10 +50,29 @@ include '../contador_sesion.php';
     }
     ?>
 
-    <main class=" mb-4 xl:px-56 mt-8">
-      <div class="container-buttons flex justify-start items-stretch mx-5">
+    <main class="h-full mt-4">
+      <div class="container-buttons flex justify-center items-baseline mx-5">
 
-        <?php echo ' <button class=" rounded-md ghost bg-blue-400 shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 drop-shadow-lg"><a href="ag_trabajador.php " class="inline-block p-4">Agregar Trabajador</a></button>';
+        <?php echo ' <button class="w-56 font-bold text-white rounded-md ghost bg-blue-400 shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 drop-shadow-lg"><a href="ag_trabajador.php " class="inline-block p-4">Agregar Trabajador</a></button>
+                      
+                      <div class="container-buscador w-full">
+                        <form  method="post" class="max-w-md ml-auto">   
+                            <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                                    </svg>
+                                </div>
+                                <input type="search" name="buscador"  class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ingrese Un Nombre"/>
+                                <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+                            </div>
+                        </form>
+                      </div>
+        ';
+        
+        
+        
         ?>
       </div>
       <div class="overflow-x-auto shadow-md sm:rounded-lg -z-10 m-10 xl:m-4">
@@ -75,99 +97,386 @@ include '../contador_sesion.php';
           <tbody>
 
             <?php
-            $sql = "SELECT * FROM trabajadores";
+            
+            if(isset($_POST['buscador'])){
 
-            $result = mysqli_query($connect, $sql);
-            if ($result) {
-              while ($row = mysqli_fetch_assoc($result)) {
-                $id = $row['id'];
-                $nombre = $row['nombre'];
-                $apellido = $row['apellido'];
-                $cedula = $row['cedula'];
-                $telefono = $row['telefono'];
+              $nombre = $_POST['buscador'];
 
-                echo '<tr>
-                      <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $id . '</td>
-                      <td class="px-3 py-2">' . $nombre . '</td>
-                      <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $apellido . '</td>
-                      <td class="px-3 py-2">' . $cedula . '</td>
-                      <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $telefono . '</td>             
-                      <td class="px-3 py-2 bg-blue-400 dark:bg-blue-800">
-                          <button class="w-full">
-                          <a href="editar_trabajador.php? editarid=' . $id . ' ">
-                          <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" id="edit-alt" data-name="Flat Line" class="icon flat-line"><path id="secondary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"/><path id="primary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"/></svg>
-                          </a>
-                          </button>
-                          </td>
 
-                          <td class="px-3 py-2 bg-red-500 dark:bg-red-800>
-                            <button class="w-full" type="button" data-modal-target="default-modal" data-modal-toggle="default-modal">
-                          
-                                  <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 -0.5 21 21" version="1.1">
               
-                                  <title>delete [#1487]</title>
-                                  <desc>Created with Sketch.</desc>
-                                  <defs>
+              $sql = "SELECT * 
+              FROM trabajadores 
+              WHERE trabajadores.nombre LIKE '%$nombre%'or trabajadores.apellido LIKE '%$nombre%' 
+              or trabajadores.cedula LIKE '%$nombre%' 
+              or trabajadores.telefono LIKE '%$nombre%'";
+              
+              $result = mysqli_query($connect, $sql);
+             
+              if (!empty($nombre) && $connect->real_escape_string($nombre)){
+
+
+                if ($result && mysqli_num_rows($result) > 0) {
+                  while ($row = mysqli_fetch_assoc($result)) {
+                    $id = $row['id'];
+                    $nombre = $row['nombre'];
+                    $apellido = $row['apellido'];
+                    $cedula = $row['cedula'];
+                    $telefono = $row['telefono'];
+    
+                    echo '<tr>
+                          <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $id . '</td>
+                          <td class="px-3 py-2">' . $nombre . '</td>
+                          <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $apellido . '</td>
+                          <td class="px-3 py-2">' . $cedula . '</td>
+                          <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $telefono . '</td>             
+                          <td class="px-3 py-2 bg-blue-400 dark:bg-blue-800">
+                              <button class="w-full">
+                              <a href="editar_trabajador.php? editarid=' . $id . ' ">
+                              <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" id="edit-alt" data-name="Flat Line" class="icon flat-line"><path id="secondary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"/><path id="primary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"/></svg>
+                              </a>
+                              </button>
+                              </td>
+    
+                              <td class="px-3 py-2 bg-red-500 dark:bg-red-800>
+                                <button class="w-full" type="button" data-modal-target="default-modal" data-modal-toggle="default-modal">
                               
-                              </defs>
-                                  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                      <g id="Dribbble-Light-Preview" transform="translate(-179.000000, -360.000000)" fill="black">
-                                          <g id="icons" transform="translate(56.000000, 160.000000)">
-                                              <path d="M130.35,216 L132.45,216 L132.45,208 L130.35,208 L130.35,216 Z M134.55,216 L136.65,216 L136.65,208 L134.55,208 L134.55,216 Z M128.25,218 L138.75,218 L138.75,206 L128.25,206 L128.25,218 Z M130.35,204 L136.65,204 L136.65,202 L130.35,202 L130.35,204 Z M138.75,204 L138.75,200 L128.25,200 L128.25,204 L123,204 L123,206 L126.15,206 L126.15,220 L140.85,220 L140.85,206 L144,206 L144,204 L138.75,204 Z" id="delete-[#1487]">
-                              
-                              </path>
+                                      <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 -0.5 21 21" version="1.1">
+                  
+                                      <title>delete [#1487]</title>
+                                      <desc>Created with Sketch.</desc>
+                                      <defs>
+                                  
+                                  </defs>
+                                      <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                          <g id="Dribbble-Light-Preview" transform="translate(-179.000000, -360.000000)" fill="black">
+                                              <g id="icons" transform="translate(56.000000, 160.000000)">
+                                                  <path d="M130.35,216 L132.45,216 L132.45,208 L130.35,208 L130.35,216 Z M134.55,216 L136.65,216 L136.65,208 L134.55,208 L134.55,216 Z M128.25,218 L138.75,218 L138.75,206 L128.25,206 L128.25,218 Z M130.35,204 L136.65,204 L136.65,202 L130.35,202 L130.35,204 Z M138.75,204 L138.75,200 L128.25,200 L128.25,204 L123,204 L123,206 L126.15,206 L126.15,220 L140.85,220 L140.85,206 L144,206 L144,204 L138.75,204 Z" id="delete-[#1487]">
+                                  
+                                  </path>
+                                              </g>
                                           </g>
                                       </g>
-                                  </g>
-                              </svg>
+                                  </svg>
+                                  
+                              </button>
+                              </td>
                               
-                          </button>
-                          </td>
-                          
-                  </tr>
-                  
-                  
-                  <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
-                    <div class="relative p-4 max-h-full">
-                        <!-- Modal content -->
-                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 mt-28">
-                            <!-- Modal header -->
-                            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                                    Sistema
-                                </h3>
-                                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
-                                    <svg class="w-4 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                    </svg>
-                                    <span class="sr-only">Close modal</span>
-                                </button>
-                            </div>
-                            <!-- Modal body -->
-                            <div class="p-4 md:p-5 space-y-4">
-                                <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                    ¿Esta Seguro Que Quiere Eliminar a Un Trabajador?
-                                </p>
-                            </div>
-                            <!-- Modal footer -->
-                            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                             
-                         <a href="eliminar_trabajador.php? eliminarid=' . $id . '" data-modal-hide="default-modal" class=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">SI</a>
-                                <button data-modal-hide="default-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">no</button>
+                      </tr>
+                      
+                      
+                      <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
+                        <div class="relative p-4 max-h-full">
+                            <!-- Modal content -->
+                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 mt-28">
+                                <!-- Modal header -->
+                                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                        Sistema
+                                    </h3>
+                                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
+                                        <svg class="w-4 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                        </svg>
+                                        <span class="sr-only">Close modal</span>
+                                    </button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="p-4 md:p-5 space-y-4">
+                                    <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                                        ¿Esta Seguro Que Quiere Eliminar a Un Trabajador?
+                                    </p>
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                                 
+                             <a href="eliminar_trabajador.php? eliminarid=' . $id . '" data-modal-hide="default-modal" class=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">SI</a>
+                                    <button data-modal-hide="default-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">no</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                  </div>
+                      </div>
+                      
+                      ';
+                  }
+    
+                } else{
+
+                  // Notificacion diciendo que no se encontro nada
+                echo "no se encontro nada";
+                  }
+
+
+              } else{
+
+                $contador = "SELECT COUNT(*) AS total 
+                FROM trabajadores";
+  
+                $consulta = $connect->query($contador); 
+                $row = $consulta->fetch_assoc(); 
+                $total_registros = $row['total'];
+  
+                $registros_por_pagina = 10;
+  
+                $total_paginas = ceil($total_registros / $registros_por_pagina);
+  
+                $pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+                if ($pagina_actual < 1) {
+                    $pagina_actual = 1;
+                } elseif ($pagina_actual > $total_paginas) {
+                    $pagina_actual = $total_paginas;
+                }
+  
+                $offset = ($pagina_actual - 1) * $registros_por_pagina;
+  
+  
+                $sql = "SELECT *
+                FROM trabajadores
+                LIMIT $offset, $registros_por_pagina";
+  
+                $resultado = mysqli_query($connect, $sql);
+  
+  
+                if ($resultado && mysqli_num_rows($resultado) > 0) {
+  
+                  while ($row = mysqli_fetch_assoc($resultado)) {
+                    $id = $row['id'];
+                    $nombre = $row['nombre'];
+                    $apellido = $row['apellido'];
+                    $cedula = $row['cedula'];
+                    $telefono = $row['telefono'];
+    
+                    echo '<tr>
+                          <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $id . '</td>
+                          <td class="px-3 py-2">' . $nombre . '</td>
+                          <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $apellido . '</td>
+                          <td class="px-3 py-2">' . $cedula . '</td>
+                          <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $telefono . '</td>             
+                          <td class="px-3 py-2 bg-blue-400 dark:bg-blue-800">
+                              <button class="w-full">
+                              <a href="editar_trabajador.php? editarid=' . $id . ' ">
+                              <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" id="edit-alt" data-name="Flat Line" class="icon flat-line"><path id="secondary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"/><path id="primary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"/></svg>
+                              </a>
+                              </button>
+                              </td>
+    
+                              <td class="px-3 py-2 bg-red-500 dark:bg-red-800>
+                                <button class="w-full" type="button" data-modal-target="default-modal" data-modal-toggle="default-modal">
+                              
+                                      <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 -0.5 21 21" version="1.1">
                   
-                  ';
+                                      <title>delete [#1487]</title>
+                                      <desc>Created with Sketch.</desc>
+                                      <defs>
+                                  
+                                  </defs>
+                                      <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                          <g id="Dribbble-Light-Preview" transform="translate(-179.000000, -360.000000)" fill="black">
+                                              <g id="icons" transform="translate(56.000000, 160.000000)">
+                                                  <path d="M130.35,216 L132.45,216 L132.45,208 L130.35,208 L130.35,216 Z M134.55,216 L136.65,216 L136.65,208 L134.55,208 L134.55,216 Z M128.25,218 L138.75,218 L138.75,206 L128.25,206 L128.25,218 Z M130.35,204 L136.65,204 L136.65,202 L130.35,202 L130.35,204 Z M138.75,204 L138.75,200 L128.25,200 L128.25,204 L123,204 L123,206 L126.15,206 L126.15,220 L140.85,220 L140.85,206 L144,206 L144,204 L138.75,204 Z" id="delete-[#1487]">
+                                  
+                                  </path>
+                                              </g>
+                                          </g>
+                                      </g>
+                                  </svg>
+                                  
+                              </button>
+                              </td>
+                              
+                      </tr>
+                      
+                      
+                      <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
+                        <div class="relative p-4 max-h-full">
+                            <!-- Modal content -->
+                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 mt-28">
+                                <!-- Modal header -->
+                                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                        Sistema
+                                    </h3>
+                                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
+                                        <svg class="w-4 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                        </svg>
+                                        <span class="sr-only">Close modal</span>
+                                    </button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="p-4 md:p-5 space-y-4">
+                                    <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                                        ¿Esta Seguro Que Quiere Eliminar a Un Trabajador?
+                                    </p>
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                                 
+                             <a href="eliminar_trabajador.php? eliminarid=' . $id . '" data-modal-hide="default-modal" class=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">SI</a>
+                                    <button data-modal-hide="default-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">no</button>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                      
+                      ';
+                  }
+              }
+              
+            }
+
+
+            } else {
+
+              $contador = "SELECT COUNT(*) AS total 
+              FROM trabajadores";
+
+              $consulta = $connect->query($contador); 
+              $row = $consulta->fetch_assoc(); 
+              $total_registros = $row['total'];
+
+              $registros_por_pagina = 10;
+
+              $total_paginas = ceil($total_registros / $registros_por_pagina);
+
+              $pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+              if ($pagina_actual < 1) {
+                  $pagina_actual = 1;
+              } elseif ($pagina_actual > $total_paginas) {
+                  $pagina_actual = $total_paginas;
               }
 
+              $offset = ($pagina_actual - 1) * $registros_por_pagina;
+
+
+
+              $sql = "SELECT *
+              FROM trabajadores
+              LIMIT $offset, $registros_por_pagina";
+
+              $resultado = mysqli_query($connect, $sql);
+
+
+              if ($resultado && mysqli_num_rows($resultado) > 0) {
+
+                while ($row = mysqli_fetch_assoc($resultado)) {
+                  $id = $row['id'];
+                  $nombre = $row['nombre'];
+                  $apellido = $row['apellido'];
+                  $cedula = $row['cedula'];
+                  $telefono = $row['telefono'];
+  
+                  echo '<tr>
+                        <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $id . '</td>
+                        <td class="px-3 py-2">' . $nombre . '</td>
+                        <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $apellido . '</td>
+                        <td class="px-3 py-2">' . $cedula . '</td>
+                        <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $telefono . '</td>             
+                        <td class="px-3 py-2 bg-blue-400 dark:bg-blue-800">
+                            <button class="w-full">
+                            <a href="editar_trabajador.php? editarid=' . $id . ' ">
+                            <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" id="edit-alt" data-name="Flat Line" class="icon flat-line"><path id="secondary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"/><path id="primary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"/></svg>
+                            </a>
+                            </button>
+                            </td>
+  
+                            <td class="px-3 py-2 bg-red-500 dark:bg-red-800>
+                              <button class="w-full" type="button" data-modal-target="default-modal" data-modal-toggle="default-modal">
+                            
+                                    <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 -0.5 21 21" version="1.1">
+                
+                                    <title>delete [#1487]</title>
+                                    <desc>Created with Sketch.</desc>
+                                    <defs>
+                                
+                                </defs>
+                                    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <g id="Dribbble-Light-Preview" transform="translate(-179.000000, -360.000000)" fill="black">
+                                            <g id="icons" transform="translate(56.000000, 160.000000)">
+                                                <path d="M130.35,216 L132.45,216 L132.45,208 L130.35,208 L130.35,216 Z M134.55,216 L136.65,216 L136.65,208 L134.55,208 L134.55,216 Z M128.25,218 L138.75,218 L138.75,206 L128.25,206 L128.25,218 Z M130.35,204 L136.65,204 L136.65,202 L130.35,202 L130.35,204 Z M138.75,204 L138.75,200 L128.25,200 L128.25,204 L123,204 L123,206 L126.15,206 L126.15,220 L140.85,220 L140.85,206 L144,206 L144,204 L138.75,204 Z" id="delete-[#1487]">
+                                
+                                </path>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </svg>
+                                
+                            </button>
+                            </td>
+                            
+                    </tr>
+                    
+                    
+                    <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
+                      <div class="relative p-4 max-h-full">
+                          <!-- Modal content -->
+                          <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 mt-28">
+                              <!-- Modal header -->
+                              <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                  <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                      Sistema
+                                  </h3>
+                                  <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
+                                      <svg class="w-4 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                      </svg>
+                                      <span class="sr-only">Close modal</span>
+                                  </button>
+                              </div>
+                              <!-- Modal body -->
+                              <div class="p-4 md:p-5 space-y-4">
+                                  <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                                      ¿Esta Seguro Que Quiere Eliminar a Un Trabajador?
+                                  </p>
+                              </div>
+                              <!-- Modal footer -->
+                              <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                               
+                           <a href="eliminar_trabajador.php? eliminarid=' . $id . '" data-modal-hide="default-modal" class=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">SI</a>
+                                  <button data-modal-hide="default-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">no</button>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                    
+                    ';
+                }
             }
+          }
+            
             ?>
 
           </tbody>
         </table>
       </div>
+
+
+      <div aria-label="Page navigation example w-full">
+        <ul class="flex items-center justify-center -space-x-px h-10 text-base py-8">
+
+        <?php 
+
+          for ($i = 1; $i <= $total_paginas; $i++) {
+            if ($i == $pagina_actual) {
+                echo "
+                          <li>
+                      <a href='#' class='flex items-center justify-center px-4 h-10 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'>$i</a>
+                    </li>
+                ";
+            } else {
+                echo "
+
+                          <li>
+                      <a href='usuarios.php? pagina=$i' aria-current='page' class='z-10 flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700  dark:border-gray-700 dark:bg-gray-700 dark:text-white'>$i</a>
+                      </li>
+                ";
+            }
+          }
+
+        ?>
+
+        </ul>
+      </div>
+
 
       <button data-tooltip-target="tooltip" type="button" class="fixed right-2 bottom-16 bg-ghost rounded-full font-medium text-sm px-4 py-2.5 text-center outline outline-1 outline-black">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32px" height="32px" viewBox="0 0 24 24" fill="none">

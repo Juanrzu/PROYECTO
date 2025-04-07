@@ -206,10 +206,10 @@ include './../../connect.php';
 
                     // Las respuestas coinciden, actualiza la contraseña
                     $contraseña_cifrada = password_hash($nueva_contraseña, PASSWORD_ARGON2ID);
-                    $update_sql = "UPDATE usuario SET contraseña = '$contraseña_cifrada' WHERE nombre_usuario = '$usuario'";
+                    $update_sql = "UPDATE usuario SET contraseña = '$contraseña_cifrada', estado = 'Activo' WHERE nombre_usuario = '$usuario'";
 
                     if ($connect->query($update_sql) === TRUE) {
-                        echo"<script> window.location='http://localhost/dashboard/Proyecto/public/login/login.php'</script>";
+                        echo"<script> window.location='http://localhost/dashboard/Proyecto/login/login.php'</script>";
                     } else {
 
                         echo '<div class="error mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">

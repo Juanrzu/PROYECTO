@@ -1,12 +1,8 @@
-<?php
+	<?php
 	include('./../connect.php');
 	session_start();
-//hola roberto
-
 
 	?>
-
-
 
 	<!DOCTYPE html>
 	<html lang="es">

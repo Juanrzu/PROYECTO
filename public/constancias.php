@@ -8,7 +8,6 @@ if ($usuario == null || $usuario == '') {
 	die();
 }
 include './../connect.php';
-include 'contador_sesion.php';
 ?>
 
 
@@ -53,8 +52,6 @@ include 'contador_sesion.php';
         echo ' <div class="container-buttons  flex justify-center items-stretch gap-4 mx-5">
         <button class="p-4  rounded-md ghost bg-blue-400 shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 drop-shadow-lg"><a href="http://localhost/dashboard/Proyecto/public/constancias/estudio/estudio.php" class="mx-auto">Crear constancia de estudio</a></button>
          <button class="p-4 mx-2 rounded-md ghost bg-blue-400 shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 drop-shadow-lg"><a href="http://localhost/dashboard/Proyecto/public/constancias/trabajadores/crear.php" class="mx-auto">Crear constancia de trabajo</a></button>
-         <button class="p-4  rounded-md ghost bg-blue-400 shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 drop-shadow-lg"><a href="http://localhost/dashboard/Proyecto/public/constancias/inscripcion/ver_alumnos.php" class="mx-auto">Crear constancia de inscripcion</a></button>
-         <button class="p-4 mx-2 rounded-md ghost bg-blue-400 shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 drop-shadow-lg"><a href="http://localhost/dashboard/Proyecto/public/constancias/aceptacion/ver_alumnos.php" class="mx-auto">Crear constancia de aceptacion</a></button>
          </div>';
         ?>
      

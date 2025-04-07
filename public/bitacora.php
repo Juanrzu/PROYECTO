@@ -8,7 +8,6 @@ if ($usuario == null || $usuario == '') {
   die();
 }
 include 'connect.php';
-include 'contador_sesion.php';
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +21,7 @@ include 'contador_sesion.php';
 </head>
 
 <body class="bg-ghost">
-  <div class="container-lg w-full flex flex-col">
+  <div class="container w-full max-w-7xl h-full mx-auto">
   <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 z-50">
             <div role="status">
                 <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600 z-50" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -42,10 +41,10 @@ include 'contador_sesion.php';
     }
     ?>
 
-    <main class=" mb-4 xl:px-56 mt-8">
+    <main class="  mb-4 xl:px-56 mt-8">
 
 
-      <div class="overflow-x-auto shadow-md sm:rounded-lg -z-10 m-10 xl:m-4">
+      <div class="h-screen overflow-y-auto shadow-md sm:rounded-lg -z-10 m-10 xl:m-4">
 
 
 
@@ -54,28 +53,25 @@ include 'contador_sesion.php';
             <tr>
               <th scope="col" class="px-3 py-2 bg-gray-100 dark:bg-gray-800">Acción</th>
               <th scope="col" class="px-3 py-2 bg-gray-200 dark:bg-gray-800">Fecha y Hora</th>
-              <th scope="col" class="px-3 py-2 bg-gray-200 dark:bg-gray-800">Usuario</th>
 
             </tr>
           </thead>
           <tbody class="table-group-divider">
             <?php
 
-            $sql = "SELECT accion,fecha_hora,usuario FROM bitacora";
+            $sql = "SELECT accion,fecha_hora FROM bitacora";
 
             $result = mysqli_query($connect, $sql);
             if ($result) {
               while ($row = mysqli_fetch_assoc($result)) {
                 $accion = $row['accion'];
-                $usuario2 = $row['usuario'];
                 $fecha_hora = $row['fecha_hora'];
 
 
                 echo '<tr class=" mt-2 border-b border-gray-900 dark:border-gray-700">
               <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $accion . '</td>
               <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $fecha_hora . '</td>
-               <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $usuario2 . '</td>
-              </tr>';
+            </tr>';
 
 
 
