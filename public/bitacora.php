@@ -56,9 +56,9 @@ include 'contador_sesion.php';
         <div class="px-6 py-4 border-b border-gray-200">
           <h3 class="text-xl font-semibold text-black-800">Historial de Acciones</h3>
         </div>
-        <div class="overflow-x-auto overflow-y-scroll">
+        <div class="overflow-x-auto">
           <?php
-          $sql = "SELECT accion, fecha_hora, usuario FROM bitacora ORDER BY fecha_hora DESC";
+          $sql = "SELECT * FROM bitacora";
           $stmt = $connect->prepare($sql);
           $stmt->execute();
           $result = $stmt->get_result();
@@ -109,7 +109,7 @@ include 'contador_sesion.php';
                           // Mostramos los datos en formato uniforme
                           if (!empty($datos)): ?>
                           <?php foreach ($datos as $clave => $valor): ?>
-                            <li><strong><?= htmlspecialchars(ucfirst($clave)) ?>:</strong> <?= htmlspecialchars($valor) ?></li>
+                            <li><strong><?= htmlspecialchars($row['datos_accion']) ?></li>
                           <?php endforeach; ?>
                           <?php else: ?>
                           <li>No hay datos disponibles para esta acción.</li>
