@@ -10,7 +10,7 @@ if (isset($_GET['eliminarid'])) {
     $motivo = trim($_POST['motivo']); // Sanitizar entrada
     
     // Obtener información del estudiante y su representante
-    $sql ="SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
+    $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre,
     representante.nombre as representante_nombre,
     representante.apellido as representante_apellido,
     representante.cedula as representante_cedula, representante.telefono as representante_telefono,
@@ -18,9 +18,13 @@ if (isset($_GET['eliminarid'])) {
     FROM estudiantes 
     JOIN seccion ON estudiantes.idseccion = seccion.id 
     JOIN grados ON estudiantes.idgrado = grados.id
-    JOIN representante On estudiantes.idrepresentante = representante.id
-    WHERE estudiantes.id=$id ";
-    $result = mysqli_query($connect, $sql);
+    JOIN representante ON estudiantes.idrepresentante = representante.id
+    WHERE estudiantes.id=?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
     
     if ($result) {
         $row = mysqli_fetch_assoc($result);
@@ -42,41 +46,46 @@ if (isset($_GET['eliminarid'])) {
 
 
           //ingresar insert en bitacora al eliminar estudiante
-            $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES ('Se Retiró un estudiante.', 
-            'Informacion: nombre = $nombre, apellido = $apellido , cen = $cen , nacimiento = $nacimiento, sexo = $sexo , grado = $gradoNombe, seccion = $seccionNombre, 
-            representante = $repreUnido , cedula representante = $cedularepre, telefono = $telefono , correo = $correo, motivo = $motivo ', 
-            '$usuario')";
-            $resultInsert2 = mysqli_query(mysql: $connect, query: $sql2);
+          $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+          $datos_accion = "Informacion: nombre = $nombre, apellido = $apellido, cen = $cen, nacimiento = $nacimiento, sexo = $sexo, grado = $gradoNombe, seccion = $seccionNombre, representante = $repreUnido, cedula representante = $cedularepre, telefono = $telefono, correo = $correo, motivo = $motivo";
+          $stmt2 = $connect->prepare($sql2);
+          $stmt2->bind_param("sss", 'Se Retiró un estudiante.', $datos_accion, $usuario);
+          $resultInsert2 = $stmt2->execute();
             //aqui terminas
 
             //ingresar insert en estudiantes retirados
-            $sql3 = "INSERT INTO retiro_estudiantes (nombre, apellido, cen, nacimiento, 
-            sexo, grado, seccion, representante, representante_apellido, cedula_repre, telefono, correo, motivo) 
-            VALUES ('$nombre','$apellido','$cen','$nacimiento','$sexo',
-            '$gradoNombre','$seccionNombre','$representanteNombre','$representanteApellido','$cedularepre','$telefono','$correo','$motivo')";
-
-
-            $resultInsert3 = mysqli_query(mysql: $connect, query: $sql3);
+            $sql3 = "INSERT INTO retiro_estudiantes (nombre, apellido, cen, nacimiento, sexo, grado, seccion, representante, representante_apellido, cedula_repre, telefono, correo, motivo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt3 = $connect->prepare($sql3);
+            $stmt3->bind_param("sssssssssssss", $nombre, $apellido, $cen, $nacimiento, $sexo, $gradoNombre, $seccionNombre, $representanteNombre, $representanteApellido, $cedularepre, $telefono, $correo, $motivo);
+            $resultInsert3 = $stmt3->execute();
 
 
             //aqui termina
 
 
             // Contar cuántos estudiantes están asociados al representante
-            $countSql = "SELECT COUNT(*) AS total FROM estudiantes WHERE idrepresentante = $representante_id";
-            $countResult = mysqli_query($connect, $countSql);
-            $countRow = mysqli_fetch_assoc($countResult);
-            $totalEstudiantes = $countRow['total'];
+            $countSql = "SELECT COUNT(*) AS total FROM estudiantes WHERE idrepresentante = ?";
+            $stmt_count = $connect->prepare($countSql);
+            $stmt_count->bind_param("i", $representante_id);
+            $stmt_count->execute();
+            $countResult = $stmt_count->get_result();
+            $countRow = $countResult->fetch_assoc();
+            $totalEstudientes = $countRow['total'];
 
             // Eliminar de la tabla estudiante estudiante
-            $deleteEstudianteSql = "DELETE FROM estudiantes WHERE id = $id";
-            $deleteEstudianteResult = mysqli_query($connect, $deleteEstudianteSql);
+            $deleteEstudianteSql = "DELETE FROM estudiantes WHERE id = ?";
+            $stmt_delete = $connect->prepare($deleteEstudianteSql);
+            $stmt_delete->bind_param("i", $id);
+            $deleteEstudianteResult = $stmt_delete->execute();
 
             if ($deleteEstudianteResult) {
             // Si solo hay un estudiante asociado al representante, eliminar al representante
             if ($totalEstudiantes == 1) {
-            $deleteRepresentanteSql = "DELETE FROM representante WHERE id = $representante_id";
-            $deleteRepresentanteResult = mysqli_query($connect, $deleteRepresentanteSql);
+              $deleteRepresentanteSql = "DELETE FROM representante WHERE id = ?";
+              $stmt = $connect->prepare($deleteRepresentanteSql);
+              $stmt->bind_param("i", $representante_id);
+              $deleteRepresentanteResult = $stmt->execute();
+              
 
             if (!$deleteRepresentanteResult) {
             die(mysqli_error($connect));

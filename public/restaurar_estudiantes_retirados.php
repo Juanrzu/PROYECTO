@@ -9,8 +9,12 @@ if (isset($_GET['eliminarid'])) {
     $id = $_GET['eliminarid'];
     
     // Obtener información del estudiante y su representante
-     $sql = "SELECT * FROM retiro_estudiantes WHERE id='$id' ";
-    $result = mysqli_query($connect, $sql);
+    $sql = "SELECT * FROM retiro_estudiantes WHERE id = ?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("i", $id);  // "i" para integer (si id es numérico)
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
     
     if ($result) {
         $row = mysqli_fetch_assoc($result);
@@ -28,57 +32,68 @@ if (isset($_GET['eliminarid'])) {
         $seccion=$row['seccion'];
 
         // Obtener el ID del grado y seccion
-            $queryGrado = "SELECT id FROM grados WHERE nombre = '$grado'";
-            $resultGrado = mysqli_query($connect, $queryGrado);
+            $queryGrado = "SELECT id FROM grados WHERE nombre = ?";
+            $stmt = $connect->prepare($queryGrado);
+            $stmt->bind_param("s", $grado);
+            $stmt->execute();
+            $resultGrado = $stmt->get_result();
+        
 
             if (!$resultGrado) {
                 die("Error al obtener el ID del grado: " . mysqli_error($connect));
             }
 
-            $rowGrado = mysqli_fetch_assoc($resultGrado);
+            $rowGrado = $resultGrado->fetch_assoc();
             $idgrado = $rowGrado['id'];
+            
 
           
-            $querySeccion = "SELECT id FROM seccion WHERE nombre = '$seccion'";
-            $resultSeccion = mysqli_query($connect, $querySeccion);
+            $querySeccion = "SELECT id FROM seccion WHERE nombre = ?";
+            $stmt = $connect->prepare($querySeccion);
+            $stmt->bind_param("s", $seccion);
+            $stmt->execute();
+            $resultSeccion = $stmt->get_result();
+
 
             if (!$resultSeccion) {
                 die("Error al obtener el ID de la sección: " . mysqli_error($connect));
             }
-            $rowSeccion = mysqli_fetch_assoc($resultSeccion);
+            $rowSeccion = $resultSeccion->fetch_assoc();
             $idseccion = $rowSeccion['id'];
 
         //aqui termina
 
           //ingresar insert en bitacora al eliminar estudiante
-            $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES ('Se restauró un estudiante.', 
-            'Informacion: nombre = $nombre, apellido = $apellido , cen = $cen , nacimiento = $nacimiento, sexo = $sexo , grado = $grado, seccion = $seccion, 
-            representante = $representanteNombre , Apellido del representante = $representanteApellido , cedula representante = $cedularepre, telefono = $telefono , correo = $correo', 
-            '$usuario')";
-            $resultInsert2 = mysqli_query(mysql: $connect, query: $sql2);
+            $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+            $datos_accion = "Informacion: nombre = $nombre, apellido = $apellido, cen = $cen, nacimiento = $nacimiento, sexo = $sexo, grado = $grado, seccion = $seccion, representante = $representanteNombre, Apellido del representante = $representanteApellido, cedula representante = $cedularepre, telefono = $telefono, correo = $correo";
+
+            $stmt = $connect->prepare($sql2);
+            $stmt->bind_param("sss", 'Se restauró un estudiante.', $datos_accion, $usuario);
+            $stmt->execute();
+
             //aqui termina
 
 
         // Verificar si se encuentra ingresado el representante
-            $selectRepresentante = "SELECT * FROM `representante` WHERE cedula = '$cedularepre'";
-
-            $resultselect = mysqli_query($connect, $selectRepresentante);
-
-            if (mysqli_num_rows($resultselect) == 0) { 
-               
-                $insertRepresentanteSql = "INSERT INTO `representante` (`nombre`, `apellido`, `cedula`, `telefono`, `correo`) 
-                                            VALUES ('$representanteNombre', '$representanteApellido', '$cedularepre', '$telefono', '$correo')";
-
-                $insertRepresentanteResult = mysqli_query($connect, $insertRepresentanteSql);
-
-                if (!$insertRepresentanteResult) {
-                    
-                    die("Error en la inserción: " . mysqli_error($connect));
+            $selectRepresentante = "SELECT * FROM `representante` WHERE cedula = ?";
+            $stmt_select = $connect->prepare($selectRepresentante);
+            $stmt_select->bind_param("s", $cedularepre);
+            $stmt_select->execute();
+            $resultselect = $stmt_select->get_result();
+            
+            if ($resultselect->num_rows == 0) {
+                $insertRepresentanteSql = "INSERT INTO `representante` (`nombre`, `apellido`, `cedula`, `telefono`, `correo`) VALUES (?, ?, ?, ?, ?)";
+                $stmt_insert = $connect->prepare($insertRepresentanteSql);
+                $stmt_insert->bind_param("sssss", $representanteNombre, $representanteApellido, $cedularepre, $telefono, $correo);
+                
+                if (!$stmt_insert->execute()) {
+                    die("Error en la inserción: " . $connect->error);
                 }
-
-              
-                $resultselect = mysqli_query($connect, $selectRepresentante);
+                
+                $stmt_select->execute();
+                $resultselect = $stmt_select->get_result();
             }
+        
 
             // Obtener la id del representante
             $rowrepre = mysqli_fetch_assoc($resultselect);
@@ -89,14 +104,20 @@ if (isset($_GET['eliminarid'])) {
           
 
           //insertar en estudiantes
-          $sql3="INSERT INTO `estudiantes`(`nombre`, `apellido`, `cen`, `nacimiento`, `sexo`, `idgrado`, `idseccion`, `idrepresentante`) 
-                 VALUES ('$nombre','$apellido','$cen','$nacimiento','$sexo','$idgrado','$idseccion','$representanteId')";
-          $resultInsert3 = mysqli_query(mysql: $connect, query: $sql3);
+          $sql3 = "INSERT INTO `estudiantes`(`nombre`, `apellido`, `cen`, `nacimiento`, `sexo`, `idgrado`, `idseccion`, `idrepresentante`) 
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $connect->prepare($sql3);
+            $stmt->bind_param("sssssiii", $nombre, $apellido, $cen, $nacimiento, $sexo, $idgrado, $idseccion, $representanteId);
+            $resultInsert3 = $stmt->execute();
+ 
           //aqui termina
 
           //eliminar de los estudiantes retirados
-          $sql4="DELETE FROM retiro_estudiantes WHERE id = '$id' ";
-          $resultInsert4 = mysqli_query(mysql: $connect, query: $sql4);
+            $sql4 = "DELETE FROM retiro_estudiantes WHERE id = ?";
+            $stmt = $connect->prepare($sql4);
+            $stmt->bind_param("i", $id);
+            $resultInsert4 = $stmt->execute();
+
           //aqui termina
 
             // Redireccionar
