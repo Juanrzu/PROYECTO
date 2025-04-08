@@ -136,14 +136,14 @@ const btn = document.getElementById('btn');
 const usuario = document.getElementById('usuario');
 const captchaInput = document.getElementById('captcha'); 
 const contraseña = document.getElementById('contraseña');
-const $minCaracteres = 16;
+const $minCaracteres = 14;
 
 // Configuración de límites
 const LIMITES = {
   usuario: 20,
   contraseña: {
             max: 30,
-            min: 16
+            min: 14
         },
   captcha: 6
 };
