@@ -83,21 +83,25 @@ include 'contador_sesion.php';
 
           if ($secc === "A") {
             $sql = "SELECT profesor.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre 
-              FROM profesor 
-              JOIN seccion ON profesor.idseccion = seccion.id 
-              JOIN grados ON profesor.idgrado = grados.id 
-              WHERE seccion.nombre = '$secc' and grados.nombre = $grado
-              ORDER BY profesor.nombre ASC";
-
-          } else {
+                    FROM profesor 
+                    JOIN seccion ON profesor.idseccion = seccion.id 
+                    JOIN grados ON profesor.idgrado = grados.id 
+                    WHERE seccion.nombre = ? AND grados.nombre = ?
+                    ORDER BY profesor.nombre ASC";
+        } else {
             $sql = "SELECT profesor.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre 
-              FROM profesor 
-              JOIN seccion ON profesor.idseccion = seccion.id 
-              JOIN grados ON profesor.idgrado = grados.id 
-              WHERE seccion.nombre = '$secc' and grados.nombre = $grado
-              ORDER BY profesor.nombre ASC";
-          }
-          $result = mysqli_query($connect, $sql);
+                    FROM profesor 
+                    JOIN seccion ON profesor.idseccion = seccion.id 
+                    JOIN grados ON profesor.idgrado = grados.id 
+                    WHERE seccion.nombre = ? AND grados.nombre = ?
+                    ORDER BY profesor.nombre ASC";
+        }
+        
+        $stmt = $connect->prepare($sql);
+        $stmt->bind_param("ss", $secc, $grado);  // Change "s" to "i" for $grado if it's numeric
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
 
           if ($result) {
             while ($row = mysqli_fetch_assoc($result)) {
@@ -190,27 +194,31 @@ include 'contador_sesion.php';
 
             if ($secc === "A") {
               $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
-            representante.nombre as representante_nombre, representante.cedula as cedularepre, 
-            representante.telefono as telefono, representante.correo as correo
-            FROM estudiantes  
-            JOIN seccion ON estudiantes.idseccion = seccion.id 
-            JOIN grados ON estudiantes.idgrado = grados.id
-            JOIN representante On estudiantes.idrepresentante = representante.id
-            WHERE seccion.nombre = '$secc' and grados.nombre = $grado
-            ORDER BY estudiantes.nombre ASC";
-
-            } else {
+                      representante.nombre as representante_nombre, representante.cedula as cedularepre, 
+                      representante.telefono as telefono, representante.correo as correo
+                      FROM estudiantes  
+                      JOIN seccion ON estudiantes.idseccion = seccion.id 
+                      JOIN grados ON estudiantes.idgrado = grados.id
+                      JOIN representante ON estudiantes.idrepresentante = representante.id
+                      WHERE seccion.nombre = ? AND grados.nombre = ?
+                      ORDER BY estudiantes.nombre ASC";
+          } else {
               $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
-            representante.nombre as representante_nombre, representante.cedula as cedularepre, 
-            representante.telefono as telefono, representante.correo as correo
-            FROM estudiantes 
-            JOIN seccion ON estudiantes.idseccion = seccion.id 
-            JOIN grados ON estudiantes.idgrado = grados.id
-            JOIN representante ON estudiantes.idrepresentante = representante.id
-            WHERE seccion.nombre = '$secc' and grados.nombre = $grado
-            ORDER BY estudiantes.nombre ASC";
-            }
-            $result = mysqli_query($connect, $sql);
+                      representante.nombre as representante_nombre, representante.cedula as cedularepre, 
+                      representante.telefono as telefono, representante.correo as correo
+                      FROM estudiantes 
+                      JOIN seccion ON estudiantes.idseccion = seccion.id 
+                      JOIN grados ON estudiantes.idgrado = grados.id
+                      JOIN representante ON estudiantes.idrepresentante = representante.id
+                      WHERE seccion.nombre = ? AND grados.nombre = ?
+                      ORDER BY estudiantes.nombre ASC";
+          }
+          
+          $stmt = $connect->prepare($sql);
+          $stmt->bind_param("ss", $secc, $grado);  // Change "s" to "i" for $grado if numeric
+          $stmt->execute();
+          $result = $stmt->get_result();
+          
             if ($result) {
               while ($row = mysqli_fetch_assoc($result)) {
                 $id = $row['id'];
