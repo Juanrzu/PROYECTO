@@ -70,15 +70,66 @@ include 'contador_sesion.php';
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">Acción</th>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">Fecha y Hora</th>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">Usuario</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">Detalles</th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <?php while ($row = $result->fetch_assoc()): ?>
-                  <tr class="hover:bg-gray-50">
+                    <tr class="hover:bg-gray-50">
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-black-500"><?= htmlspecialchars($row['accion']) ?></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-black-500"><?= htmlspecialchars($row['fecha_hora']) ?></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-black-500"><?= htmlspecialchars($row['usuario']) ?></td>
-                  </tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-black-500">
+                      <!-- Botón para abrir el modal -->
+                      <button 
+                      type="button" 
+                      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                      onclick="document.getElementById('modal-accion-<?= htmlspecialchars($row['id']) ?>').classList.remove('hidden')"
+                      >
+                      Ver detalles
+                      </button>
+
+                      <!-- Modal -->
+                      <div id="modal-accion-<?= htmlspecialchars($row['id']) ?>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                      <div class="bg-white rounded-lg shadow-lg w-full max-w-md dark:bg-gray-800 mx-4">
+                        <div class="p-6">
+                        <h3 class="font-bold text-lg text-gray-800 dark:text-white mb-4">Detalles de la Acción</h3>
+                        <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                          <?php
+                          // Parseamos los datos dinámicamente
+                          $pares = explode(',', $row['accion']);
+                          $datos = [];
+                          foreach ($pares as $par) {
+                          if (strpos($par, '=') !== false) {
+                            list($clave, $valor) = explode('=', trim($par));
+                            $datos[trim($clave)] = trim($valor);
+                          }
+                          }
+
+                          // Mostramos los datos en formato uniforme
+                          if (!empty($datos)): ?>
+                          <?php foreach ($datos as $clave => $valor): ?>
+                            <li><strong><?= htmlspecialchars(ucfirst($clave)) ?>:</strong> <?= htmlspecialchars($valor) ?></li>
+                          <?php endforeach; ?>
+                          <?php else: ?>
+                          <li>No hay datos disponibles para esta acción.</li>
+                          <?php endif; ?>
+                        </ul>
+                        </div>
+                        <!-- Botón para cerrar -->
+                        <div class="flex justify-end p-4 border-t border-gray-200 dark:border-gray-700">
+                        <button
+                          type="button"
+                          class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                          onclick="document.getElementById('modal-accion-<?= htmlspecialchars($row['id']) ?>').classList.add('hidden')"
+                        >
+                          Cerrar
+                        </button>
+                        </div>
+                      </div>
+                      </div>
+                    </td>
+                    </tr>
                 <?php endwhile; ?>
               </tbody>
             </table>
