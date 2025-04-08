@@ -2,13 +2,17 @@
 
 session_start();
 error_reporting(0);
-$usuario = $_SESSION['nombre_usuario'];
-if ($usuario == null || $usuario == '') {
-	header('location: ./../login/login.php');
-	die();
+
+if (!isset($_SESSION['nombre_usuario']) || empty($_SESSION['nombre_usuario'])) {
+	header('Location: ./../login/login.php');
+	exit();
 }
-include './../connect.php';
-include '../contador_sesion.php';
+
+$usuario = $_SESSION['nombre_usuario'];
+
+require_once './../connect.php';
+require_once '../contador_sesion.php';
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
