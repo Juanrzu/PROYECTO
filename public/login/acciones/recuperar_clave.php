@@ -50,13 +50,13 @@ include './../../connect.php';
                         <button type="button" class="w-3 h-3 rounded-full bg-white" aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
                     </div>
                     <!-- Slider controls -->
-                    <button type="button" class="absolute top-1/2 left-4 transform -translate-y-1/2 z-30 flex items-center justify-center w-10 h-10 rounded-full bg-white/80 hover:bg-white" data-carousel-prev>
+                    <button type="button" class="absolute top-1/2 left-[-1em] transform -translate-y-1/2 z-30 flex items-center justify-center w-10 h-10 rounded-full bg-white/80 hover:bg-white" data-carousel-prev>
                         <svg class="w-4 h-4 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
                         </svg>
                         <span class="sr-only">Previous</span>
                     </button>
-                    <button type="button" class="absolute top-1/2 right-4 transform -translate-y-1/2 z-30 flex items-center justify-center w-10 h-10 rounded-full bg-blue-600/80 hover:bg-blue-600" data-carousel-next>
+                    <button type="button" class="absolute top-1/2 right-[-2em] transform -translate-y-1/2 z-30 flex items-center justify-center w-10 h-10 rounded-full bg-blue-600/80 hover:bg-blue-600" data-carousel-next>
                         <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                         </svg>
@@ -66,7 +66,7 @@ include './../../connect.php';
             </div>
 
             <!-- Form Section -->
-            <div class="w-full md:w-1/2 p-8 ml-20">
+            <div class="w-full md:w-3/5 p-8 ">
             <form id="formulario" class="space-y-6" method="POST">
     <div class="text-center">
         <h2 class="text-3xl font-bold text-gray-900">Recuperar Contraseña</h2>
@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
         p2: 50,
         contraseña: {
             max: 30,
-            min: 8
+            min: 16
         }
     };
 

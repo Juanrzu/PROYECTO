@@ -22,7 +22,7 @@
 	<div class="min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-xl shadow-2xl bg-[url('http://localhost/dashboard/Proyecto/src/wave-bg.png')] bg-no-repeat bg-cover bg-right-bottom overflow-hidden">
         <!-- Carousel Section -->
-        <div class="hidden md:block md:w-1/2  p-8">
+        <div class="hidden md:block md:w-1/2 p-8">
             <div id="default-carousel" class="h-full relative" data-carousel="slide">
                 <!-- Carousel wrapper -->
                 <div class="relative h-full overflow-hidden rounded-lg">
@@ -49,13 +49,13 @@
                     <button type="button" class="w-3 h-3 rounded-full bg-white" aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
                 </div>
                 <!-- Slider controls -->
-                <button type="button" class="absolute top-1/2 left-4 transform -translate-y-1/2 z-30 flex items-center justify-center w-10 h-10 rounded-full bg-white/80 hover:bg-white" data-carousel-prev>
+                <button type="button" class="absolute top-1/2 left-[-1em] transform -translate-y-1/2 z-30 flex items-center justify-center w-10 h-10 rounded-full bg-white/80 hover:bg-white" data-carousel-prev>
                     <svg class="w-4 h-4 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
                     </svg>
                     <span class="sr-only">Previous</span>
                 </button>
-                <button type="button" class="absolute top-1/2 right-4 transform -translate-y-1/2 z-30 flex items-center justify-center w-10 h-10 rounded-full bg-blue-600/80 hover:bg-blue-600" data-carousel-next>
+                <button type="button" class="absolute top-1/2 right-[-2em] transform -translate-y-1/2 z-30 flex items-center justify-center w-10 h-10 rounded-full bg-blue-600/80 hover:bg-blue-600" data-carousel-next>
                     <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                     </svg>
@@ -65,7 +65,7 @@
         </div>
 
         <!-- Form Section -->
-        <div class="w-full md:w-1/2 p-8 md:p-12  ml-20">
+        <div class="w-full md:w-3/5 p-8 md:p-12">
             <form id="formulario" method="POST" class="space-y-6">
                 <div class="text-center">
                     <h2 class="text-3xl font-bold text-gray-900">Bienvenido!</h2>
@@ -76,7 +76,7 @@
                 <div>
                     <label for="usuario" class="block text-sm font-medium text-gray-700">Usuario</label>
                     <div class="mt-1 relative">
-                        <input name="usuario" type="text" id="usuario" required
+                        <input name="usuario" type="text" id="usuario" 
                             class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
                             placeholder="Ingrese su usuario" maxlength="20" oninput="updateCounter('usuario', 20)">
                     </div>
@@ -86,7 +86,7 @@
                 <div>
                     <label for="contraseña" class="block text-sm font-medium text-gray-700">Contraseña</label>
                     <div class="mt-1 relative">
-                        <input type="password" name="contraseña" id="contraseña" required
+                        <input type="password" name="contraseña" id="contraseña" 
                             class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
                             placeholder="Ingrese su contraseña" maxlength="30" oninput="updateCounter('contraseña', 30)">
                     </div>
@@ -105,7 +105,7 @@
                             </svg>
                         </button>
                     </div>
-                    <input type="text" name="captcha" id="captcha" required
+                    <input type="text" name="captcha" id="captcha" 
                         class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
                         placeholder="Ingrese el código CAPTCHA" maxlength="6" oninput="updateCounter('captcha', 6)">
                 </div>
@@ -136,12 +136,15 @@ const btn = document.getElementById('btn');
 const usuario = document.getElementById('usuario');
 const captchaInput = document.getElementById('captcha'); 
 const contraseña = document.getElementById('contraseña');
-const $minCaracteres = 8;
+const $minCaracteres = 16;
 
 // Configuración de límites
 const LIMITES = {
   usuario: 20,
-  contraseña: 30,
+  contraseña: {
+            max: 30,
+            min: 16
+        },
   captcha: 6
 };
 
@@ -214,6 +217,20 @@ function validarCampos() {
         contraseña.classList.add('border-red-500');
     } else {
         contraseña.classList.remove('border-red-500');
+
+		// Validar nueva contraseña
+        if (contraseña.value.trim()) {
+            if (contraseña.value.length < LIMITES.contraseña.min) {
+                errores.push(`La contraseña debe tener al menos ${LIMITES.contraseña.min} caracteres`);
+                contraseña.classList.add('border-red-500');
+            } else if (!REGEX.contraseña.test(contraseña.value)) {
+                errores.push('La contraseña debe contener al menos una mayúscula, una minúscula y un número');
+                contraseña.classList.add('border-red-500');
+            } else if (contraseña.value.length > LIMITES.contraseña.max) {
+                errores.push(`La contraseña no puede exceder los ${LIMITES.contraseña.max} caracteres`);
+                contraseña.classList.add('border-red-500');
+            }
+        }
     }
     
     return errores;
@@ -225,10 +242,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCounter('contraseña', LIMITES.contraseña);
     updateCounter('captcha', LIMITES.captcha);
     
-    // Event listeners para actualización en tiempo real
-    usuario.addEventListener('input', () => updateCounter('usuario', LIMITES.usuario));
-    contraseña.addEventListener('input', () => updateCounter('contraseña', LIMITES.contraseña));
-    captchaInput.addEventListener('input', () => updateCounter('captcha', LIMITES.captcha));
 });
 
 // Manejar envío del formulario
