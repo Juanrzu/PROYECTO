@@ -243,9 +243,13 @@ if (isset($_POST['submit'])) {
 
     }
 
-    $sql_verificar_estudiante = "SELECT * FROM estudiantes WHERE cen = '$cen'";
-    $resultado_estudiante = mysqli_query($connect, $sql_verificar_estudiante);
-    if (mysqli_num_rows($resultado_estudiante) > 0) {
+    $sql_verificar_estudiante = "SELECT * FROM estudiantes WHERE cen = ?";
+    $stmt = $connect->prepare($sql_verificar_estudiante);
+    $stmt->bind_param("s", $cen);
+    $stmt->execute();
+    $resultado_estudiante = $stmt->get_result();
+
+    if ($resultado_estudiante->num_rows > 0) {
         echo "<div >
                         <div class='container_title btn btn-danger'>
                             <h5>*Ya se encuentra registrado un estudiante con esta cedula</h5>
@@ -259,68 +263,95 @@ if (isset($_POST['submit'])) {
 
     // aqui empieza          
     // Verificar si el representante ya existe
-    $queryCheckRepre = "SELECT id FROM representante WHERE cedula = '$cedularepre'";
-    $resultCheckRepre = mysqli_query($connect, $queryCheckRepre);
+    $queryCheckRepre = "SELECT id FROM representante WHERE cedula = ?";
+    $stmt = $connect->prepare($queryCheckRepre);
+    $stmt->bind_param("s", $cedularepre);
+    $stmt->execute();
+    $resultCheckRepre = $stmt->get_result();
+    
 
     if (!$resultCheckRepre) {
         die("Error al verificar el representante: " . mysqli_error($connect));
     }
 
-    if (mysqli_num_rows($resultCheckRepre) > 0) {
+    if ($resultCheckRepre->num_rows > 0) {
         // El representante ya existe, obtener su ID
-        $rowRepre = mysqli_fetch_assoc($resultCheckRepre);
+        $rowRepre = $resultCheckRepre->fetch_assoc();
         $idRepre = $rowRepre['id'];
     } else {
         if ($cen == $cedularepre) {
             $errores[] = "La cedula del estudiante y la del representante son las mismas";
         }
-        $sql_verificar_cedula = "SELECT * FROM estudiantes WHERE cen = '$cedularepre' ";
-        $resultado_cedula = mysqli_query($connect, $sql_verificar_cedula);
-        if (mysqli_num_rows($resultado_cedula) > 0) {
-            $errores[] = "La cedula del representante ingresada se encuenta registrada con un estudiante";
+                // 1. Verificar cédula en estudiantes
+            $sql_verificar_cedula = "SELECT * FROM estudiantes WHERE cen = ?";
+            $stmt = $connect->prepare($sql_verificar_cedula);
+            $stmt->bind_param("s", $cedularepre);
+            $stmt->execute();
+            $resultado_cedula = $stmt->get_result();
+            if (mysqli_num_rows($resultado_cedula) > 0) {
+                $errores[] = "La cedula del representante ingresada se encuenta registrada con un estudiante";
+            }
 
+            // 2. Verificar cédula en profesores
+            $sql_verificar_cedula = "SELECT * FROM profesor WHERE cedula = ?";
+            $stmt = $connect->prepare($sql_verificar_cedula);
+            $stmt->bind_param("s", $cen);
+            $stmt->execute();
+            $resultado_cedula = $stmt->get_result();
+            if (mysqli_num_rows($resultado_cedula) > 0) {
+                $errores[] = "La cedula del estudiante ingresada se encuenta registrada con un profesor";
+            }
 
-        }
-        $sql_verificar_cedula = "SELECT * FROM profesor WHERE cedula = '$cen' ";
-        $resultado_cedula = mysqli_query($connect, $sql_verificar_cedula);
-        if (mysqli_num_rows($resultado_cedula) > 0) {
-            $errores[] = "La cedula del estudiante ingresada se encuenta registrada con un profesor";
-        }
+            // 3. Verificar cédula en profesores con nombre/apellido diferente
+            $sql_verificar_cedula2 = "SELECT * FROM profesor WHERE cedula = ? AND (nombre != ? OR apellido != ?)";
+            $stmt = $connect->prepare($sql_verificar_cedula2);
+            $stmt->bind_param("sss", $cedularepre, $representante, $representante_apellido);
+            $stmt->execute();
+            $resultado_cedula2 = $stmt->get_result();
+            if (mysqli_num_rows($resultado_cedula2) > 0) {
+                $errores[] = "La cedula del representante coincide con un profesor pero el nombre o apellido es diferentes";
+            }
 
-        $sql_verificar_cedula2 = "SELECT * FROM profesor WHERE cedula = '$cedularepre' AND (nombre != '$representante' OR apellido != '$representante_apellido')";
-        $resultado_cedula2 = mysqli_query($connect, $sql_verificar_cedula2);
-        if (mysqli_num_rows($resultado_cedula2) > 0) {
-            $errores[] = "La cedula del representante coincide con un profesor pero el nombre o apellido es diferentes";
+            // 4. Verificar cédula en usuarios con nombre/apellido diferente
+            $sql_verificar_cedula3 = "SELECT * FROM usuario WHERE cedula = ? AND (nombre != ? OR apellido != ?)";
+            $stmt = $connect->prepare($sql_verificar_cedula3);
+            $stmt->bind_param("sss", $cedularepre, $representante, $representante_apellido);
+            $stmt->execute();
+            $resultado_cedula3 = $stmt->get_result();
+            if (mysqli_num_rows($resultado_cedula3) > 0) {
+                $errores[] = "La cedula del representante coincide con un usuario del sistema pero el nombre o apellido es diferentes";
+            }
 
-        }
-        $sql_verificar_cedula3 = "SELECT * FROM usuario WHERE cedula = '$cedularepre' AND (nombre != '$representante' OR apellido != '$representante_apellido')";
-        $resultado_cedula3 = mysqli_query($connect, $sql_verificar_cedula3);
-        if (mysqli_num_rows($resultado_cedula3) > 0) {
-            $errores[] = "La cedula del representante coincide con un usuario del sistema pero el nombre o apellido es diferentes";
+            // 5. Verificar cédula en representantes
+            $sql_verificar_cedula4 = "SELECT * FROM representante WHERE cedula = ?";
+            $stmt = $connect->prepare($sql_verificar_cedula4);
+            $stmt->bind_param("s", $cen);
+            $stmt->execute();
+            $resultado_cedula4 = $stmt->get_result();
+            if (mysqli_num_rows($resultado_cedula4) > 0) {
+                $errores[] = "La cedula escolar ingresada para el estudiante se encuenta registrada con un representante";
+            }
 
+            // 6. Verificar teléfono en representantes
+            $sql_verificar_telefono = "SELECT * FROM representante WHERE telefono = ?";
+            $stmt = $connect->prepare($sql_verificar_telefono);
+            $stmt->bind_param("s", $codigo);
+            $stmt->execute();
+            $resultado_telefono = $stmt->get_result();
+            if (mysqli_num_rows($resultado_telefono) > 0) {
+                $errores[] = "Este telefono ya se encuentra registrado con otro representante";
+            }
 
-        }
-        $sql_verificar_cedula4 = "SELECT * FROM representante WHERE cedula = '$cen' ";
-        $resultado_cedula4 = mysqli_query($connect, $sql_verificar_cedula4);
-        if (mysqli_num_rows($resultado_cedula4) > 0) {
-            $errores[] = "La cedula escolar ingresada para el estudiante  se encuenta registrada con un representante";
+            // 7. Verificar correo en representantes
+            $sql_verificar_correo = "SELECT * FROM representante WHERE correo = ?";
+            $stmt = $connect->prepare($sql_verificar_correo);
+            $stmt->bind_param("s", $correo);
+            $stmt->execute();
+            $resultado_correo = $stmt->get_result();
+            if (mysqli_num_rows($resultado_correo) > 0) {
+                $errores[] = "Este correo ya se encuentra registrado con otro representante";
+            }
 
-
-        }
-        $sql_verificar_telefono = "SELECT * FROM representante WHERE telefono = '$codigo'";
-        $resultado_telefono = mysqli_query($connect, $sql_verificar_telefono);
-        if (mysqli_num_rows($resultado_telefono) > 0) {
-            $errores[] = "Este telefono ya se encuentra registrado con otro representante";
-
-
-        }
-        $sql_verificar_correo = "SELECT * FROM representante WHERE correo = '$correo'";
-        $resultado_correo = mysqli_query($connect, $sql_verificar_correo);
-        if (mysqli_num_rows($resultado_correo) > 0) {
-            $errores[] = "Este correo ya se encuentra registrado con otro representante";
-
-
-        }
 
         if (!empty($errores)) {
             echo "<div >
@@ -338,11 +369,11 @@ if (isset($_POST['submit'])) {
         }
 
         // El representante no existe, insertarlo y obtener su nuevo ID
-        $queryInsertRepre = "INSERT INTO representante (nombre, apellido,cedula, telefono, correo) 
-                                        VALUES ('$representante','$representante_apellido', '$cedularepre', '$codigo', '$correo')";
-
-        $resultInsertRepre = mysqli_query($connect, $queryInsertRepre);
-
+        $queryInsertRepre = "INSERT INTO representante (nombre, apellido, cedula, telefono, correo) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $connect->prepare($queryInsertRepre);
+        $stmt->bind_param("sssss", $representante, $representante_apellido, $cedularepre, $codigo, $correo);
+        $resultInsertRepre = $stmt->execute();
+        
         if (!$resultInsertRepre) {
             die("Error al insertar el nuevo representante: " . mysqli_error($connect));
         }
@@ -369,39 +400,49 @@ if (isset($_POST['submit'])) {
 
 
     // Obtener el ID del grado
-    $queryGrado = "SELECT id FROM grados WHERE nombre = '$grado'";
-    $resultGrado = mysqli_query($connect, $queryGrado);
-
+    $queryGrado = "SELECT id FROM grados WHERE nombre = ?";
+    $stmt = $connect->prepare($queryGrado);
+    $stmt->bind_param("s", $grado);
+    $stmt->execute();
+    $resultGrado = $stmt->get_result();
     if (!$resultGrado) {
         die("Error al obtener el ID del grado: " . mysqli_error($connect));
     }
 
-    $rowGrado = mysqli_fetch_assoc($resultGrado);
+    $rowGrado = $resultGrado->fetch_assoc();
     $idgrado = $rowGrado['id'];
+    
 
     // Obtener el ID de la sección
-    $querySeccion = "SELECT id FROM seccion WHERE nombre = '$seccion'";
-    $resultSeccion = mysqli_query($connect, $querySeccion);
+    $querySeccion = "SELECT id FROM seccion WHERE nombre = ?";
+    $stmt = $connect->prepare($querySeccion);
+    $stmt->bind_param("s", $seccion);
+    $stmt->execute();
+    $resultSeccion = $stmt->get_result();
 
     if (!$resultSeccion) {
-        die("Error al obtener el ID de la sección: " . mysqli_error($connect));
+        die("Error al obtener el ID de la sección: " . $stmt->error);
     }
 
-    $rowSeccion = mysqli_fetch_assoc($resultSeccion);
+    $rowSeccion = $resultSeccion->fetch_assoc();
     $idseccion = $rowSeccion['id'];
 
-    // Inserción en la tabla de estudiantes
-    $sql = "INSERT INTO estudiantes (nombre, apellido, cen, nacimiento, sexo, idgrado,idseccion ,idrepresentante ) 
-                        VALUES ('$nombre', '$apellido', '$cen', '$nacimiento', '$sexo', $idgrado , $idseccion, $idRepre)";
 
-    $resultInsert = mysqli_query(mysql: $connect, query: $sql);
+    // Inserción en la tabla de estudiantes
+    $sql = "INSERT INTO estudiantes (nombre, apellido, cen, nacimiento, sexo, idgrado, idseccion, idrepresentante) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("sssssiii", $nombre, $apellido, $cen, $nacimiento, $sexo, $idgrado, $idseccion, $idRepre);
+    $resultInsert = $stmt->execute();
+    
      
     //ingresar insert en bitacora
-    $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES ('Se Insertó un nuevo estudiante.', 
-    'Informacion: nombre = $nombre, apellido = $apellido , cen = $cen , nacimiento = $nacimiento, sexo = $sexo , grado = $grado, seccion = $seccion, 
-    representante = $representante , Apellido del representante = $representante_apellido , cedula representante = $cedularepre, telefono = $codigo , correo = $correo', 
-    '$usuario')";
-    $resultInsert2 = mysqli_query(mysql: $connect, query: $sql2);
+    $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+    $stmt2 = $connect->prepare($sql2);
+    $accion = "Se Insertó un nuevo estudiante.";
+    $datos_accion = "Informacion: nombre = $nombre, apellido = $apellido, cen = $cen, nacimiento = $nacimiento, sexo = $sexo, grado = $grado, seccion = $seccion, representante = $representante, Apellido del representante = $representante_apellido, cedula representante = $cedularepre, telefono = $codigo, correo = $correo";
+    $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
+    $resultInsert2 = $stmt2->execute();
+    
     //aqui termina
 
 

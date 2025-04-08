@@ -1,31 +1,39 @@
 <?php
     include 'connect.php';
     $id=$_GET['editarid'];
-    $sql="SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
-    representante.nombre as representante_nombre,
-    representante.cedula as representante_cedula, representante.telefono as representante_telefono,
-    representante.correo as representante_correo 
-    FROM estudiantes 
-    JOIN seccion ON estudiantes.idseccion = seccion.id 
-    JOIN grados ON estudiantes.idgrado = grados.id
-    JOIN representante On estudiantes.idrepresentante = representante.id
-    WHERE estudiantes.id=$id ";
+   $id = $_GET['editarid'];
 
-    $result=mysqli_query($connect,$sql);
-    $row=mysqli_fetch_assoc($result);
-        $nombre=$row['nombre'];
-        $apellido=$row['apellido'];
-        $cen=$row['cen'];
-        $nacimiento=$row['nacimiento'];
-        $sexo=$row['sexo'];
-        $repre=$row['representante_nombre'];
-        $cedula=$row['representante_cedula'];
-        $tele=$row['representante_telefono'];
-        $corre=$row['representante_correo'];
-        $grado=$row['grado_nombre'];
-        $seccion=$row['seccion_nombre'];
-        $volver=$grado;
-        $volver2=$seccion;
+    $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
+            representante.nombre as representante_nombre,
+            representante.cedula as representante_cedula, representante.telefono as representante_telefono,
+            representante.correo as representante_correo 
+            FROM estudiantes 
+            JOIN seccion ON estudiantes.idseccion = seccion.id 
+            JOIN grados ON estudiantes.idgrado = grados.id
+            JOIN representante ON estudiantes.idrepresentante = representante.id
+            WHERE estudiantes.id = ?";
+
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    // Conservando todas tus asignaciones originales:
+    $nombre = $row['nombre'];
+    $apellido = $row['apellido'];
+    $cen = $row['cen'];
+    $nacimiento = $row['nacimiento'];
+    $sexo = $row['sexo'];
+    $repre = $row['representante_nombre'];
+    $cedula = $row['representante_cedula'];
+    $tele = $row['representante_telefono'];
+    $corre = $row['representante_correo'];
+    $grado = $row['grado_nombre'];
+    $seccion = $row['seccion_nombre'];
+    $volver = $grado;
+    $volver2 = $seccion;
+
          
     if (isset($_POST['submit'])){
         $nombre= $_POST['nombre'];
@@ -46,30 +54,45 @@
         if (empty($error)) {
         if ($seccion === 'A' || $seccion === 'B') {
                 
-        $sql_grado_exist = "SELECT id FROM grados WHERE nombre = '$grado'";
-        $result_grado_exist = mysqli_query($connect, $sql_grado_exist);
+            $sql_grado_exist = "SELECT id FROM grados WHERE nombre = ?";
+            $stmt_grado = $connect->prepare($sql_grado_exist);
+            $stmt_grado->bind_param("s", $grado);
+            $stmt_grado->execute();
+            $result_grado_exist = $stmt_grado->get_result();
+            $row_grado = $result_grado_exist->fetch_assoc();
+            $grado_id = $row_grado['id'];
+            
     
-        $sql_seccion_exist = "SELECT id FROM seccion WHERE nombre = '$seccion'";
-        $result_seccion_exist = mysqli_query($connect, $sql_seccion_exist);
-
-        $row_grado = mysqli_fetch_assoc($result_grado_exist);
-        $grado_id = $row_grado['id'];
-
-        $row_seccion = mysqli_fetch_assoc($result_seccion_exist);
-        $seccion_id = $row_seccion['id'];
-
-
-            $sql1 = "UPDATE estudiantes SET idgrado = $grado_id, idseccion = $seccion_id WHERE id = $id";
-        
-
-            $sql2 = "UPDATE estudiantes SET nombre = '$nombre', apellido = '$apellido', cen = $cen, nacimiento = '$nacimiento', sexo = '$sexo' WHERE id = $id";
+            $sql_seccion_exist = "SELECT id FROM seccion WHERE nombre = ?";
+            $stmt_seccion = $connect->prepare($sql_seccion_exist);
+            $stmt_seccion->bind_param("s", $seccion);
+            $stmt_seccion->execute();
+            $result_seccion_exist = $stmt_seccion->get_result();
+            $row_seccion = $result_seccion_exist->fetch_assoc();
+            $seccion_id = $row_seccion['id'];
             
 
-            $sql3 = "UPDATE `representante` SET `nombre` = '$representante', `cedula` ='$cedularepre', `telefono` = '$telefono', `correo` = '$correo' WHERE `cedula` = '$cedula'";
-           
-            $result= mysqli_multi_query($connect, $sql1 . ";" . $sql2. ";" . $sql3);
 
-            if ($result ) {
+                    // Consulta 1: Actualización de grado y sección
+            $sql1 = "UPDATE estudiantes SET idgrado = ?, idseccion = ? WHERE id = ?";
+            $stmt1 = $connect->prepare($sql1);
+            $stmt1->bind_param("iii", $grado_id, $seccion_id, $id);
+
+            // Consulta 2: Actualización de datos personales
+            $sql2 = "UPDATE estudiantes SET nombre = ?, apellido = ?, cen = ?, nacimiento = ?, sexo = ? WHERE id = ?";
+            $stmt2 = $connect->prepare($sql2);
+            $stmt2->bind_param("ssissi", $nombre, $apellido, $cen, $nacimiento, $sexo, $id);
+
+            // Consulta 3: Actualización de representante
+            $sql3 = "UPDATE representante SET nombre = ?, cedula = ?, telefono = ?, correo = ? WHERE cedula = ?";
+            $stmt3 = $connect->prepare($sql3);
+            $stmt3->bind_param("sssss", $representante, $cedularepre, $telefono, $correo, $cedula);
+
+            // Ejecución en transacción (más seguro que multi_query)
+            $connect->autocommit(FALSE);
+            $success = $stmt1->execute() && $stmt2->execute() && $stmt3->execute();
+
+            if ($success) {
                 //echo "Se ha editado al alumno";
                 header('location:ver_grado.php?gradonombre=' . $volver . '&seccion=' . $volver2);
             } else {

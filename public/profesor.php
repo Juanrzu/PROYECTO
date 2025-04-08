@@ -162,22 +162,34 @@ if (isset($_POST['submit'])){
   if (empty($error)) {
     if ($seccion === 'A' || $seccion === 'B' ) {
       
-      $sqlgrado = "SELECT id FROM grados WHERE nombre = '$grado'";
-      $resultgrado = mysqli_query($connect, $sqlgrado);
-      $rowgrado = mysqli_fetch_assoc($resultgrado);
+      $sqlgrado = "SELECT id FROM grados WHERE nombre = ?";
+      $stmt = $connect->prepare($sqlgrado);
+      $stmt->bind_param("s", $grado);
+      $stmt->execute();
+      $resultgrado = $stmt->get_result();
+      $rowgrado = $resultgrado->fetch_assoc();
       $idgrado = $rowgrado['id'];
+
   
-      $sqlseccion = "SELECT id FROM seccion WHERE nombre = '$seccion'";
-      $resultseccion = mysqli_query($connect, $sqlseccion);
-      $rowseccion = mysqli_fetch_assoc($resultseccion);
+      $sqlseccion = "SELECT id FROM seccion WHERE nombre = ?";
+      $stmt = $connect->prepare($sqlseccion);
+      $stmt->bind_param("s", $seccion);
+      $stmt->execute();
+      $resultseccion = $stmt->get_result();
+      $rowseccion = $resultseccion->fetch_assoc();
       $idseccion = $rowseccion['id'];
+      
       }
     }
-  $sqlprofe = "SELECT * FROM profesor WHERE cedula = '$cedula' ";
-  $resultadoprofesor = mysqli_query($connect, $sqlprofe);
+    $sqlprofe = "SELECT * FROM profesor WHERE cedula = ?";
+    $stmt = $connect->prepare($sqlprofe); 
+    $stmt->bind_param("s", $cedula);
+    $stmt->execute();
+    $resultadoprofesor = $stmt->get_result();
+    
 
     // Verificar si la consulta devuelve resultados
-  if (mysqli_num_rows($resultadoprofesor) > 0) {
+    if (mysqli_num_rows($resultadoprofesor) > 0) {
     echo "<footer class='error'>
     <div class='container_title btn btn-danger'>
         <h5>La cedula ya se encuentra registrada a otro profesor</h5>
@@ -187,10 +199,14 @@ if (isset($_POST['submit'])){
 exit;
   } 
  // Consulta para contar cuántos profesores hay asignados a un grado y sección específicos
- $sql_count = "SELECT COUNT(*) AS total FROM profesor WHERE idgrado = $idgrado AND idseccion = $idseccion";
- $result_count = mysqli_query($connect, $sql_count);
- $row_count = mysqli_fetch_assoc($result_count);
- $total_profesores = $row_count['total'];
+  $sql_count = "SELECT COUNT(*) AS total FROM profesor WHERE idgrado = ? AND idseccion = ?";
+  $stmt = $connect->prepare($sql_count);
+  $stmt->bind_param("ii", $idgrado, $idseccion);
+  $stmt->execute();
+  $result_count = $stmt->get_result();
+  $row_count = $result_count->fetch_assoc();
+  $total_profesores = $row_count['total'];
+
 
  // Verificar si ya hay 2 profesores asignados a este grado y sección
  if ($total_profesores >= 2) {
@@ -202,8 +218,11 @@ exit;
      exit();
  }
  
-      $sql= "INSERT INTO profesor (nombre, apellido, cedula, idgrado, idseccion) VALUES ('$nombre', '$apellido', '$cedula', $idgrado, $idseccion) ";
-      $result= mysqli_query($connect, $sql);
+      $sql = "INSERT INTO profesor (nombre, apellido, cedula, idgrado, idseccion) VALUES (?, ?, ?, ?, ?)";
+      $stmt = $connect->prepare($sql);
+      $stmt->bind_param("sssii", $nombre, $apellido, $cedula, $idgrado, $idseccion);
+      $result = $stmt->execute();
+      
       if($result){
  
          echo"<script> window.location='ver_grado.php? gradonombre= $volver && seccion= $volver2'</script>";
