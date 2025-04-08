@@ -53,7 +53,8 @@ include 'contador_sesion.php';
           <thead class="text-xs text-black uppercase dark:text-gray-400">
             <tr>
               <th scope="col" class="px-3 py-2 bg-gray-100 dark:bg-gray-800">Acción</th>
-              <th scope="col" class="px-3 py-2 bg-gray-200 dark:bg-gray-800">Fecha y Hora</th>
+              <th scope="col" class="px-3 py-2 bg-gray-200 dark:bg-gray-800">Información</th>
+              <th scope="col" class="px-3 py-2 bg-gray-100 dark:bg-gray-800">Fecha y Hora</th>
               <th scope="col" class="px-3 py-2 bg-gray-200 dark:bg-gray-800">Usuario</th>
 
             </tr>
@@ -61,28 +62,84 @@ include 'contador_sesion.php';
           <tbody class="table-group-divider">
             <?php
             //consulta preparada
-            $sql = "SELECT accion, fecha_hora, usuario FROM bitacora";
+            $sql = "SELECT * FROM bitacora";
             $stmt = $connect->prepare($sql);
             $stmt->execute();
             $result = $stmt->get_result();
-            
+                
             if ($result) {
               while ($row = mysqli_fetch_assoc($result)) {
-                $accion = $row['accion'];
-                $usuario2 = $row['usuario'];
-                $fecha_hora = $row['fecha_hora'];
+                  $accion = $row['accion'];
+                  $datosAccion = $row['datos_accion'];
+                  $usuario2 = $row['usuario'];
+                  $fecha_hora = $row['fecha_hora'];
+                  $idUnico = $row['id']; // Asegúrate de tener un campo único como 'id' en tu consulta SQL
+          
+                  echo '
+                  <tr class="mt-2 border-b border-gray-900 dark:border-gray-700">
+                      <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $accion . '</td>
+                   <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">
+                          <!-- Botón para abrir el modal (con ID dinámico) -->
+                          <button 
+                              type="button" 
+                              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                              onclick="document.getElementById(\'modal-accion-' . $row['id'] . '\').classList.remove(\'hidden\')"
+                          >
+                              Ver información
+                          </button>
 
+                          <!-- Modal con ID único basado en el ID del registro -->
+                          <div id="modal-accion-' . $row['id'] . '" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                              <div class="bg-white rounded-lg shadow-lg w-full max-w-md dark:bg-gray-800 mx-4">
+                                  <div class="p-6">
+                                      <h3 class="font-bold text-lg text-gray-800 dark:text-white mb-4">Datos del Estudiante</h3>
+                                      <ul class="space-y-2 text-gray-700 dark:text-gray-300">';
 
-                echo '<tr class=" mt-2 border-b border-gray-900 dark:border-gray-700">
-              <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $accion . '</td>
-              <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $fecha_hora . '</td>
-               <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $usuario2 . '</td>
-              </tr>';
+                      // Parseamos los datos dinámicamente
+                      $pares = explode(',', $datosAccion); // Datos crudos: "nombre=Sofía, apellido=Torres..."
+                      $datos = [];
+                      foreach ($pares as $par) {
+                          if (strpos($par, '=') !== false) {
+                              list($clave, $valor) = explode('=', trim($par));
+                              $datos[trim($clave)] = trim($valor);
+                          }
+                      }
 
+                      // Mostramos campos específicos con formato
+                      echo '
+                                          <li><strong>Nombre:</strong> ' . htmlspecialchars($datos['nombre'] . ' ' . $datos['apellido']) . '</li>
+                                          <li><strong>CEN:</strong> ' . htmlspecialchars($datos['cen']) . '</li>
+                                          <li><strong>Nacimiento:</strong> ' . date('d/m/Y', strtotime($datos['nacimiento'])) . '</li>
+                                          <li><strong>Sexo:</strong> ' . htmlspecialchars($datos['sexo']) . '</li>
+                                          <li><strong>Grado/Sección:</strong> ' . htmlspecialchars($datos['grado'] . '° "' . $datos['seccion'] . '"') . '</li>
+                                          <li class="pt-2 border-t border-gray-200 dark:border-gray-700 mt-2"><strong>Representante:</strong></li>
+                                          <li><strong>Nombre:</strong> ' . htmlspecialchars($datos['representante']) . '</li>
+                                          <li><strong>Cédula:</strong> ' . htmlspecialchars($datos['cedula representante']) . '</li>
+                                          <li><strong>Teléfono:</strong> ' . htmlspecialchars($datos['telefono']) . '</li>
+                                          <li><strong>Correo:</strong> ' . htmlspecialchars($datos['correo']) . '</li>';
 
-
+                      echo '
+                                      </ul>
+                                  </div>
+                                  <!-- Botón para cerrar (con referencia al ID correcto) -->
+                                  <div class="flex justify-end p-4 border-t border-gray-200 dark:border-gray-700">
+                                      <button
+                                          type="button"
+                                          class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                                          onclick="document.getElementById(\'modal-accion-' . $row['id'] . '\').classList.add(\'hidden\')"
+                                      >
+                                          Cerrar
+                                      </button>
+                                  </div>
+                              </div>
+                          </div>
+                      </td>
+                      <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $fecha_hora . '</td>
+                      <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $usuario2 . '</td>
+                  </tr>';
               }
-            }$stmt->close();
+          }
+          $stmt->close();
             ?>
 
           </tbody>
