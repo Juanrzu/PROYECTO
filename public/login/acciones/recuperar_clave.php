@@ -460,11 +460,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registrar'])) {
               </script>';
         
         // Mensaje de éxito (opcionalmente podrías mostrarlo antes de redirigir)
-        echo '<div class="success mt-2 px-2 py-4 text-center bg-green-500 rounded-xl">
-                <svg fill="#4BB543" width="40px" height="26px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        echo '<div class="custom-notification fixed bottom-4 right-4 px-4 py-3 rounded bg-green-100 border-green-400 text-green-700 shadow-lg border flex items-center z-50">
+                <div class="flex-shrink-0 mr-3">
+                    <svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
                 </svg>
-                <p class="mx-auto text-xs">Contraseña actualizada correctamente. Redirigiendo...</p>
+                </div>
+                <p class="text-sm">Contraseña actualizada correctamente. Redirigiendo...</p>
+                
               </div>';
     } else {
         mostrarError('Error al actualizar la contraseña: ' . $connect->error);
