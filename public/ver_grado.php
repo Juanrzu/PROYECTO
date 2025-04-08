@@ -98,7 +98,7 @@ include 'contador_sesion.php';
         }
         
         $stmt = $connect->prepare($sql);
-        $stmt->bind_param("ss", $secc, $grado);  // Change "s" to "i" for $grado if it's numeric
+        $stmt->bind_param("si", $secc, $grado);  // Change "s" to "i" for $grado if it's numeric
         $stmt->execute();
         $result = $stmt->get_result();
         
@@ -188,144 +188,143 @@ include 'contador_sesion.php';
             </tr>
           </thead>
           <tbody>
-            <?php
+          <?php
 
-            $secc = strtoupper(trim($seccion));
+$secc = strtoupper(trim($seccion));
 
-            if ($secc === "A") {
-              $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
-                      representante.nombre as representante_nombre, representante.cedula as cedularepre, 
-                      representante.telefono as telefono, representante.correo as correo
-                      FROM estudiantes  
-                      JOIN seccion ON estudiantes.idseccion = seccion.id 
-                      JOIN grados ON estudiantes.idgrado = grados.id
-                      JOIN representante ON estudiantes.idrepresentante = representante.id
-                      WHERE seccion.nombre = ? AND grados.nombre = ?
-                      ORDER BY estudiantes.nombre ASC";
-          } else {
-              $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
-                      representante.nombre as representante_nombre, representante.cedula as cedularepre, 
-                      representante.telefono as telefono, representante.correo as correo
-                      FROM estudiantes 
-                      JOIN seccion ON estudiantes.idseccion = seccion.id 
-                      JOIN grados ON estudiantes.idgrado = grados.id
-                      JOIN representante ON estudiantes.idrepresentante = representante.id
-                      WHERE seccion.nombre = ? AND grados.nombre = ?
-                      ORDER BY estudiantes.nombre ASC";
-          }
-          
-          $stmt = $connect->prepare($sql);
-          $stmt->bind_param("ss", $secc, $grado);  // Change "s" to "i" for $grado if numeric
-          $stmt->execute();
-          $result = $stmt->get_result();
-          
-            if ($result) {
-              while ($row = mysqli_fetch_assoc($result)) {
-                $id = $row['id'];
-                $nombre = $row['nombre'];
-                $apellido = $row['apellido'];
-                $cen = $row['cen'];
-                $nacimiento = $row['nacimiento'];
-                $sexo = $row['sexo'];
-                $representante = $row['representante_nombre'];
-                $cedularepre = $row['cedularepre'];
-                $telefono = $row['telefono'];
-                $correo = $row['correo'];
-                $grado = $row['grado_nombre'];
-                $seccion = $row['seccion_nombre'];
+if ($secc === "A") {
+  $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
+          representante.nombre as representante_nombre, representante.cedula as cedularepre, 
+          representante.telefono as telefono, representante.correo as correo
+          FROM estudiantes  
+          JOIN seccion ON estudiantes.idseccion = seccion.id 
+          JOIN grados ON estudiantes.idgrado = grados.id
+          JOIN representante ON estudiantes.idrepresentante = representante.id
+          WHERE seccion.nombre = ? AND grados.nombre = ?
+          ORDER BY estudiantes.nombre ASC";
+} else {
+  $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
+          representante.nombre as representante_nombre, representante.cedula as cedularepre, 
+          representante.telefono as telefono, representante.correo as correo
+          FROM estudiantes 
+          JOIN seccion ON estudiantes.idseccion = seccion.id 
+          JOIN grados ON estudiantes.idgrado = grados.id
+          JOIN representante ON estudiantes.idrepresentante = representante.id
+          WHERE seccion.nombre = ? AND grados.nombre = ?
+          ORDER BY estudiantes.nombre ASC";
+}
 
-                echo '<tr class="border-b border-gray-900 dark:border-gray-700">
-                <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $nombre . '</td>
-                <td class="px-3 py-2">' . $apellido . '</td>
-                <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $cen . '</td>
-                <td class="px-3 py-2">' . $nacimiento . '</td>
-                <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $sexo . '</td>
-                <td class="px-3 py-2 ">' . $representante . '</td>
-                <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $cedularepre . '</td>
-                <td class="px-3 py-2">' . $telefono . '</td>
-                <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $correo . '</td>
-                <td class="px-3 py-2">' . $grado . '</td>
-                <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $seccion . '</td>
-                <td class="bg-blue-400 dark:bg-blue-800 hover:bg-blue-500">
-                    <button class="w-full">
-                        <a href="editar.php?editarid=' . $id . '" class="px-3 py-2">
-                            <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" id="edit-alt" class="icon flat-line">
-                                <path d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"/>
-                                <path d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"/>
-                            </svg>
-                        </a>
-                    </button>
-                </td>
-                <td class="bg-red-500 dark:bg-red-800 hover:bg-red-400"> 
-                    <form method="POST" action="retirar_estudiante.php?eliminarid=' . $id . '">
-                        <button type="button" class="w-full" data-modal-target="modal-retirar-' . $id . '" data-modal-toggle="modal-retirar-' . $id . '">
-                            <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" width="32px" height="32px" viewBox="0 0 21 21">
-                                <!-- SVG contenido -->
-                            </svg>
-                        </button>
-            
-                        <div id="modal-retirar-' . $id . '" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
-                            <div class="relative p-4 max-h-full">
-                                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 mt-28">
-                                    <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
-                                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Sistema</h3>
-                                        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="modal-retirar-' . $id . '">
-                                            <svg class="w-4 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                            </svg>
-                                            <span class="sr-only">Close modal</span>
-                                        </button>
-                                    </div>
-                                    <div class="p-4 md:p-5 space-y-4">
-                                        <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">¿Dinos el motivo?</p>
-                                        <div class="mb-2">
-                                            <input type="text" class="w-full mt-2 rounded-lg" name="motivo" id="motivo-retirar-' . $id . '" autocomplete="off">
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center p-4 border-t border-gray-200 rounded-b dark:border-gray-600">
-                                        <button type="submit" name="registrar" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Retirar</button>
-                                        <button type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" data-modal-hide="modal-retirar-' . $id . '">Cancelar</button>
-                                    </div>
-                                </div>
+$stmt = $connect->prepare($sql);
+$stmt->bind_param("si", $secc, $grado); // Change "s" to "i" for $grado if numeric
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result) {
+  while ($row = mysqli_fetch_assoc($result)) {
+    $id = $row['id'];
+    $nombre = $row['nombre'];
+    $apellido = $row['apellido'];
+    $cen = $row['cen'];
+    $nacimiento = $row['nacimiento'];
+    $sexo = $row['sexo'];
+    $representante = $row['representante_nombre'];
+    $cedularepre = $row['cedularepre'];
+    $telefono = $row['telefono'];
+    $correo = $row['correo'];
+    $grado = $row['grado_nombre'];
+    $seccion = $row['seccion_nombre'];
+
+    echo '<tr class="border-b border-gray-900 dark:border-gray-700">
+    <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $nombre . '</td>
+    <td class="px-3 py-2">' . $apellido . '</td>
+    <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $cen . '</td>
+    <td class="px-3 py-2">' . $nacimiento . '</td>
+    <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $sexo . '</td>
+    <td class="px-3 py-2 ">' . $representante . '</td>
+    <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $cedularepre . '</td>
+    <td class="px-3 py-2">' . $telefono . '</td>
+    <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $correo . '</td>
+    <td class="px-3 py-2">' . $grado . '</td>
+    <td class="px-3 py-2 bg-gray-200 dark:bg-gray-800">' . $seccion . '</td>
+    <td class="bg-blue-400 dark:bg-blue-800 hover:bg-blue-500">
+        <button class="w-full">
+            <a href="editar.php?editarid=' . $id . '" class="px-3 py-2">
+                <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" id="edit-alt" class="icon flat-line">
+                    <path d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"/>
+                    <path d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"/>
+                </svg>
+            </a>
+        </button>
+    </td>
+    <td class="bg-red-500 dark:bg-red-800 hover:bg-red-400"> 
+        <form method="POST" action="retirar_estudiante.php?eliminarid=' . $id . '">
+            <button type="button" class="w-full" data-modal-target="modal-retirar-' . $id . '" data-modal-toggle="modal-retirar-' . $id . '">
+                <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" width="32px" height="32px" viewBox="0 0 21 21">
+                    <!-- SVG contenido -->
+                </svg>
+            </button>
+
+            <div id="modal-retirar-' . $id . '" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
+                <div class="relative p-4 max-h-full">
+                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 mt-28">
+                        <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Sistema</h3>
+                            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="modal-retirar-' . $id . '">
+                                <svg class="w-4 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                </svg>
+                                <span class="sr-only">Close modal</span>
+                            </button>
+                        </div>
+                        <div class="p-4 md:p-5 space-y-4">
+                            <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">¿Dinos el motivo?</p>
+                            <div class="mb-2">
+                                <input type="text" class="w-full mt-2 rounded-lg" name="motivo" id="motivo-retirar-' . $id . '" autocomplete="off">
                             </div>
                         </div>
-                    </form>
-                </td>
-            
-                <td class="bg-red-500 dark:bg-red-800 hover:bg-red-400"> 
-                    <form method="POST" action="eliminar.php?eliminarid=' . $id . '">
-                        <button type="button" class="w-full" data-modal-target="modal-eliminar-' . $id . '" data-modal-toggle="modal-eliminar-' . $id . '">
-                            <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" width="32px" height="32px" viewBox="0 0 21 21">
-                                <!-- SVG contenido -->
-                            </svg>
-                        </button>
-            
-                        <div id="modal-eliminar-' . $id . '" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
-                            <div class="relative p-4 max-h-full">
-                                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 mt-28">
-                                    <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
-                                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Sistema</h3>
-                                        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="modal-eliminar-' . $id . '">
-                                            <svg class="w-4 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                            </svg>
-                                            <span class="sr-only">Close modal</span>
-                                        </button>
-                                    </div>
-                                    <div class="p-4 md:p-5 space-y-4">
-                                        <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">¿Está seguro?</p>
-                                    </div>
-                                    <div class="flex items-center p-4 border-t border-gray-200 rounded-b dark:border-gray-600">
-                                        <button type="submit" name="registrar" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Sí</button>
-                                        <button type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" data-modal-hide="modal-eliminar-' . $id . '">No</button>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="flex items-center p-4 border-t border-gray-200 rounded-b dark:border-gray-600">
+                            <button type="submit" name="registrar" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Retirar</button>
+                            <button type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" data-modal-hide="modal-retirar-' . $id . '">Cancelar</button>
                         </div>
-                    </form>
-                </td>
-            </tr>';
-            
+                    </div>
+                </div>
+            </div>
+        </form>
+    </td>
+
+    <td class="bg-red-500 dark:bg-red-800 hover:bg-red-400"> 
+        <form method="POST" action="eliminar.php?eliminarid=' . $id . '">
+            <button type="button" class="w-full" data-modal-target="modal-eliminar-' . $id . '" data-modal-toggle="modal-eliminar-' . $id . '">
+                <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" width="32px" height="32px" viewBox="0 0 21 21">
+                    <!-- SVG contenido -->
+                </svg>
+            </button>
+
+            <div id="modal-eliminar-' . $id . '" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
+                <div class="relative p-4 max-h-full">
+                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 mt-28">
+                        <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Sistema</h3>
+                            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="modal-eliminar-' . $id . '">
+                                <svg class="w-4 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                </svg>
+                                <span class="sr-only">Close modal</span>
+                            </button>
+                        </div>
+                        <div class="p-4 md:p-5 space-y-4">
+                            <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">¿Está seguro?</p>
+                        </div>
+                        <div class="flex items-center p-4 border-t border-gray-200 rounded-b dark:border-gray-600">
+                            <button type="submit" name="registrar" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Sí</button>
+                            <button type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" data-modal-hide="modal-eliminar-' . $id . '">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </td>
+</tr>';
 
 
 
@@ -335,10 +334,11 @@ include 'contador_sesion.php';
 
 
 
-              }
-            }
-            
-            ?>
+
+  }
+}
+
+?>
 
           </tbody>
         </table>
