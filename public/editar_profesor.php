@@ -166,7 +166,7 @@ if (isset($_POST['submit'])){
               
             exit();
         }
-        
+        //preparar sentencia
         //Verificar Sección
         if (empty($error)) {
             if ($seccion === 'A' || $seccion === 'B') {
@@ -196,11 +196,12 @@ if (isset($_POST['submit'])){
                 $stmt_grado->close();
                 $stmt_seccion->close();
                 $stmt_profe->close();
+                //fin
             }}
 
           
             if ($result_grado_exist->num_rows > 0 && $result_seccion_exist->num_rows > 0) {
-            
+             //preparar sentencia
                 // Obtener IDs de grado y sección
                 $row_grado = $result_grado_exist->fetch_assoc();
                 $grado_id = $row_grado['id'];
@@ -237,6 +238,7 @@ if (isset($_POST['submit'])){
             //echo "Se ha editado el profesor";
             echo" <script> window.location='ver_grado.php? gradonombre= $volver && seccion= $volver2 '</script>";
             $stmt->close();
+            //finn
         }else{
             die (mysqli_error($connect));
         } include 'connect.php';

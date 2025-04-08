@@ -76,9 +76,11 @@ include 'contador_sesion.php';
           <?php
 
           $secc = strtoupper(trim($seccion));
-
-            $sql = "SELECT * FROM retiro_estudiantes";
-           $result = mysqli_query($connect, $sql);
+          $sql = "SELECT * FROM retiro_estudiantes";
+          $stmt = $connect->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->get_result();
+          
 
           if ($result) {
             while ($row = mysqli_fetch_assoc($result)) {
