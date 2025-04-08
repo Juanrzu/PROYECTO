@@ -46,127 +46,119 @@ require_once '../contador_sesion.php';
     }
     ?>
 
-		<main class="w-full flex justify-center items-center xl:px-56 mt-8">
+	<main class="w-full flex justify-center items-center xl:px-56 mt-8">
 
+	<form method="POST" class="w-full max-w-screen-sm rounded-xl p-4 py-8 shadow-lg bg-gray-50 mx-auto" id="formulario">
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
-			<form method="POST" class=" w-80 rounded-xl p-4 py-8 shadow-lg bg-gray-100 bg-opacity-80" id="formulario">
-				<div class="mb-2">
-					<label>Nombres</label><br>
-					<input type="text" class="form-control w-full mt-2 rounded-lg" name="nombre" id="nombre" placeholder="Ingrese su nombre">
-				</div>
-
-				<div class="mb-2">
-					<label>Apellidos</label><br>
-					<input type="text" class="form-control w-full mt-2 rounded-lg" name="apellido" id="apellido" placeholder="Igrese su apellido">
-				</div>
-
-				<div class="mb-2">
-					<label>Cedula</label><br>
-					<input type="number" class="form-control w-full mt-2 rounded-lg" name="cedula" id="cedula" placeholder="Ingrese su cédula">
-				</div>
-
-				<div class="mb-2">
-					<label>Telefono</label><br>
-					<div class="input-group has-validation">
-						<select class="input-group-text rounded-md" name="codigo" id="codigo">
-							<option value=0268>0268</option>
-							<option value=0414>0414</option>
-							<option value=0424>0424</option>
-							<option value=0416>0416</option>
-							<option value=0426>0426</option>
-							<option value=0412>0412</option>
-						</select>
-						<input type="text" class="form-control w-[67%] rounded-lg" placeholder="Telefono" name="telefono" autocomplete="off" maxlength="7" id="telefono">
-					</div>
-				</div>
-
-				<div class="mb-2">
-					<label>Correo</label><br>
-					<input type="text" class="form-control w-full mt-2 rounded-lg" name="correo" id="email" placeholder="Igrese su correo">
-				</div>
-
-				<div class="mb-2">
-					<label>Usuario</label><br>
-					<input type="text" class="form-control w-full mt-2 rounded-lg" name="usuario" id="usuario" placeholder="Ingrese su usuario">
-				</div>
-
-				<div class="mb-2">
-
-					<label>Contraseña</label><br>
-					<input type="password" class="form-control w-full mt-2 rounded-lg" name="contraseña" id="contraseña" placeholder="Igrese la contraseña">
-				</div>
-
-				<div class="mb-2">
-
-					<label>¿Cual es el nombre de su madre o padre?</label><br>
-					<input type="text" class="form-control w-full mt-2 rounded-lg" name="pregunta1" id="p1" placeholder="Ingrese su respuesta">
-				</div>
-
-				<div class="mb-2">
-
-					<label>¿Cual es tu animal favorito?</label><br>
-					<input type="text" class="form-control w-full mt-2 rounded-lg" name="pregunta2" id="p2" placeholder="Ingrese su respuesta">
-				</div>
-				<div class="container-error text-danger mb-2">
-
-				</div>
-
-
-				<div class="mb-2">
-					<button type="button" data-modal-target="default-modal" data-modal-toggle="default-modal" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 ghost bg-blue-500 shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" id="btn-modal" data-bs-toggle="modal" data-bs-target="#exampleModal">REGISTRAR</button>
-				</div>
-
-				<div class="mb-2">
-					<button type="button" onclick="window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 ghost bg-blue-700 shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Regresar a la página anterior</button>
-				</div>
-
-	<div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full">
-		<div class="relative p-4 max-h-full">
-			<!-- Modal content -->
-			<div class="relative bg-white rounded-lg shadow dark:bg-gray-700 mt-28">
-				<!-- Modal header -->
-				<div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-					<h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-						Sistema
-					</h3>
-					<button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
-						<svg class="w-4 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-							<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-						</svg>
-						<span class="sr-only">Close modal</span>
-					</button>
-				</div>
-				<!-- Modal body -->
-				<div class="p-4 md:p-5 space-y-4">
-					<p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-						¿Esta Seguro Que Quiere Registrar Un Usuario?
-					</p>
-				</div>
-				<!-- Modal footer -->
-				<div class="flex items-center p-4 md:p-5 border-t w- border-gray-200 rounded-b dark:border-gray-600">
-					<button data-modal-hide="default-modal" type="submit" name="registrar" id="registrar" class=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">SI</button>
-					<button data-modal-hide="default-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">no</button>
-				</div>
-			</div>
-		</div>
+	<!-- Nombres -->
+	<div>
+	  <label for="nombre" class="block text-sm font-medium text-gray-700">Nombres</label>
+	  <input type="text" name="nombre" id="nombre"
+		class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+		placeholder="Ingrese su nombre">
 	</div>
-	</form>
 
+	<!-- Apellidos -->
+	<div>
+	  <label for="apellido" class="block text-sm font-medium text-gray-700">Apellidos</label>
+	  <input type="text" name="apellido" id="apellido"
+		class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+		placeholder="Ingrese su apellido">
+	</div>
 
+	<!-- Cédula -->
+	<div class="col-span-1 sm:col-span-2">
+	  <label for="cedula" class="block text-sm font-medium text-gray-700">Cédula</label>
+	  <input type="number" name="cedula" id="cedula"
+		class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+		placeholder="Ingrese su cédula">
+	</div>
+
+	<!-- Teléfono -->
+	<div class="col-span-1 sm:col-span-2">
+	  <label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono</label>
+	  <div class="flex items-center gap-3 mt-2">
+		<select name="codigo" id="codigo" class="rounded-md border border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+		  <option value="0268">0268</option>
+		  <option value="0414">0414</option>
+		  <!-- Más opciones -->
+		</select>
+		<input type="text" name="telefono" id="telefono"
+		  class="w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+		  placeholder="Teléfono" maxlength="7">
+	  </div>
+	</div>
+
+	<!-- Correo -->
+	<div class="col-span-1 sm:col-span-2">
+	  <label for="email" class="block text-sm font-medium text-gray-700">Correo</label>
+	  <input type="text" name="correo" id="email"
+		class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+		placeholder="Ingrese su correo">
+	</div>
+
+	<!-- Usuario -->
+	<div>
+	  <label for="usuario" class="block text-sm font-medium text-gray-700">Usuario</label>
+	  <input type="text" name="usuario" id="usuario"
+		class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+		placeholder="Ingrese su usuario">
+	</div>
+
+	<!-- Contraseña -->
+	<div>
+	  <label for="contraseña" class="block text-sm font-medium text-gray-700">Contraseña</label>
+	  <input type="password" name="contraseña" id="contraseña"
+		class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+		placeholder="Ingrese la contraseña">
+	</div>
+
+	<!-- Pregunta 1 -->
+	<div class="col-span-1 sm:col-span-2">
+	  <label for="p1" class="block text-sm font-medium text-gray-700">¿Cuál es el nombre de su madre o padre?</label>
+	  <input type="text" name="pregunta1" id="p1"
+		class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+		placeholder="Ingrese su respuesta">
+	</div>
+
+	<!-- Pregunta 2 -->
+	<div class="col-span-1 sm:col-span-2">
+	  <label for="p2" class="block text-sm font-medium text-gray-700">¿Cuál es tu animal favorito?</label>
+	  <input type="text" name="pregunta2" id="p2"
+		class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+		placeholder="Ingrese su respuesta">
+	</div>
+  </div>
+
+  <!-- Botones -->
+  <div class="mt-6 flex flex-col sm:flex-row gap-3">
+	<button type="submit"
+	  class="w-full sm:w-auto px-4 py-3 rounded-md bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+	  Registrar
+	</button>
+	<button type="button" onclick="window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'"
+	  class="w-full sm:w-auto px-4 py-3 rounded-md bg-gray-300 text-gray-700 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+	  Regresar
+	</button>
+  </div>
+</form>
 
 	</main>
 
 
 	
-	<footer class="flex justify-between items-center w-full px-8 py-4">
-		<p class="demin">Todos Los derechos reservados 2024</p>
-		<a class="btn bg-slate-50 rounded-full" href="https://creativecommons.org/licenses/by-sa/4.0/">
-			<svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="32px" height="32px" viewBox="0 0 512 512">
-				<path d="M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 448c-110.532 0-200-89.451-200-200 0-110.531 89.451-200 200-200 110.532 0 200 89.451 200 200 0 110.532-89.451 200-200 200zm107.351-101.064c-9.614 9.712-45.53 41.396-104.065 41.396-82.43 0-140.484-61.425-140.484-141.567 0-79.152 60.275-139.401 139.762-139.401 55.531 0 88.738 26.62 97.593 34.779a11.965 11.965 0 0 1 1.936 15.322l-18.155 28.113c-3.841 5.95-11.966 7.282-17.499 2.921-8.595-6.776-31.814-22.538-61.708-22.538-48.303 0-77.916 35.33-77.916 80.082 0 41.589 26.888 83.692 78.277 83.692 32.657 0 56.843-19.039 65.726-27.225 5.27-4.857 13.596-4.039 17.82 1.738l19.865 27.17a11.947 11.947 0 0 1-1.152 15.518z" />
-				Licencia Creative Commons
-			</svg>
-		</a>
-	</footer>
+	<!-- Footer -->
+    <footer class="bg-white shadow mt-12">
+        <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-600 text-sm">Todos los derechos reservados © 2024</p>
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="mt-2 md:mt-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-600 hover:text-gray-800 transition-colors duration-200" fill="currentColor" viewBox="0 0 512 512">
+            <path d="M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 448c-110.532 0-200-89.451-200-200 0-110.531 89.451-200 200-200 110.532 0 200 89.451 200 200 0 110.532-89.451 200-200 200zm107.351-101.064c-9.614 9.712-45.53 41.396-104.065 41.396-82.43 0-140.484-61.425-140.484-141.567 0-79.152 60.275-139.401 139.762-139.401 55.531 0 88.738 26.62 97.593 34.779a11.965 11.965 0 0 1 1.936 15.322l-18.155 28.113c-3.841 5.95-11.966 7.282-17.499 2.921-8.595-6.776-31.814-22.538-61.708-22.538-48.303 0-77.916 35.33-77.916 80.082 0 41.589 26.888 83.692 78.277 83.692 32.657 0 56.843-19.039 65.726-27.225 5.27-4.857 13.596-4.039 17.82 1.738l19.865 27.17a11.947 11.947 0 0 1-1.152 15.518z"/>
+            </svg>
+        </a>
+        </div>
+    </footer>
 	</div>
 	<script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
 	<script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>

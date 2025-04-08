@@ -193,7 +193,7 @@ if (!isset($usuario)) {
         </main>
 
 
-        <div class="w-full text-white">p</div>
+  
     </div>
 
     <script>
