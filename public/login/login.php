@@ -1,8 +1,12 @@
 <?php
-	include('./../connect.php');
-	session_start();
 
-	?>
+session_start();
+error_reporting(0);
+
+require_once './../connect.php';
+require_once '../contador_sesion.php';
+
+?>
 
 
 
@@ -129,8 +133,10 @@
         </div>
     </div>
 </div>
-		
-		<script>
+</body>
+</html>
+
+<script>
 const form = document.getElementById('formulario');
 const btn = document.getElementById('btn');
 const usuario = document.getElementById('usuario');
@@ -618,7 +624,3 @@ document.body.appendChild(msg);
 
 
 ?> 
-
-
-	</body>
-	</html>

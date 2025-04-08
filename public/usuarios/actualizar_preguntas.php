@@ -2,13 +2,18 @@
 
 session_start();
 error_reporting(0);
-$usuario = $_SESSION['nombre_usuario'];
-if ($usuario == null || $usuario == '') {
-    header('location: ./../login/login.php');
-    die();
+
+// Verificar si el usuario está autenticado
+if (!isset($_SESSION['nombre_usuario']) || empty($_SESSION['nombre_usuario'])) {
+    header('Location: ./../login/login.php');
+    exit();
 }
-include './../connect.php';
-include '../contador_sesion.php';
+
+$usuario = $_SESSION['nombre_usuario'];
+
+// Incluir archivos necesarios
+require_once './../connect.php';
+require_once '../contador_sesion.php';
 ?>
 
 <!DOCTYPE html>
@@ -48,86 +53,77 @@ include '../contador_sesion.php';
         <main class=" flex justify-center items-center xl:px-56 mt-8">
 
 
-            <form method="POST" class="w-80 rounded-xl p-4 py-8 shadow-lg bg-gray-100" id="formulario">
+        <form method="POST" class="w-80 rounded-xl p-4 py-8 shadow-lg bg-gray-50" id="formulario">
+        <div class="mb-6">
+            <label for="usuario" class="block text-sm font-medium text-gray-700">Usuario</label>
+            <input type="text" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="usuario" id="usuario" autocomplete="off" value="<?php echo "$usuario"; ?>">
+        </div>
 
+        <div class="mb-6">
+            <label for="p1" class="block text-sm font-medium text-gray-700">Pregunta de seguridad 1</label>
+            <input type="text" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="pregunta1" id="p1" placeholder="¿Cuál es el nombre de su madre o padre?">
+        </div>
 
-                <div class="mb-2">
-                    <label>Usuario</label><br>
-                    <input type="text" class=" w-full mt-2 rounded-lg" name="usuario" id="usuario" autocomplete="off" value=<?php echo "$usuario"; ?>>
-                </div>
+        <div class="mb-6">
+            <label for="p2" class="block text-sm font-medium text-gray-700">Pregunta de seguridad 2</label>
+            <input type="text" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="pregunta2" id="p2" placeholder="¿Cuál es su animal favorito?">
+        </div>
 
-                <div class="mb-2">
+        <div class="mb-6">
+            <label for="pregunta_nueva1" class="block text-sm font-medium text-gray-700">Nueva respuesta de seguridad 1</label>
+            <input type="text" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="pregunta_nueva1" id="pregunta_nueva1" placeholder="Ingrese la nueva respuesta a la pregunta de seguridad 1">
+        </div>
 
-                    <label>Pregunta de seguridad 1</label><br>
-                    <input type="text" class="form-control form-control w-full mt-2 rounded-lg" name="pregunta1" id="p1" placeholder="¿Cual es el nombre de su madre o padre?">
-                </div>
+        <div class="mb-6">
+            <label for="pregunta_nueva2" class="block text-sm font-medium text-gray-700">Nueva respuesta de seguridad 2</label>
+            <input type="text" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="pregunta_nueva2" id="pregunta_nueva2" placeholder="Ingrese la nueva respuesta a la pregunta de seguridad 2">
+        </div>
 
-                <div class="mb-2">
+        <div class="mb-6 flex gap-4">
+            <button type="button" data-modal-target="default-modal" data-modal-toggle="default-modal" class="flex w-full justify-center px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">REGISTRAR</button>
+            <button type="button" onclick="window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'" class="flex w-full justify-center px-4 py-3 text-sm font-medium text-white bg-blue-700 rounded-md shadow-sm hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">Regresar</button>
+        </div>
 
-                    <label>Pregunta de seguridad 2</label><br>
-                    <input type="text" class="form-control form-control w-full mt-2 rounded-lg" name="pregunta2" id="p2" placeholder="¿Cual es su animal favorito?">
-                </div>
-
-                <div class="mb-2">
-                    <label>Nueva respuesta de seguridad 1</label><br>
-                    <input type="text" class="form-control form-control w-full mt-2 rounded-lg" name="pregunta_nueva1" id="pregunta_nueva1" placeholder="Igrese la nueva respuesta a la pregunta de seguridad 1">
-                </div>
-
-                <div class="mb-4">
-                    <label>Nueva respuesta de seguridad 2</label><br>
-                    <input type="text" class="form-control form-control w-full mt-2 rounded-lg" name="pregunta_nueva2" id="pregunta_nueva2" placeholder="Igrese la nueva respuesta a la pregunta de seguridad 2">
-                </div>
-
-                <div class="mb-2">
-                    <button type="button" data-modal-target="default-modal" data-modal-toggle="default-modal" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 ghost bg-blue-500 shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">REGISTRAR</button>
-
-                </div>
-
-                <div class="mb-2">
-                    <button type="button" onclick="window.location='http:localhost/dashboard/Proyecto/public/usuarios/usuarios.php'" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 ghost bg-blue-700 shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Regresar a la página anterior</button>
-                </div>
-
-
-                <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
-                    <div class="relative p-4 max-h-full">
-                        <!-- Modal content -->
-                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 mt-28">
-                            <!-- Modal header -->
-                            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                                    Sistema
-                                </h3>
-                                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
-                                    <svg class="w-4 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                    </svg>
-                                    <span class="sr-only">Close modal</span>
-                                </button>
-                            </div>
-                            <!-- Modal body -->
-                            <div class="p-4 md:p-5 space-y-4">
-                                <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                    ¿Esta Seguro Que Quiere Registrar Un Usuario?
-                                </p>
-                            </div>
-                            <!-- Modal footer -->
-                            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                                <button data-modal-hide="default-modal" type="submit" name="registrar" class=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">SI</button>
-                                <button data-modal-hide="default-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">no</button>
-                            </div>
-                        </div>
+            <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 left-0 right-0 bottom-0 z-50 justify-center items-center">
+                <div class="relative p-4 max-h-full">
+                <!-- Modal content -->
+                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <!-- Modal header -->
+                    <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-gray-600">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Sistema</h3>
+                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
+                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close</span>
+                    </button>
                     </div>
-            </form>
+                    <!-- Modal body -->
+                    <div class="p-5">
+                    <p class="text-base text-gray-500 dark:text-gray-400">¿Está seguro que quiere registrar un usuario?</p>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="flex items-center p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                    <button data-modal-hide="default-modal" type="submit" name="registrar" class="px-5 py-2 text-sm text-white bg-blue-700 rounded-lg focus:ring-4 focus:outline-none hover:bg-blue-800 focus:ring-blue-300">SI</button>
+                    <button data-modal-hide="default-modal" type="button" class="px-5 py-2 ms-3 text-sm text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700">No</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </form>
+
         </main>
-        <footer class="flex justify-between items-center w-full px-8 py-4 mt-[20%]">
-            <p class="demin">Todos Los derechos reservados 2024</p>
-            <a class="btn bg-slate-50 rounded-full" href="https://creativecommons.org/licenses/by-sa/4.0/">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="32px" height="32px" viewBox="0 0 512 512">
-                    <path d="M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 448c-110.532 0-200-89.451-200-200 0-110.531 89.451-200 200-200 110.532 0 200 89.451 200 200 0 110.532-89.451 200-200 200zm107.351-101.064c-9.614 9.712-45.53 41.396-104.065 41.396-82.43 0-140.484-61.425-140.484-141.567 0-79.152 60.275-139.401 139.762-139.401 55.531 0 88.738 26.62 97.593 34.779a11.965 11.965 0 0 1 1.936 15.322l-18.155 28.113c-3.841 5.95-11.966 7.282-17.499 2.921-8.595-6.776-31.814-22.538-61.708-22.538-48.303 0-77.916 35.33-77.916 80.082 0 41.589 26.888 83.692 78.277 83.692 32.657 0 56.843-19.039 65.726-27.225 5.27-4.857 13.596-4.039 17.82 1.738l19.865 27.17a11.947 11.947 0 0 1-1.152 15.518z" />
-                    Licencia Creative Commons
-                </svg>
-            </a>
-        </footer>
+        <!-- Footer -->
+    <footer class="bg-white shadow mt-12">
+        <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-600 text-sm">Todos los derechos reservados © 2024</p>
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="mt-2 md:mt-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-600 hover:text-gray-800 transition-colors duration-200" fill="currentColor" viewBox="0 0 512 512">
+            <path d="M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 448c-110.532 0-200-89.451-200-200 0-110.531 89.451-200 200-200 110.532 0 200 89.451 200 200 0 110.532-89.451 200-200 200zm107.351-101.064c-9.614 9.712-45.53 41.396-104.065 41.396-82.43 0-140.484-61.425-140.484-141.567 0-79.152 60.275-139.401 139.762-139.401 55.531 0 88.738 26.62 97.593 34.779a11.965 11.965 0 0 1 1.936 15.322l-18.155 28.113c-3.841 5.95-11.966 7.282-17.499 2.921-8.595-6.776-31.814-22.538-61.708-22.538-48.303 0-77.916 35.33-77.916 80.082 0 41.589 26.888 83.692 78.277 83.692 32.657 0 56.843-19.039 65.726-27.225 5.27-4.857 13.596-4.039 17.82 1.738l19.865 27.17a11.947 11.947 0 0 1-1.152 15.518z"/>
+            </svg>
+        </a>
+        </div>
+    </footer>
     </div>
     <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
     <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>

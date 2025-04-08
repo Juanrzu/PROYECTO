@@ -1,14 +1,17 @@
 <?php
 
 session_start();
-error_reporting(error_level: 0);
-$usuario = $_SESSION['nombre_usuario'];
-if ($usuario == null || $usuario == '') {
-	header(header: 'location: ./../login/login.php');
-	die();
+error_reporting(0);
+
+if (!isset($_SESSION['nombre_usuario']) || empty($_SESSION['nombre_usuario'])) {
+  header('Location: ./../login/login.php');
+  exit();
 }
-include './../connect.php';
-include '../contador_sesion.php';
+
+$usuario = $_SESSION['nombre_usuario'];
+
+require_once './../connect.php';
+require_once '../contador_sesion.php';
 ?>
 
 <!DOCTYPE html>
@@ -47,172 +50,94 @@ include '../contador_sesion.php';
     }
     ?>
 
-    <main class=" mb-4 xl:px-56 mt-8">
-      <div class="container-buttons flex justify-start items-stretch mx-5">
+<main class="container h-screen mx-auto px-4 py-8">
+  <!-- Botón de acción -->
+  <div class="flex flex-wrap gap-4 mb-8">
+    <a href="ag_trabajador.php" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+      </svg>
+      Agregar Trabajador
+    </a>
+  </div>
 
-        <?php echo ' <button class=" rounded-md ghost bg-blue-400 shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 drop-shadow-lg"><a href="ag_trabajador.php " class="inline-block p-4">Agregar Trabajador</a></button>';
-        ?>
-      </div>
-      <div class="overflow-x-auto shadow-md sm:rounded-lg -z-10 m-10 xl:m-4">
-        <table class="w-full text-xs text-left rtl:text-right text-black dark:text-gray-400">
-        <thead class="text-xs text-black uppercase dark:text-gray-400">
-            <tr>
-
-              <th scope="col" class="px-3 py-2 bg-gray-100 dark:bg-gray-800">ID</th>
-              <th scope="col" class="px-3 py-2 ">Nombre</th>
-              <th scope="col" class="px-3 py-2 bg-gray-100 dark:bg-gray-800">Apellido</th>
-              <th scope="col" class="px-3 py-2 ">Cedula</th>
-              <th scope="col" class="px-3 py-2 bg-gray-100 dark:bg-gray-800">Telefono</th>
-              <th scope="col" class="px-3 py-2 bg-blue-400 dark:bg-blue-800">
-                                Editar
-                            </th>
-                            </th>
-                            <th scope="col" class="px-3 py-2 bg-red-500 dark:bg-red-800">
-                                Borrar
-                            </th>
+  <!-- Contenedor de la tabla -->
+  <div class="overflow-x-auto shadow-md sm:rounded-lg m-10 xl:m-4">
+    <?php
+    $sql = "SELECT * FROM trabajadores";
+    $result = mysqli_query($connect, $sql);
+    
+    if (mysqli_num_rows($result) > 0): ?>
+      <!-- Tabla (solo se muestra si hay registros) -->
+      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" class="px-6 py-3">ID</th>
+            <th scope="col" class="px-6 py-3">Nombre</th>
+            <th scope="col" class="px-6 py-3">Apellido</th>
+            <th scope="col" class="px-6 py-3">Cédula</th>
+            <th scope="col" class="px-6 py-3">Teléfono</th>
+            <th scope="col" class="px-6 py-3">Editar</th>
+            <th scope="col" class="px-6 py-3">Borrar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php while ($row = mysqli_fetch_assoc($result)): ?>
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50">
+              <td class="px-6 py-4"><?= htmlspecialchars($row['id']) ?></td>
+              <td class="px-6 py-4"><?= htmlspecialchars($row['nombre']) ?></td>
+              <td class="px-6 py-4"><?= htmlspecialchars($row['apellido']) ?></td>
+              <td class="px-6 py-4"><?= htmlspecialchars($row['cedula']) ?></td>
+              <td class="px-6 py-4"><?= htmlspecialchars($row['telefono']) ?></td>
+              <td class="px-6 py-4">
+                <a href="editar_trabajador.php?editarid=<?= $row['id'] ?>" class="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-blue-50 transition-colors duration-200">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                  </svg>
+                </a>
+              </td>
+              <td class="px-6 py-4">
+                <a href="eliminar_trabajador.php?eliminarid=<?= $row['id'] ?>" class="text-red-600 hover:text-red-800 p-2 rounded-full hover:bg-red-50 transition-colors duration-200">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                  </svg>
+                </a>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-
-            <?php
-            $sql = "SELECT * FROM trabajadores";
-
-            $result = mysqli_query($connect, $sql);
-            if ($result) {
-              while ($row = mysqli_fetch_assoc($result)) {
-                $id = $row['id'];
-                $nombre = $row['nombre'];
-                $apellido = $row['apellido'];
-                $cedula = $row['cedula'];
-                $telefono = $row['telefono'];
-
-                echo '<tr>
-                      <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $id . '</td>
-                      <td class="px-3 py-2">' . $nombre . '</td>
-                      <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $apellido . '</td>
-                      <td class="px-3 py-2">' . $cedula . '</td>
-                      <td class="px-3 py-2 bg-gray-100 dark:bg-gray-800">' . $telefono . '</td>             
-                      <td class="px-3 py-2 bg-blue-400 dark:bg-blue-800">
-                          <button class="w-full">
-                          <a href="editar_trabajador.php? editarid=' . $id . ' ">
-                          <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="32px" height="32px" viewBox="0 0 24 24" id="edit-alt" data-name="Flat Line" class="icon flat-line"><path id="secondary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"/><path id="primary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"/></svg>
-                          </a>
-                          </button>
-                          </td>
-
-                          <td class="px-3 py-2 bg-red-500 dark:bg-red-800>
-                            <button class="w-full" type="button" data-modal-target="default-modal" data-modal-toggle="default-modal">
-                          
-                                  <svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 -0.5 21 21" version="1.1">
-              
-                                  <title>delete [#1487]</title>
-                                  <desc>Created with Sketch.</desc>
-                                  <defs>
-                              
-                              </defs>
-                                  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                      <g id="Dribbble-Light-Preview" transform="translate(-179.000000, -360.000000)" fill="black">
-                                          <g id="icons" transform="translate(56.000000, 160.000000)">
-                                              <path d="M130.35,216 L132.45,216 L132.45,208 L130.35,208 L130.35,216 Z M134.55,216 L136.65,216 L136.65,208 L134.55,208 L134.55,216 Z M128.25,218 L138.75,218 L138.75,206 L128.25,206 L128.25,218 Z M130.35,204 L136.65,204 L136.65,202 L130.35,202 L130.35,204 Z M138.75,204 L138.75,200 L128.25,200 L128.25,204 L123,204 L123,206 L126.15,206 L126.15,220 L140.85,220 L140.85,206 L144,206 L144,204 L138.75,204 Z" id="delete-[#1487]">
-                              
-                              </path>
-                                          </g>
-                                      </g>
-                                  </g>
-                              </svg>
-                              
-                          </button>
-                          </td>
-                          
-                  </tr>
-                  
-                  
-                  <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
-                    <div class="relative p-4 max-h-full">
-                        <!-- Modal content -->
-                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 mt-28">
-                            <!-- Modal header -->
-                            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                                    Sistema
-                                </h3>
-                                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
-                                    <svg class="w-4 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                    </svg>
-                                    <span class="sr-only">Close modal</span>
-                                </button>
-                            </div>
-                            <!-- Modal body -->
-                            <div class="p-4 md:p-5 space-y-4">
-                                <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                    ¿Esta Seguro Que Quiere Eliminar a Un Trabajador?
-                                </p>
-                            </div>
-                            <!-- Modal footer -->
-                            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                             
-                         <a href="eliminar_trabajador.php? eliminarid=' . $id . '" data-modal-hide="default-modal" class=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">SI</a>
-                                <button data-modal-hide="default-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">no</button>
-                            </div>
-                        </div>
-                    </div>
-                  </div>
-                  
-                  ';
-              }
-
-            }
-            ?>
-
-          </tbody>
-        </table>
+          <?php endwhile; ?>
+        </tbody>
+      </table>
+    <?php else: ?>
+      <!-- Mensaje cuando no hay datos -->
+      <div class="w-full bg-white p-8 text-center rounded-lg shadow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h3 class="mt-4 text-lg font-medium text-gray-900">No hay trabajadores registrados</h3>
+        <p class="mt-2 text-sm text-gray-500">Actualmente no hay ningún trabajador en el sistema.</p>
+        <div class="mt-6">
+          <a href="ag_trabajador.php" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow transition duration-200">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Agregar Primer Trabajador
+          </a>
+        </div>
       </div>
-
-      <button data-tooltip-target="tooltip" type="button" class="fixed right-2 bottom-16 bg-ghost rounded-full font-medium text-sm px-4 py-2.5 text-center outline outline-1 outline-black">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32px" height="32px" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 20H12.01" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    <path d="M7 9C7 7.87439 7.37194 6.83566 7.99963 6C8.91184 4.78555 10.3642 4 12 4C14.7614 4 17 6.23858 17 9C17 11.4212 15.279 13.4405 12.9936 13.9013C12.4522 14.0104 12 14.4477 12 15V15V16" stroke="#323232" stroke-width="2" stroke-linecap="round" />
-                </svg>
-            </button>
-
-            <div id="tooltip" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium ghost transition-opacity duration-300 bg-gray-800 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                <p class="flex items-center">Haz click en <svg class="mx-2" xmlns="http://www.w3.org/2000/svg" fill="#000000" width="25px" height="25px" viewBox="0 0 24 24" id="edit-alt" data-name="Flat Line" class="icon flat-line">
-                        <path id="secondary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: rgb(44, 169, 188); stroke-width: 2;" />
-                        <path id="primary" d="M20.41,7.83,7.24,21H3V16.76L16.17,3.59a1,1,0,0,1,1.42,0l2.82,2.82A1,1,0,0,1,20.41,7.83Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;" />
-                    </svg> para entrar los grados</p>
-                <p class="flex items-center mt-2">Haz click en <svg class="mx-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32px" height="32px" viewBox="0 -0.5 21 21" version="1.1">
-
-                        <title>delete [#1487]</title>
-                        <desc>Created with Sketch.</desc>
-                        <defs>
-
-                        </defs>
-                        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                            <g id="Dribbble-Light-Preview" transform="translate(-179.000000, -360.000000)" fill="#FF0000">
-                                <g id="icons" transform="translate(56.000000, 160.000000)">
-                                    <path d="M130.35,216 L132.45,216 L132.45,208 L130.35,208 L130.35,216 Z M134.55,216 L136.65,216 L136.65,208 L134.55,208 L134.55,216 Z M128.25,218 L138.75,218 L138.75,206 L128.25,206 L128.25,218 Z M130.35,204 L136.65,204 L136.65,202 L130.35,202 L130.35,204 Z M138.75,204 L138.75,200 L128.25,200 L128.25,204 L123,204 L123,206 L126.15,206 L126.15,220 L140.85,220 L140.85,206 L144,206 L144,204 L138.75,204 Z" id="delete-[#1487]">
-
-                                    </path>
-                                </g>
-                            </g>
-                        </g>
-                    </svg> para entrar los grados</p>
-                <div class="tooltip-arrow" data-popper-arrow></div>
-            </div>
-
-            
-
-    </main>
-    <footer class="flex justify-between items-center w-full px-8 py-4 mt-[20%]">
-            <p class="demin">Todos Los derechos reservados 2024</p>
-            <a class="btn bg-slate-50 rounded-full" href="https://creativecommons.org/licenses/by-sa/4.0/">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="32px" height="32px" viewBox="0 0 512 512">
-                    <path d="M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 448c-110.532 0-200-89.451-200-200 0-110.531 89.451-200 200-200 110.532 0 200 89.451 200 200 0 110.532-89.451 200-200 200zm107.351-101.064c-9.614 9.712-45.53 41.396-104.065 41.396-82.43 0-140.484-61.425-140.484-141.567 0-79.152 60.275-139.401 139.762-139.401 55.531 0 88.738 26.62 97.593 34.779a11.965 11.965 0 0 1 1.936 15.322l-18.155 28.113c-3.841 5.95-11.966 7.282-17.499 2.921-8.595-6.776-31.814-22.538-61.708-22.538-48.303 0-77.916 35.33-77.916 80.082 0 41.589 26.888 83.692 78.277 83.692 32.657 0 56.843-19.039 65.726-27.225 5.27-4.857 13.596-4.039 17.82 1.738l19.865 27.17a11.947 11.947 0 0 1-1.152 15.518z" />
-                    Licencia Creative Commons
-                </svg>
-            </a>
-        </footer>
+    <?php endif; ?>
+  </div>
+</main>
+    <!-- Footer -->
+    <footer class="bg-white shadow mt-12">
+        <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-600 text-sm">Todos los derechos reservados © 2024</p>
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="mt-2 md:mt-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-600 hover:text-gray-800 transition-colors duration-200" fill="currentColor" viewBox="0 0 512 512">
+            <path d="M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 448c-110.532 0-200-89.451-200-200 0-110.531 89.451-200 200-200 110.532 0 200 89.451 200 200 0 110.532-89.451 200-200 200zm107.351-101.064c-9.614 9.712-45.53 41.396-104.065 41.396-82.43 0-140.484-61.425-140.484-141.567 0-79.152 60.275-139.401 139.762-139.401 55.531 0 88.738 26.62 97.593 34.779a11.965 11.965 0 0 1 1.936 15.322l-18.155 28.113c-3.841 5.95-11.966 7.282-17.499 2.921-8.595-6.776-31.814-22.538-61.708-22.538-48.303 0-77.916 35.33-77.916 80.082 0 41.589 26.888 83.692 78.277 83.692 32.657 0 56.843-19.039 65.726-27.225 5.27-4.857 13.596-4.039 17.82 1.738l19.865 27.17a11.947 11.947 0 0 1-1.152 15.518z"/>
+            </svg>
+        </a>
+        </div>
+    </footer>
   </div>
   <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
   <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
