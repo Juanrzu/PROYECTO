@@ -7,7 +7,7 @@ $usuario = $_SESSION['nombre_usuario'];
 
 if (isset($_GET['eliminarid'])) {
     $id = $_GET['eliminarid'];
-    $motivo = trim($_POST['motivo']); // Sanitizar entrada
+
     
     // Obtener información del estudiante y su representante
     $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
@@ -51,7 +51,8 @@ if (isset($_GET['eliminarid'])) {
           $datos_accion = "Informacion: nombre = $nombre, apellido = $apellido, cen = $cen, nacimiento = $nacimiento, sexo = $sexo, grado = $grado, seccion = $seccion, representante = $representanteNombre, Apellido del representante = $representanteApellido, cedula representante = $cedularepre, telefono = $telefono, correo = $correo";
           
           $stmt2 = $connect->prepare($sql2);
-          $stmt2->bind_param("sss", "Se Elimino un estudiante.", $datos_accion, $usuario);
+          $accion= "Se Elimino un estudiante.";
+          $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
           $resultInsert2 = $stmt2->execute();
             //aqui termina
 
