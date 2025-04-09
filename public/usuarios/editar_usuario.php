@@ -115,7 +115,7 @@ include '../contador_sesion.php';
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                              <button type="submit" class="btn btn-primary" name="submit">Si</button>
+                              <button type="submit" class="btn btn-primary" name="submit" id='submit'>Si</button>
                             </div>
                           </div>
                         </div>
@@ -244,7 +244,7 @@ include '../contador_sesion.php';
                         );}
     
             
-                    if ($$stmt->execute()) {
+                    if ($stmt->execute()) {
                         echo"<script> window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'</script>";
                         $stmt->close();
                     } else {
