@@ -183,21 +183,6 @@ const notificaciones = {
   }
 };
 
-// Función para actualizar el contador de caracteres
-function updateCounter(inputId, maxLength) {
-    const input = document.getElementById(inputId);
-    const currentLength = input.value.length;
-    
-    // Cambiar estilos si se acerca al límite
-    if (currentLength >= maxLength) {
-        input.classList.add('border-red-500', 'text-red-500');
-        input.classList.remove('border-gray-300', 'text-black');
-        notificaciones.mostrar(`${inputId} ha excedido el límite de caracteres (${maxLength})`);
-    } else {
-        input.classList.remove('border-red-500', 'text-red-500');
-        input.classList.add('border-gray-300', 'text-black');
-    }
-}
 
 // Validación de campos
 function validarCampos() {
@@ -242,6 +227,23 @@ function validarCampos() {
     return errores;
 }
 
+// Función para actualizar el contador de caracteres
+function updateCounter(inputId, maxLength) {
+    const input = document.getElementById(inputId);
+    const currentLength = input.value.length;
+    
+    // Cambiar estilos si se acerca al límite
+    if (currentLength >= maxLength) {
+        input.classList.add('border-red-500', 'text-red-500');
+        input.classList.remove('border-gray-300', 'text-black');
+        notificaciones.mostrar(`${inputId} ha excedido el límite de caracteres (${maxLength})`);
+    } else {
+        input.classList.remove('border-red-500', 'text-red-500');
+        input.classList.add('border-gray-300', 'text-black');
+    }
+}
+
+
 // Inicializar contadores al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
     updateCounter('usuario', LIMITES.usuario);
@@ -274,7 +276,36 @@ form.addEventListener("submit", (e) => {
 </script>
 		
 		
-<?php
+<?php 
+
+function mostrar_notificacion_php($mensaje, $tipo = 'error') {
+    $color_clase = ($tipo === 'error') ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
+    $icono_svg = '';
+
+    if ($tipo === 'error') {
+        $icono_svg = '<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
+                    </svg>';
+    } elseif ($tipo === 'success') {
+        $icono_svg = '<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
+                    </svg>';
+    }
+
+    echo '<div class="fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ' . $color_clase . ' border flex items-center">
+            <div class="flex-shrink-0 mr-3">' . $icono_svg . '</div>
+            <div class="text-sm">' . htmlspecialchars($mensaje) . '</div>
+          </div>
+          <script>
+            setTimeout(() => {
+              const notificacion = document.querySelector(\'.fixed.bottom-4.right-4\');
+              if (notificacion) {
+                notificacion.classList.add(\'opacity-0\', \'transition-opacity\', \'duration-500\');
+                setTimeout(() => notificacion.remove(), 500);
+              }
+            }, 4000);
+          </script>';
+}
 
 if (isset($_POST['registrar'])) {
 	// Obtener datos del formulario
@@ -284,110 +315,32 @@ if (isset($_POST['registrar'])) {
 	$limiteUsuario = 20;
 	$limiteContraseña = 30;
 
-	
-	
-	// Verificar si el usuario y la contraseña no están vacíos
-	if (empty($usuario) || empty($contraseña_ingresada || empty($captcha_input))) {
-		echo '<script>						
-	var msg = document.createElement("div");
-
-				msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-						<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-								<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-								<p class=" text-xs ghost pb-1">Los campos no pueden estar vacios</p> 
-						</div>
-				</div>`;
-
-								var elemento = msg;
-								setTimeout(function() {
-									elemento.remove();
-								}, 4000);
-document.body.appendChild(msg);
-
-</script>';
-		exit(); // Detiene la ejecución del script si hay campos vacíos
-	
-	} 
-
-	
-		
-			if (strlen($usuario) > $limiteUsuario) {
-				echo '<script>						
-	var msg = document.createElement("div");
-
-				msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-						<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-								<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-								<p class=" text-xs ghost pb-1">El Usuario no debe pasar los 20 caracteres</p> 
-						</div>
-				</div>`;
-
-								var elemento = msg;
-								setTimeout(function() {
-									elemento.remove();
-								}, 4000);
-document.body.appendChild(msg);
-
-</script>';
+	// Verificar si el usuario, la contraseña y el captcha no están vacíos
+	if (empty($usuario) || empty($contraseña_ingresada) || empty($captcha_input)) {
+		mostrar_notificacion_php("Los campos no pueden estar vacíos");
 		exit();
-			}
+	}
 
-			if (strlen($contraseña_ingresada) > $limiteContraseña) {
-				echo '<script>						
-	var msg = document.createElement("div");
-
-				msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-						<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-								<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-								<p class=" text-xs ghost pb-1">La contraseña no debe pasar los 30 caracteres</p> 
-						</div>
-				</div>`;
-
-								var elemento = msg;
-								setTimeout(function() {
-									elemento.remove();
-								}, 4000);
-document.body.appendChild(msg);
-
-</script>';
+	if (strlen($usuario) > $limiteUsuario) {
+		mostrar_notificacion_php("El Usuario no debe pasar los 20 caracteres");
 		exit();
-			}
-		
+	}
 
-	
-
-
-
-
-
-
-
-
-
+	if (strlen($contraseña_ingresada) > $limiteContraseña) {
+		mostrar_notificacion_php("La contraseña no debe pasar los 30 caracteres");
+		exit();
+	}
 
 	// Verificar el captcha primero
-	if ($captcha_input !== $_SESSION["captcha"]) {
-		echo '<script>						
-						var msg = document.createElement("div");
-						msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-								<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-									<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-									<p class="text-xs ghost pb-1">Captcha no valido</p> 
-								</div>
-						</div>`;
+	if (!isset($_SESSION["captcha"]) || $captcha_input !== $_SESSION["captcha"]) {
+		mostrar_notificacion_php("Captcha no válido");
+		exit();
+	}
 
-								var elemento = msg;
-								setTimeout(function() {
-									elemento.remove();
-								}, 4000);
-								document.body.appendChild(msg);
-						</script>'; exit;
-			}
-	//preparar seleccion datos de usuario
-
+	// Preparar selección de datos de usuario
 	$q = "SELECT * FROM usuario WHERE nombre_usuario = ?";
 	$stmt = $connect->prepare($q);
-	
+
 	if (!$stmt) {
 		die("Error al preparar la consulta: " . $connect->error);
 	}
@@ -397,230 +350,93 @@ document.body.appendChild(msg);
 	$array = $result->fetch_assoc();
 	$stmt->close();
 
-	//fin
-
 	if ($array) {
-		$usuario = $array['nombre_usuario'];
-		$contraseña = $array['contraseña'];
+		$usuario_db = $array['nombre_usuario'];
+		$contraseña_db = $array['contraseña'];
 		$estado = $array['estado'];
 		$intentos_fallidos = $array['intentos_fallidos'];
 
-		if (password_verify($contraseña_ingresada, $contraseña)) {
-
+		if (password_verify($contraseña_ingresada, $contraseña_db)) {
 			if ($estado == "Inactivo") {
-				echo '<script>						
-						var msg = document.createElement("div");
-						msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-								<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-									<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-									<p class="text-xs ghost pb-1">Este Usuario esta inactivo, contacte con el administrador</p> 
-								</div>
-						</div>`;
-
-								var elemento = msg;
-								setTimeout(function() {
-									elemento.remove();
-								}, 4000);
-								document.body.appendChild(msg);
-						</script>'; exit;
+				mostrar_notificacion_php("Este Usuario está inactivo, contacte con el administrador");
+				exit();
 			}
 
-			$_SESSION['nombre_usuario'] = $usuario;
+			$_SESSION['nombre_usuario'] = $usuario_db;
 			$intentos_fallidos = 0;
 
-			//preparar actualizacion intentos fallidos
-				$update_query = "UPDATE usuario SET intentos_fallidos = 0 WHERE nombre_usuario = ?";
-				$stmt = $connect->prepare($update_query);
+			// Actualizar intentos fallidos
+			$update_query = "UPDATE usuario SET intentos_fallidos = 0 WHERE nombre_usuario = ?";
+			$stmt = $connect->prepare($update_query);
 
-				if (!$stmt) {
-					die("Error al preparar la consulta: " . $connect->error);
-				}
-
-				$stmt->bind_param("s", $usuario);
-				$stmt->execute();
-				$stmt->close();
-				echo "<script> window.location='http://localhost/dashboard/Proyecto/public/display.php'</script>";
-
-
-			//fin
-
-			//preparar insersion inicio de sesion en bitacora
-			
-				$accion = "Se ha iniciado la sesión";
-			
-				$sql2 = "INSERT INTO bitacora (accion, usuario) VALUES (?, ?)";
-				$stmt = $connect->prepare($sql2);
-
-				if (!$stmt) {
-					die("Error al preparar la consulta: " . $connect->error);
-				}
-
-				$stmt->bind_param("ss", $accion, $usuario);
-				$resultInsert2 = $stmt->execute();
-
-				if (!$resultInsert2) {
-					die("Error al ejecutar la consulta: " . $stmt->error);
-				}
-
-				$stmt->close();
-				die();
-
-			//fin
-		}
-		if ($estado == "Inactivo") {
-			echo '<script>						
-	var msg = document.createElement("div");
-
-				msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-						<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-								<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-								<p class=" text-xs ghost pb-1">Este Usuario esta desactivado</p> 
-						</div>
-				</div>`;
-								var elemento = msg;
-								setTimeout(function() {
-									elemento.remove();
-								}, 4000);
-document.body.appendChild(msg);
-</script>'; exit;
-
-		} else {
-			$intentos_fallidos++;
-			if ($intentos_fallidos >= 3) {
-				//preparar sentencia
-				$update_query = "UPDATE usuario SET estado = ?, intentos_fallidos = ? WHERE nombre_usuario = ?";
-				$stmt = $connect->prepare($update_query);
-
-				if (!$stmt) {
-					die("Error al preparar la consulta: " . $connect->error);
-				}
-
-				$cambiarEstado = "Inactivo";
-				$intentos_fallidos = 0;
-				$stmt->bind_param("sis", $cambiarEstado, $intentos_fallidos, $usuario);
-				if ($stmt->execute()) {
-				} else {
-					die("Error al ejecutar: " . $stmt->error);
-				}
-
-				$stmt->close();
-				//fin
-
-				echo '<script>						
-								var msg = document.createElement("div");
-
-											msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-													<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-															<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-															<p class=" text-xs ghost pb-1">Ya ha usado muchos intentos. Usuario bloqueado, contacte con el administrador</p> 
-													</div>
-											</div>`;
-															var elemento = msg;
-															setTimeout(function() {
-																elemento.remove();
-															}, 4000);
-							document.body.appendChild(msg);
-						</script>'; 
-						exit;
-			} else {
-				echo '<script>						
-								var msg = document.createElement("div");
-
-											msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-													<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-															<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-															<p class=" text-xs ghost pb-1">La contraseña es incorrecta</p> 
-													</div>
-											</div>`;
-															var elemento = msg;
-															setTimeout(function() {
-																elemento.remove();
-															}, 4000);
-							document.body.appendChild(msg);
-						</script>'; 
-						
+			if (!$stmt) {
+				die("Error al preparar la consulta: " . $connect->error);
 			}
-			//Preparar actualizacion del número de intentos fallidos en la base de datos
-			
-				$update = "UPDATE usuario SET intentos_fallidos = ? WHERE nombre_usuario = ?";
-				$stmt = $connect->prepare($update);
 
-				if (!$stmt) {
-					die("Error al preparar la consulta: " . $connect->error);
-				}
+			$stmt->bind_param("s", $usuario_db);
+			$stmt->execute();
+			$stmt->close();
 
-				$stmt->bind_param("is", $intentos_fallidos, $usuario);
+			// Registrar inicio de sesión en bitácora
+			$accion = "Se ha iniciado la sesión";
+			$sql2 = "INSERT INTO bitacora (accion, usuario) VALUES (?, ?)";
+			$stmt = $connect->prepare($sql2);
 
-				if ($stmt->execute()) {
+			if (!$stmt) {
+				die("Error al preparar la consulta: " . $connect->error);
+			}
+
+			$stmt->bind_param("ss", $accion, $usuario_db);
+			$stmt->execute();
+			$stmt->close();
+
+			echo "<script> window.location='http://localhost/dashboard/Proyecto/public/display.php'</script>";
+			exit();
+		} else {
+			if ($estado == "Inactivo") {
+				mostrar_notificacion_php("Este Usuario está desactivado");
+				exit();
+			} else {
+				$intentos_fallidos++;
+				if ($intentos_fallidos >= 3) {
+					// Bloquear usuario
+					$update_query = "UPDATE usuario SET estado = ?, intentos_fallidos = ? WHERE nombre_usuario = ?";
+					$stmt = $connect->prepare($update_query);
+
+					if (!$stmt) {
+						die("Error al preparar la consulta: " . $connect->error);
+					}
+
+					$cambiarEstado = "Inactivo";
+					$intentos_fallidos_reset = 0;
+					$stmt->bind_param("sis", $cambiarEstado, $intentos_fallidos_reset, $usuario_db);
+					$stmt->execute();
+					$stmt->close();
+
+					mostrar_notificacion_php("Ya ha usado muchos intentos. Usuario bloqueado, contacte con el administrador");
+					exit();
 				} else {
-					die("Error al ejecutar: " . $stmt->error);
+					mostrar_notificacion_php("La contraseña es incorrecta");
+
+					// Actualizar intentos fallidos
+					$update = "UPDATE usuario SET intentos_fallidos = ? WHERE nombre_usuario = ?";
+					$stmt = $connect->prepare($update);
+
+					if (!$stmt) {
+						die("Error al preparar la consulta: " . $connect->error);
+					}
+
+					$stmt->bind_param("is", $intentos_fallidos, $usuario_db);
+					$stmt->execute();
+					$stmt->close();
 				}
-
-				$stmt->close();
-			//fin
+			}
 		}
-	} else { // Usuario no encontrado
-		echo '<script>						
-	var msg = document.createElement("div");
-
-				msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-						<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-								<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-								<p class=" text-xs ghost pb-1">Este Usuario no existe</p> 
-						</div>
-				</div>`;
-								var elemento = msg;
-								setTimeout(function() {
-									elemento.remove();
-								}, 4000);
-document.body.appendChild(msg);
-</script>'; exit;
+	} else {
+		mostrar_notificacion_php("Este Usuario no existe");
+		exit();
 	}
 }
 
 
-$nombre = isset($_POST['nombre']) ? $_POST['nombre'] :'';
-$nombre = isset($_POST['codigo ']) ? $_POST['codigo'] :'';
 
-if($nombre== '' || $codigo = ''){
-	echo '<script>						
-	var msg = document.createElement("div");
-
-				msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-						<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-								<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-								<p class=" text-xs ghost pb-1">captcha no valido</p> 
-						</div>
-				</div>`;
-								var elemento = msg;
-								setTimeout(function() {
-									elemento.remove();
-								}, 4000);
-document.body.appendChild(msg);
-</script>'; exit;
-	exit();
-}
-
-$captcha = sha1($codigo);
-
-if($codigoverificacion != $captcha){
-	$_SESSION['codigo_verificacion'] = '';
-	echo '<script>						
-	var msg = document.createElement("div");
-
-				msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-						<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-								<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-								<p class=" text-xs ghost pb-1">Codigo de verificacion incorrecto</p> 
-						</div>
-				</div>`;
-								var elemento = msg;
-								setTimeout(function() {
-									elemento.remove();
-								}, 4000);
-document.body.appendChild(msg);
-</script>'; exit;
-}
-
-
-?> 
