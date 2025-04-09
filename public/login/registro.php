@@ -2,8 +2,8 @@
 
 session_start();
 error_reporting(0);
-$usuario = $_SESSION['nombre_usuario'];
-if ($usuario == null || $usuario == '') {
+$usuarioSesion = $_SESSION['nombre_usuario'];
+if ($usuarioSesion == null || $usuarioSesion == '') {
 	header('location: ./../login/login.php');
 	die();
 }
@@ -35,7 +35,7 @@ include '../contador_sesion.php';
 		</div>
 
 		<?php
-    if ($usuario == "admin" || $usuario == "Admin") {
+    if ($usuarioSesion == "admin" || $usuarioSesion == "Admin") {
         include('../header_admin.php');
     } else {
         include('../header.php');
@@ -527,7 +527,15 @@ validarCampoUnico($connect, 'cedula', $cedula, "Esta cédula ya está registrada
 // Puedes continuar con el registro del usuario
 
 
-
+  //ingresar insert en bitacora
+  $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+  $stmt2 = $connect->prepare($sql2);
+  $accion = "Se Insertó un nuevo Usuario.";
+  $datos_accion = "nombre = $nombre, apellido = $apellido, cedula = $cedula, codigo = $codigo, correo = $correo, usuario= $usuario";
+  $stmt2->bind_param("sss", $accion, $datos_accion, $usuarioSesion);
+  $resultInsert2 = $stmt2->execute();
+  
+  //aqui termina
 
 		//preparar sentencia 5
 

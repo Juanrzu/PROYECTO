@@ -226,6 +226,25 @@ if (isset($_POST['submit'])){
                     exit;
                 }
                 $stmt_verificar->close();
+                // Consulta para contar cuántos profesores hay asignados a un grado y sección específicos
+                    $sql_count = "SELECT COUNT(*) AS total FROM profesor WHERE idgrado = ? AND idseccion = ?";
+                    $stmt = $connect->prepare($sql_count);
+                    $stmt->bind_param("ii", $grado_id, $seccion_id);
+                    $stmt->execute();
+                    $result_count = $stmt->get_result();
+                    $row_count = $result_count->fetch_assoc();
+                    $total_profesores = $row_count['total'];
+
+
+                    // Verificar si ya hay 2 profesores asignados a este grado y sección
+                    if ($total_profesores >= 2) {
+                        echo "<footer class='error'>
+                                <div class='container_title btn btn-danger'>
+                                    <h5>Ya hay 2 profesores asignados a este grado y sección</h5>
+                                </div>
+                            </footer>";
+                        exit();
+                    }
             
                 // Actualizar profesor
                 $sql = "UPDATE profesor SET nombre = ?, apellido = ?, cedula = ?, idgrado = ?, idseccion = ? WHERE id = ?";
