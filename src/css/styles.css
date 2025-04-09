@@ -1816,10 +1816,6 @@ input:checked + .toggle-bg {
   overflow-x: hidden;
 }
 
-.overflow-y-scroll {
-  overflow-y: scroll;
-}
-
 .whitespace-nowrap {
   white-space: nowrap;
 }
