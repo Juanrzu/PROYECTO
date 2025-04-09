@@ -51,7 +51,7 @@ include '../contador_sesion.php';
 				<!-- Nombres -->
 				<div>
 				<label for="nombre" class="block text-sm font-medium text-gray-700">Nombres</label>
-				<input type="text" name="nombre" id="nombre"
+				<input type="text" name="nombre" id="nombre" maxlength="50"
 					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
 					placeholder="Ingrese su nombre">
 				</div>
@@ -59,7 +59,7 @@ include '../contador_sesion.php';
 				<!-- Apellidos -->
 				<div>
 				<label for="apellido" class="block text-sm font-medium text-gray-700">Apellidos</label>
-				<input type="text" name="apellido" id="apellido"
+				<input type="text" name="apellido" id="apellido" maxlength="50"
 					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
 					placeholder="Ingrese su apellido">
 				</div>
@@ -67,7 +67,7 @@ include '../contador_sesion.php';
 				<!-- Cédula -->
 				<div class="col-span-1 sm:col-span-2">
 				<label for="cedula" class="block text-sm font-medium text-gray-700">Cédula</label>
-				<input type="number" name="cedula" id="cedula"
+				<input type="number" name="cedula" id="cedula" maxlength="9"
 					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
 					placeholder="Ingrese su cédula">
 				</div>
@@ -81,16 +81,16 @@ include '../contador_sesion.php';
 					<option value="0414">0414</option>
 					<!-- Más opciones -->
 					</select>
-					<input type="text" name="telefono" id="telefono"
+					<input type="text" name="telefono" id="telefono" maxlength="7"
 					class="w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
-					placeholder="Teléfono" maxlength="7">
+					placeholder="Teléfono">
 				</div>
 				</div>
 
 				<!-- Correo -->
 				<div class="col-span-1 sm:col-span-2">
 				<label for="email" class="block text-sm font-medium text-gray-700">Correo</label>
-				<input type="text" name="correo" id="email"
+				<input type="text" name="correo" id="email" maxlength="100"
 					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
 					placeholder="Ingrese su correo">
 				</div>
@@ -98,7 +98,7 @@ include '../contador_sesion.php';
 				<!-- Usuario -->
 				<div>
 				<label for="usuario" class="block text-sm font-medium text-gray-700">Usuario</label>
-				<input type="text" name="usuario" id="usuario"
+				<input type="text" name="usuario" id="usuario" maxlength="30"
 					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
 					placeholder="Ingrese su usuario">
 				</div>
@@ -106,7 +106,7 @@ include '../contador_sesion.php';
 				<!-- Contraseña -->
 				<div>
 				<label for="contraseña" class="block text-sm font-medium text-gray-700">Contraseña</label>
-				<input type="password" name="contraseña" id="contraseña"
+				<input type="password" name="contraseña" id="contraseña" maxlength="50"
 					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
 					placeholder="Ingrese la contraseña">
 				</div>
@@ -114,7 +114,7 @@ include '../contador_sesion.php';
 				<!-- Pregunta 1 -->
 				<div class="col-span-1 sm:col-span-2">
 				<label for="p1" class="block text-sm font-medium text-gray-700">¿Cuál es el nombre de su madre o padre?</label>
-				<input type="text" name="pregunta1" id="p1"
+				<input type="text" name="pregunta1" id="p1" maxlength="100"
 					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
 					placeholder="Ingrese su respuesta">
 				</div>
@@ -122,7 +122,7 @@ include '../contador_sesion.php';
 				<!-- Pregunta 2 -->
 				<div class="col-span-1 sm:col-span-2">
 				<label for="p2" class="block text-sm font-medium text-gray-700">¿Cuál es tu animal favorito?</label>
-				<input type="text" name="pregunta2" id="p2"
+				<input type="text" name="pregunta2" id="p2" maxlength="100"
 					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
 					placeholder="Ingrese su respuesta">
 				</div>

@@ -1171,6 +1171,10 @@ input:checked + .toggle-bg {
   top: 0.625rem;
 }
 
+.top-4 {
+  top: 1rem;
+}
+
 .-z-10 {
   z-index: -10;
 }
@@ -2078,6 +2082,11 @@ input:checked + .toggle-bg {
   background-color: rgb(255 255 255 / 0.8);
 }
 
+.bg-green-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(14 159 110 / var(--tw-bg-opacity));
+}
+
 .bg-opacity-40 {
   --tw-bg-opacity: 0.4;
 }
@@ -2122,6 +2131,10 @@ input:checked + .toggle-bg {
 
 .fill-blue-600 {
   fill: #1C64F2;
+}
+
+.fill-blue-500 {
+  fill: #3F83F8;
 }
 
 .object-contain {
