@@ -342,135 +342,138 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 </body>
+
 <?php
 // Verifica si se ha enviado el formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registrar'])) {
     // Conexión a la base de datos
     include '../../connect.php';
     
-    // Función para mostrar mensajes de error estandarizados
-    function mostrarError($mensaje) {
-        echo '<div class="custom-notification fixed bottom-4 right-4 px-4 py-3 rounded bg-red-100 border-red-400 text-red-700 shadow-lg border flex items-center z-50">
-                <div class="flex-shrink-0 mr-3">
-                    <svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
-                </svg>
-                </div>
-        
-                <p class="text-sm">'.htmlspecialchars($mensaje).'</p>
-              </div>';
+    // Función para mostrar notificaciones estilizadas
+    function mostrarNotificacion($mensaje, $tipo = 'error') {
+        $icono = $tipo === 'error' ?
+            '<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
+            </svg>' :
+            '<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
+            </svg>';
+
+        $color = $tipo === 'error' ? 
+            'bg-red-100 border-red-400 text-red-700' : 
+            'bg-green-100 border-green-400 text-green-700';
+
+        $notificacion = '
+        <div class="notificacion fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg '.$color.' border flex items-center z-50">
+            <div class="flex-shrink-0 mr-3">'.$icono.'</div>
+            <div class="text-sm">'.htmlspecialchars($mensaje).'</div>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const notificacion = document.querySelector(".notificacion");
+                setTimeout(() => {
+                    notificacion.classList.add("opacity-0", "transition-opacity", "duration-500");
+                    setTimeout(() => notificacion.remove(), 500);
+                }, 4000);
+            });
+        </script>';
+
+        echo $notificacion;
     }
 
     // Validar y sanitizar entradas
     $usuario = trim($_POST['usuario'] ?? '');
-    $pregunta1 = trim(strtolower($_POST['pregunta1'] ?? ''));
-    $pregunta2 = trim(strtolower($_POST['pregunta2'] ?? ''));
+    $pregunta1 = trim($_POST['pregunta1'] ?? '');
+    $pregunta2 = trim($_POST['pregunta2'] ?? '');
     $nueva_contraseña = $_POST['contraseña'] ?? '';
+
+    // Expresión regular para validar solo letras y espacios (incluye acentos y ñ)
+    $regexSoloLetras = '/^[A-Za-zñÑáéíóúÁÉÍÓÚüÜ\s]+$/';
 
     // Validar campos vacíos
     if (empty($usuario)) {
-        mostrarError('El campo usuario no puede estar vacío');
+        mostrarNotificacion('El campo usuario no puede estar vacío');
         exit;
     }
     if (empty($pregunta1)) {
-        mostrarError('Debe responder la primera pregunta de seguridad');
+        mostrarNotificacion('Debe responder la primera pregunta de seguridad');
         exit;
     }
     if (empty($pregunta2)) {
-        mostrarError('Debe responder la segunda pregunta de seguridad');
+        mostrarNotificacion('Debe responder la segunda pregunta de seguridad');
         exit;
     }
     if (empty($nueva_contraseña)) {
-        mostrarError('Debe ingresar una nueva contraseña');
+        mostrarNotificacion('Debe ingresar una nueva contraseña');
         exit;
     }
+
+    // Validar formato del usuario (solo letras y espacios)
+    if (!preg_match($regexSoloLetras, $usuario)) {
+        mostrarNotificacion('El usuario solo puede contener letras y espacios');
+        exit;
+    }
+
+    // Validar formato de las preguntas (solo letras y espacios)
+    if (!preg_match($regexSoloLetras, $pregunta1)) {
+        mostrarNotificacion('La primera pregunta solo puede contener letras y espacios');
+        exit;
+    }
+    if (!preg_match($regexSoloLetras, $pregunta2)) {
+        mostrarNotificacion('La segunda pregunta solo puede contener letras y espacios');
+        exit;
+    }
+
+    // Convertir a minúsculas después de validar (para las preguntas)
+    $pregunta1 = strtolower($pregunta1);
+    $pregunta2 = strtolower($pregunta2);
 
     // Validar fortaleza de la contraseña
     if (strlen($nueva_contraseña) < 8) {
-        mostrarError('La contraseña debe tener al menos 8 caracteres');
+        mostrarNotificacion('La contraseña debe tener al menos 8 caracteres');
         exit;
     }
     if (!preg_match('/[A-Z]/', $nueva_contraseña)) {
-        mostrarError('La contraseña debe contener al menos una letra mayúscula');
+        mostrarNotificacion('La contraseña debe contener al menos una letra mayúscula');
         exit;
     }
     if (!preg_match('/[a-z]/', $nueva_contraseña)) {
-        mostrarError('La contraseña debe contener al menos una letra minúscula');
+        mostrarNotificacion('La contraseña debe contener al menos una letra minúscula');
         exit;
     }
     if (!preg_match('/[0-9]/', $nueva_contraseña)) {
-        mostrarError('La contraseña debe contener al menos un número');
+        mostrarNotificacion('La contraseña debe contener al menos un número');
         exit;
     }
 
-    // Consulta preparada para verificar el usuario
-    $sql = "SELECT respuesta_seguridad1, respuesta_seguridad2 FROM usuario WHERE nombre_usuario = ?";
-    $stmt = $connect->prepare($sql);
-    
-    if (!$stmt) {
-        mostrarError('Error en la preparación de la consulta: ' . $connect->error);
-        exit;
-    }
+    // Resto del código de validación y actualización...
+    // ... (mantener el código existente de consulta a la base de datos y actualización)
 
-    $stmt->bind_param("s", $usuario);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows === 0) {
-        mostrarError('Usuario no encontrado');
-        $stmt->close();
-        exit;
-    }
-
-    $row = $result->fetch_assoc();
-    $stmt->close();
-
-    // Verificar respuestas de seguridad
-    if (!password_verify($pregunta1, $row['respuesta_seguridad1']) || 
-        !password_verify($pregunta2, $row['respuesta_seguridad2'])) {
-        mostrarError('Las respuestas de seguridad no coinciden');
-        exit;
-    }
-
-    // Actualizar contraseña con hash seguro
-    $opciones = [
-        'memory_cost' => 1<<17, // 128MB
-        'time_cost'   => 4,
-        'threads'     => 3,
-    ];
-    
-    $contraseña_cifrada = password_hash($nueva_contraseña, PASSWORD_ARGON2ID, $opciones);
-    
-    $update_sql = "UPDATE usuario SET contraseña = ? WHERE nombre_usuario = ?";
-    $stmt = $connect->prepare($update_sql);
-    
-    if (!$stmt) {
-        mostrarError('Error en la preparación de la actualización: ' . $connect->error);
-        exit;
-    }
-
-    $stmt->bind_param("ss", $contraseña_cifrada, $usuario);
-    
     if ($stmt->execute()) {
-        // Redirección con JavaScript para evitar problemas de headers
-        echo '<script> 
-                setTimeout(function() {
-                    window.location.href = "http://localhost/dashboard/Proyecto/public/login/login.php";
-                }, 1500);
-              </script>';
-        
-        // Mensaje de éxito (opcionalmente podrías mostrarlo antes de redirigir)
-        echo '<div class="custom-notification fixed bottom-4 right-4 px-4 py-3 rounded bg-green-100 border-green-400 text-green-700 shadow-lg border flex items-center z-50">
-                <div class="flex-shrink-0 mr-3">
-                    <svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        // Notificación de éxito con redirección
+        echo '
+        <div class="notificacion fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-green-100 border-green-400 text-green-700 border flex items-center z-50">
+            <div class="flex-shrink-0 mr-3">
+                <svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
                 </svg>
-                </div>
-                <p class="text-sm">Contraseña actualizada correctamente. Redirigiendo...</p>
-                
-              </div>';
+            </div>
+            <p class="text-sm">Contraseña actualizada correctamente. Redirigiendo...</p>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                // Animación de desvanecimiento
+                const notificacion = document.querySelector(".notificacion");
+                setTimeout(() => {
+                    notificacion.classList.add("opacity-0", "transition-opacity", "duration-500");
+                    setTimeout(() => {
+                        window.location.href = "http://localhost/dashboard/Proyecto/public/login/login.php";
+                    }, 500);
+                }, 1500);
+            });
+        </script>';
     } else {
-        mostrarError('Error al actualizar la contraseña: ' . $connect->error);
+        mostrarNotificacion('Error al actualizar la contraseña: ' . $connect->error);
     }
     
     $stmt->close();

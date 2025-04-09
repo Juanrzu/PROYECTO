@@ -52,77 +52,97 @@
     ?>
 
   
-    <main class=" flex justify-center items-center xl:px-56 mt-8">
-              <form method="post" id="formulario" class="w-80 rounded-xl p-4 py-8 shadow-lg bg-gray-100" novalidate>
-                  <div class="mb-2">
-                      <label>Nombre</label>
-                      <input type="text" class="form-control form-control w-full mt-2 rounded-lg"  placeholder="Nombre del Profesor" maxlength="30" name="nombre" id="nombre" autocomplete="off">
-                  </div>
-                  <div class="mb-2">
-                      <label>Apellido</label>
-                      <input type="text" class="form-control form-control w-full mt-2 rounded-lg"  placeholder="Apellido del Profesor" maxlength="30" name="apellido" id="apellido" autocomplete="off">
-                  </div>
-                  <div class="mb-2">
-                      <label>Cedula</label>
-                      <input type="text" class="form-control form-control w-full mt-2 rounded-lg" placeholder="Cedula" name="cedula" autocomplete="off" maxlength="30" id="cedula" >
-                  </div>
-                  <div class="mb-2">
-                      <label>Grado</label>
-                  <select class="form-control form-control w-full mt-2 rounded-lg" name="grado"  required>
-                      <option value=1>1</option>
-                      <option value=2>2</option>
-                      <option value=3>3</option>
-                      <option value=4>4</option>
-                      <option value=5>5</option>
-                      <option value=6>6</option>
-                  </select>
-                </div>
-                <div class="mb-2">
-                      <label>Seccion</label>
-                  <select class="form-control form-control w-full mt-2 rounded-lg" name="seccion"  required>
-                      <option value="A">A</option>
-                      <option value="B">B</option>
-                  </select>
-                </div>
-                  <div class="mb-2">
-                  <button type="button" data-modal-target="default-modal" data-modal-toggle="default-modal" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 ghost bg-blue-500 shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">FINALIZAR</button>
-                  </div>
-                  <div class="mb-2">
-                        <button type="button" onclick="regresarPaginaAnterior()" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 ghost bg-blue-500 shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" id="btn-modal">Regresar a la página anterior</button>
-                    </div>
+<main class="w-full flex justify-center items-center xl:px-56 mt-8">
+  <form method="post" id="formulario" class="w-full max-w-screen-sm rounded-md border border-gray-300 p-6 shadow-sm bg-white">
+    <div class="grid grid-cols-1 gap-4">
 
-                    <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
-                    <div class="relative p-4 max-h-full">
-                        <!-- Modal content -->
-                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 mt-28">
-                            <!-- Modal header -->
-                            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                                    Sistema
-                                </h3>
-                                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
-                                    <svg class="w-4 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                    </svg>
-                                    <span class="sr-only">Close modal</span>
-                                </button>
-                            </div>
-                            <!-- Modal body -->
-                            <div class="p-4 md:p-5 space-y-4">
-                                <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                    ¿Esta Seguro Que Quiere Registrar Un Profesor?
-                                </p>
-                            </div>
-                            <!-- Modal footer -->
-                            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                                <button data-modal-hide="default-modal" type="submit" name="submit" class=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">SI</button>
-                                <button data-modal-hide="default-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">no</button>
-                            </div>
-                        </div>
-                    </div>
-              </form>
-     </main> 
+      <!-- Nombre -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+        <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
+               placeholder="Nombre del Profesor" maxlength="30" name="nombre" id="nombre" autocomplete="off">
+      </div>
 
+      <!-- Apellido -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
+        <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
+               placeholder="Apellido del Profesor" maxlength="30" name="apellido" id="apellido" autocomplete="off">
+      </div>
+
+      <!-- Cédula -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Cédula</label>
+        <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
+               placeholder="Cédula" name="cedula" autocomplete="off" maxlength="30" id="cedula">
+      </div>
+
+      <!-- Grado y Sección en fila para pantallas medianas/grandes -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Grado</label>
+          <select class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="grado" required>
+            <option value=1>1</option>
+            <option value=2>2</option>
+            <option value=3>3</option>
+            <option value=4>4</option>
+            <option value=5>5</option>
+            <option value=6>6</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Sección</label>
+          <select class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="seccion" required>
+            <option value="A">A</option>
+            <option value="B">B</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex flex-col sm:flex-row gap-3 mt-4">
+        <button type="button" data-modal-target="default-modal" data-modal-toggle="default-modal" 
+                class="w-full px-4 py-3 rounded-md bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm">
+          Finalizar
+        </button>
+        <button type="button" onclick="regresarPaginaAnterior()" 
+                class="w-full px-4 py-3 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 shadow-sm border border-gray-300">
+          Regresar
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
+      <div class="relative p-4 max-h-full">
+        <div class="relative bg-white rounded-md shadow-md border border-gray-300">
+          <div class="flex items-center justify-between p-4 border-b border-gray-300">
+            <h3 class="text-lg font-semibold text-gray-700">Confirmación</h3>
+            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center" data-modal-hide="default-modal">
+              <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+              </svg>
+            </button>
+          </div>
+          <div class="p-4 space-y-4">
+            <p class="text-sm text-gray-600">¿Está seguro que quiere registrar este profesor?</p>
+          </div>
+          <div class="flex items-center p-4 border-t border-gray-300">
+            <button data-modal-hide="default-modal" type="submit" name="submit" id="btn" 
+                    class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm">
+              Confirmar
+            </button>
+            <button data-modal-hide="default-modal" type="button" 
+                    class="px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 shadow-sm border border-gray-300">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</main>
      <script>
                   function regresarPaginaAnterior() {
                     window.history.back();
@@ -135,6 +155,7 @@
     <script>
 	document.addEventListener("DOMContentLoaded", () => {
 		const form = document.getElementById('formulario');
+    const btn = document.getElementById('btn');
 		const inputs = {
 			nombre: document.getElementById('nombre'),
 			apellido: document.getElementById('apellido'),
@@ -146,11 +167,11 @@
 			soloNumeros: /^\d+$/
 		};
 
-		const LIMITES = {
-			nombre: 29,
-			apellido: 29,
-			cedula: 8,
-		};
+    const LIMITES = {
+      nombre: { min: 1, max: 29 },
+      apellido: { min: 1, max: 29 },
+      cedula: { min: 7, max: 8 },
+    };
 
 		const mostrarNotificacion = (mensaje, tipo = 'error') => {
 			const sanitizeHTML = (str) => {
@@ -209,27 +230,32 @@
 			return { valido: true };
 		};
 
-		form.addEventListener("submit", (e) => {
-			e.preventDefault();
+		btn.addEventListener("click", (e) => {
+      
 
 			Object.values(inputs).forEach(input => input.classList.remove('border-red-500'));
 
 			const validaciones = [
-				{ input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, 1, LIMITES.nombre, `El nombre debe ser válido y tener un máximo de ${LIMITES.nombre} caracteres.`) },
-				{ input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, 1, LIMITES.apellido, `El apellido debe ser válido y tener un máximo de ${LIMITES.apellido} caracteres.`) },
-				{ input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula, LIMITES.cedula, `La cédula debe tener exactamente ${LIMITES.cedula} dígitos.`) },
+        { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, LIMITES.nombre.min, `El nombre debe ser válido.`) },
+        { input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, LIMITES.apellido.min, `El apellido debe ser válido.`) },
+        { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, `Ingresa una Cedula valida.`) },
+        { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, 1, LIMITES.nombre.max, `El nombre debe ser válido.`) },
+				{ input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, 1, LIMITES.apellido.max, `El apellido debe ser válido y tener un máximo de ${LIMITES.apellido} caracteres.`) },
+				{ input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula, LIMITES.cedula.max, `La cédula debe tener exactamente ${LIMITES.cedula} dígitos.`) },
+      
       ];
 
 			for (const validacion of validaciones) {
 				if (!validacion.resultado.valido) {
+          e.preventDefault();
 					validacion.input.classList.add('border-red-500');
 					mostrarNotificacion(validacion.resultado.mensaje);
 					return;
+
 				}
 			}
 
-			mostrarNotificacion('Formulario enviado correctamente', 'success');
-			form.submit(); // Descomentar para enviar el formulario
+
 		});
 	});
 </script>
@@ -239,114 +265,165 @@
 
 <?php
 
-if (isset($_POST['submit'])){
-  $nombre= $_POST['nombre'];
-  $apellido= $_POST['apellido'];
-  $cedula= $_POST['cedula'];
-  $grado=$_POST['grado'];
-  $seccion=$_POST['seccion'];
-  $seccion= strtoupper($seccion);
-  $volver=$grado;
-  $volver2=$seccion;
-  $error=[];
+if (isset($_POST['submit'])) {
+    $nombre = trim($_POST['nombre']);
+    $apellido = trim($_POST['apellido']);
+    $cedula = trim($_POST['cedula']);
+    $grado = trim($_POST['grado']);
+    $seccion = strtoupper(trim($_POST['seccion']));
+    $usuario = $_SESSION['nombre_usuario'] ?? 'usuario_default'; // Usuario por defecto para bitácora
 
-  if (empty($nombre) || empty($apellido) || empty($cedula) || empty($grado) || empty($seccion)) {
-    echo "<footer class='error'>
-    <div class='container_title btn btn-danger'>
-        <h5 class='title-h1'>Los datos no pueden estar vacios</h5>
-    </div>
+    // Configuración de límites y expresiones regulares
+    $LIMITES = [
+        'nombre' => ['min' => 1, 'max' => 30],
+        'apellido' => ['min' => 1, 'max' => 30],
+        'cedula' => ['min' => 7, 'max' => 8],
+        'grado' => ['min' => 1, 'max' => 20],
+        'seccion' => ['min' => 1, 'max' => 1]
+    ];
 
-</footer>";
-      
-    exit();
-  }
-  //Verificar Sección
-  if (empty($error)) {
-    if ($seccion === 'A' || $seccion === 'B' ) {
-      
-      $sqlgrado = "SELECT id FROM grados WHERE nombre = ?";
-      $stmt = $connect->prepare($sqlgrado);
-      $stmt->bind_param("s", $grado);
-      $stmt->execute();
-      $resultgrado = $stmt->get_result();
-      $rowgrado = $resultgrado->fetch_assoc();
-      $idgrado = $rowgrado['id'];
+    $regex = [
+        'soloLetras' => '/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/',
+        'soloNumeros' => '/^[0-9]+$/'
+    ];
 
-  
-      $sqlseccion = "SELECT id FROM seccion WHERE nombre = ?";
-      $stmt = $connect->prepare($sqlseccion);
-      $stmt->bind_param("s", $seccion);
-      $stmt->execute();
-      $resultseccion = $stmt->get_result();
-      $rowseccion = $resultseccion->fetch_assoc();
-      $idseccion = $rowseccion['id'];
-      
-      }
+    $errores = [];
+
+    // Función para validar campos
+    function validarCampo($valor, $regex = null, $limites, $campo) {
+        if (empty($valor)) return "$campo no puede estar vacío.";
+        if ($regex && !preg_match($regex, $valor)) return "Formato inválido en $campo.";
+        if (strlen($valor) < $limites['min'] || strlen($valor) > $limites['max']) {
+            return "$campo debe tener entre {$limites['min']} y {$limites['max']} caracteres.";
+        }
+        return null;
     }
+
+    // Validar todos los campos
+    $errores[] = validarCampo($nombre, $regex['soloLetras'], $LIMITES['nombre'], 'Nombre');
+    $errores[] = validarCampo($apellido, $regex['soloLetras'], $LIMITES['apellido'], 'Apellido');
+    $errores[] = validarCampo($cedula, $regex['soloNumeros'], $LIMITES['cedula'], 'Cédula');
+    $errores[] = validarCampo($grado, null, $LIMITES['grado'], 'Grado');
+    $errores[] = validarCampo($seccion, $regex['soloLetras'], $LIMITES['seccion'], 'Sección');
+
+    // Filtrar errores vacíos
+    $errores = array_filter($errores);
+
+    if (!empty($errores)) {
+        foreach ($errores as $error) {
+            echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `
+                  <div class='flex-shrink-0 mr-3 text-red-700'>
+                    <svg fill='#f00505' width='24px' height='24px' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'>
+                      <path d='M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z'></path>
+                    </svg>
+                  </div>
+                  <div class='text-sm'>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</div>
+                `;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+                </script>";
+          }
+        exit();
+    }
+
+    // Comprobar la sección
+    if (!in_array($seccion, ['A', 'B'])) {
+        echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `<span>La sección debe ser 'A' o 'B'.</span>`;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+              </script>";
+        exit();
+    }
+
+    // Consulta a la base de datos
+    $sqlgrado = "SELECT id FROM grados WHERE nombre = ?";
+    $stmt = $connect->prepare($sqlgrado);
+    $stmt->bind_param("s", $grado);
+    $stmt->execute();
+    $resultgrado = $stmt->get_result();
+    $rowgrado = $resultgrado->fetch_assoc();
+    $idgrado = $rowgrado['id'] ?? null;
+
+    $sqlseccion = "SELECT id FROM seccion WHERE nombre = ?";
+    $stmt = $connect->prepare($sqlseccion);
+    $stmt->bind_param("s", $seccion);
+    $stmt->execute();
+    $resultseccion = $stmt->get_result();
+    $rowseccion = $resultseccion->fetch_assoc();
+    $idseccion = $rowseccion['id'] ?? null;
+
+    if (!$idgrado || !$idseccion) {
+        echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `<span>Grado o sección inválidos.</span>`;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+              </script>";
+        exit();
+    }
+
+    // Comprobar si la cédula ya existe
     $sqlprofe = "SELECT * FROM profesor WHERE cedula = ?";
-    $stmt = $connect->prepare($sqlprofe); 
+    $stmt = $connect->prepare($sqlprofe);
     $stmt->bind_param("s", $cedula);
     $stmt->execute();
     $resultadoprofesor = $stmt->get_result();
-    
 
-    // Verificar si la consulta devuelve resultados
-    if (mysqli_num_rows($resultadoprofesor) > 0) {
-    echo "<footer class='error'>
-    <div class='container_title btn btn-danger'>
-        <h5>La cedula ya se encuentra registrada a otro profesor</h5>
-    </div>
+    if ($resultadoprofesor->num_rows > 0) {
+        echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `<span>La cédula ya está registrada.</span>`;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+              </script>";
+        exit();
+    }
 
-</footer>";
-exit;
-  } 
- // Consulta para contar cuántos profesores hay asignados a un grado y sección específicos
-  $sql_count = "SELECT COUNT(*) AS total FROM profesor WHERE idgrado = ? AND idseccion = ?";
-  $stmt = $connect->prepare($sql_count);
-  $stmt->bind_param("ii", $idgrado, $idseccion);
-  $stmt->execute();
-  $result_count = $stmt->get_result();
-  $row_count = $result_count->fetch_assoc();
-  $total_profesores = $row_count['total'];
+    // Comprobar el número de profesores asignados
+    $sql_count = "SELECT COUNT(*) AS total FROM profesor WHERE idgrado = ? AND idseccion = ?";
+    $stmt = $connect->prepare($sql_count);
+    $stmt->bind_param("ii", $idgrado, $idseccion);
+    $stmt->execute();
+    $result_count = $stmt->get_result();
+    $row_count = $result_count->fetch_assoc();
+    $total_profesores = $row_count['total'];
 
+    if ($total_profesores >= 2) {
+        echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `<span>Ya hay 2 profesores asignados a este grado y sección.</span>`;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+              </script>";
+        exit();
+    }
 
- // Verificar si ya hay 2 profesores asignados a este grado y sección
- if ($total_profesores >= 2) {
-     echo "<footer class='error'>
-             <div class='container_title btn btn-danger'>
-                 <h5>Ya hay 2 profesores asignados a este grado y sección</h5>
-             </div>
-         </footer>";
-     exit();
- }
- 
-      $sql = "INSERT INTO profesor (nombre, apellido, cedula, idgrado, idseccion) VALUES (?, ?, ?, ?, ?)";
-      $stmt = $connect->prepare($sql);
-      $stmt->bind_param("sssii", $nombre, $apellido, $cedula, $idgrado, $idseccion);
-      $result = $stmt->execute();
+    // Insertar profesor en la base de datos
+    $sql = "INSERT INTO profesor (nombre, apellido, cedula, idgrado, idseccion) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("sssii", $nombre, $apellido, $cedula, $idgrado, $idseccion);
+    $result = $stmt->execute();
 
-    
-       //ingresar insert en bitacora
-    $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
-    $stmt2 = $connect->prepare($sql2);
-    $accion = "Se Insertó un nuevo profesor.";
-    $datos_accion = "nombre = $nombre, apellido = $apellido, cedula = $cedula, grado = $grado, seccion = $seccion";
-    $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
-    $resultInsert2 = $stmt2->execute();
-    
-    //aqui termina
-      
-      if($result){
- 
-         echo"<script> window.location='ver_grado.php? gradonombre= $volver && seccion= $volver2'</script>";
-      }else{
-          die (mysqli_error($connect));
-      } 
-  }
-
-
-
-  
-
-
+    if ($result) {
+        echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-green-100 text-green-700 border flex items-center';
+                notificacion.innerHTML = `<span>Profesor registrado correctamente.</span>`;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+              </script>";
+        echo "<script> window.location='ver_grado.php?gradonombre=$grado&seccion=$seccion'</script>";
+    } else {
+        die(mysqli_error($connect));
+    }
+}
 ?>
