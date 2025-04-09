@@ -2,17 +2,13 @@
 
 session_start();
 error_reporting(0);
-
-if (!isset($_SESSION['nombre_usuario']) || empty($_SESSION['nombre_usuario'])) {
-	header('Location: ./../login/login.php');
-	exit();
-}
-
 $usuario = $_SESSION['nombre_usuario'];
-
-require_once './../connect.php';
-require_once '../contador_sesion.php';
-
+if ($usuario == null || $usuario == '') {
+	header('location: ./../login/login.php');
+	die();
+}
+include './../connect.php';
+include '../contador_sesion.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,119 +42,120 @@ require_once '../contador_sesion.php';
     }
     ?>
 
-	<main class="w-full flex justify-center items-center xl:px-56 mt-8">
+		<main class="w-full flex justify-center items-center xl:px-56 mt-8">
 
-	<form method="POST" class="w-full max-w-screen-sm rounded-xl p-4 py-8 shadow-lg bg-gray-50 mx-auto" id="formulario">
-  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
-	<!-- Nombres -->
-	<div>
-	  <label for="nombre" class="block text-sm font-medium text-gray-700">Nombres</label>
-	  <input type="text" name="nombre" id="nombre"
-		class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
-		placeholder="Ingrese su nombre">
-	</div>
+		<form method="POST" class="w-full max-w-screen-sm rounded-xl p-4 py-8 shadow-lg bg-gray-50 mx-auto" id="formulario">
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
-	<!-- Apellidos -->
-	<div>
-	  <label for="apellido" class="block text-sm font-medium text-gray-700">Apellidos</label>
-	  <input type="text" name="apellido" id="apellido"
-		class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
-		placeholder="Ingrese su apellido">
-	</div>
+				<!-- Nombres -->
+				<div>
+				<label for="nombre" class="block text-sm font-medium text-gray-700">Nombres</label>
+				<input type="text" name="nombre" id="nombre"
+					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+					placeholder="Ingrese su nombre">
+				</div>
 
-	<!-- Cédula -->
-	<div class="col-span-1 sm:col-span-2">
-	  <label for="cedula" class="block text-sm font-medium text-gray-700">Cédula</label>
-	  <input type="number" name="cedula" id="cedula"
-		class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
-		placeholder="Ingrese su cédula">
-	</div>
+				<!-- Apellidos -->
+				<div>
+				<label for="apellido" class="block text-sm font-medium text-gray-700">Apellidos</label>
+				<input type="text" name="apellido" id="apellido"
+					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+					placeholder="Ingrese su apellido">
+				</div>
 
-	<!-- Teléfono -->
-	<div class="col-span-1 sm:col-span-2">
-	  <label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono</label>
-	  <div class="flex items-center gap-3 mt-2">
-		<select name="codigo" id="codigo" class="rounded-md border border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-		  <option value="0268">0268</option>
-		  <option value="0414">0414</option>
-		  <!-- Más opciones -->
-		</select>
-		<input type="text" name="telefono" id="telefono"
-		  class="w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
-		  placeholder="Teléfono" maxlength="7">
-	  </div>
-	</div>
+				<!-- Cédula -->
+				<div class="col-span-1 sm:col-span-2">
+				<label for="cedula" class="block text-sm font-medium text-gray-700">Cédula</label>
+				<input type="number" name="cedula" id="cedula"
+					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+					placeholder="Ingrese su cédula">
+				</div>
 
-	<!-- Correo -->
-	<div class="col-span-1 sm:col-span-2">
-	  <label for="email" class="block text-sm font-medium text-gray-700">Correo</label>
-	  <input type="text" name="correo" id="email"
-		class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
-		placeholder="Ingrese su correo">
-	</div>
+				<!-- Teléfono -->
+				<div class="col-span-1 sm:col-span-2">
+				<label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono</label>
+				<div class="flex items-center gap-3 mt-2">
+					<select name="codigo" id="codigo" class="rounded-md border border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+					<option value="0268">0268</option>
+					<option value="0414">0414</option>
+					<!-- Más opciones -->
+					</select>
+					<input type="text" name="telefono" id="telefono"
+					class="w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+					placeholder="Teléfono" maxlength="7">
+				</div>
+				</div>
 
-	<!-- Usuario -->
-	<div>
-	  <label for="usuario" class="block text-sm font-medium text-gray-700">Usuario</label>
-	  <input type="text" name="usuario" id="usuario"
-		class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
-		placeholder="Ingrese su usuario">
-	</div>
+				<!-- Correo -->
+				<div class="col-span-1 sm:col-span-2">
+				<label for="email" class="block text-sm font-medium text-gray-700">Correo</label>
+				<input type="text" name="correo" id="email"
+					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+					placeholder="Ingrese su correo">
+				</div>
 
-	<!-- Contraseña -->
-	<div>
-	  <label for="contraseña" class="block text-sm font-medium text-gray-700">Contraseña</label>
-	  <input type="password" name="contraseña" id="contraseña"
-		class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
-		placeholder="Ingrese la contraseña">
-	</div>
+				<!-- Usuario -->
+				<div>
+				<label for="usuario" class="block text-sm font-medium text-gray-700">Usuario</label>
+				<input type="text" name="usuario" id="usuario"
+					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+					placeholder="Ingrese su usuario">
+				</div>
 
-	<!-- Pregunta 1 -->
-	<div class="col-span-1 sm:col-span-2">
-	  <label for="p1" class="block text-sm font-medium text-gray-700">¿Cuál es el nombre de su madre o padre?</label>
-	  <input type="text" name="pregunta1" id="p1"
-		class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
-		placeholder="Ingrese su respuesta">
-	</div>
+				<!-- Contraseña -->
+				<div>
+				<label for="contraseña" class="block text-sm font-medium text-gray-700">Contraseña</label>
+				<input type="password" name="contraseña" id="contraseña"
+					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+					placeholder="Ingrese la contraseña">
+				</div>
 
-	<!-- Pregunta 2 -->
-	<div class="col-span-1 sm:col-span-2">
-	  <label for="p2" class="block text-sm font-medium text-gray-700">¿Cuál es tu animal favorito?</label>
-	  <input type="text" name="pregunta2" id="p2"
-		class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
-		placeholder="Ingrese su respuesta">
-	</div>
-  </div>
+				<!-- Pregunta 1 -->
+				<div class="col-span-1 sm:col-span-2">
+				<label for="p1" class="block text-sm font-medium text-gray-700">¿Cuál es el nombre de su madre o padre?</label>
+				<input type="text" name="pregunta1" id="p1"
+					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+					placeholder="Ingrese su respuesta">
+				</div>
 
-  <!-- Botones -->
-  <div class="mt-6 flex flex-col sm:flex-row gap-3">
-	<button type="submit"
-	  class="w-full sm:w-auto px-4 py-3 rounded-md bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-	  Registrar
-	</button>
-	<button type="button" onclick="window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'"
-	  class="w-full sm:w-auto px-4 py-3 rounded-md bg-gray-300 text-gray-700 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-	  Regresar
-	</button>
-  </div>
-</form>
+				<!-- Pregunta 2 -->
+				<div class="col-span-1 sm:col-span-2">
+				<label for="p2" class="block text-sm font-medium text-gray-700">¿Cuál es tu animal favorito?</label>
+				<input type="text" name="pregunta2" id="p2"
+					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+					placeholder="Ingrese su respuesta">
+				</div>
+			</div>
+
+			<!-- Botones -->
+			<div class="mt-6 flex flex-col sm:flex-row gap-3">
+				<button type="submit" name="registrar" id="registrar"
+				class="w-full sm:w-auto px-4 py-3 rounded-md bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+				Registrar
+				</button>
+				<button type="button" onclick="window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'"
+				class="w-full sm:w-auto px-4 py-3 rounded-md bg-gray-300 text-gray-700 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+				Regresar
+				</button>
+			</div>
+			</form>
+
+
 
 	</main>
 
 
 	
-	<!-- Footer -->
-    <footer class="bg-white shadow mt-12">
-        <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
-        <p class="text-gray-600 text-sm">Todos los derechos reservados © 2024</p>
-        <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="mt-2 md:mt-0">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-600 hover:text-gray-800 transition-colors duration-200" fill="currentColor" viewBox="0 0 512 512">
-            <path d="M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 448c-110.532 0-200-89.451-200-200 0-110.531 89.451-200 200-200 110.532 0 200 89.451 200 200 0 110.532-89.451 200-200 200zm107.351-101.064c-9.614 9.712-45.53 41.396-104.065 41.396-82.43 0-140.484-61.425-140.484-141.567 0-79.152 60.275-139.401 139.762-139.401 55.531 0 88.738 26.62 97.593 34.779a11.965 11.965 0 0 1 1.936 15.322l-18.155 28.113c-3.841 5.95-11.966 7.282-17.499 2.921-8.595-6.776-31.814-22.538-61.708-22.538-48.303 0-77.916 35.33-77.916 80.082 0 41.589 26.888 83.692 78.277 83.692 32.657 0 56.843-19.039 65.726-27.225 5.27-4.857 13.596-4.039 17.82 1.738l19.865 27.17a11.947 11.947 0 0 1-1.152 15.518z"/>
-            </svg>
-        </a>
-        </div>
-    </footer>
+	<footer class="flex justify-between items-center w-full px-8 py-4">
+		<p class="demin">Todos Los derechos reservados 2024</p>
+		<a class="btn bg-slate-50 rounded-full" href="https://creativecommons.org/licenses/by-sa/4.0/">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="32px" height="32px" viewBox="0 0 512 512">
+				<path d="M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 448c-110.532 0-200-89.451-200-200 0-110.531 89.451-200 200-200 110.532 0 200 89.451 200 200 0 110.532-89.451 200-200 200zm107.351-101.064c-9.614 9.712-45.53 41.396-104.065 41.396-82.43 0-140.484-61.425-140.484-141.567 0-79.152 60.275-139.401 139.762-139.401 55.531 0 88.738 26.62 97.593 34.779a11.965 11.965 0 0 1 1.936 15.322l-18.155 28.113c-3.841 5.95-11.966 7.282-17.499 2.921-8.595-6.776-31.814-22.538-61.708-22.538-48.303 0-77.916 35.33-77.916 80.082 0 41.589 26.888 83.692 78.277 83.692 32.657 0 56.843-19.039 65.726-27.225 5.27-4.857 13.596-4.039 17.82 1.738l19.865 27.17a11.947 11.947 0 0 1-1.152 15.518z" />
+				Licencia Creative Commons
+			</svg>
+		</a>
+	</footer>
 	</div>
 	<script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
 	<script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
@@ -452,292 +449,84 @@ if (isset($_POST['registrar'])) {
 		</script>';
 		exit;
 	}
-
+	// Verificar usuario 
 	//preparar sentencia 1
 	// Verificar usuario 
 			
-		$sql_verificar_usuario = "SELECT * FROM usuario WHERE nombre_usuario = ?";
-		$stmt = $connect->prepare($sql_verificar_usuario);
-		if (!$stmt) {
-			die("Error al preparar la consulta: " . $connect->error);
-		}
-		$stmt->bind_param("s", $usuario);  
-		$stmt->execute();
-		$resultado_usuario = $stmt->get_result();
+	
+	
+// Funciones auxiliares
+function mostrarError($mensaje) {
+    echo '<script> 
+        var msg = document.createElement("div");
+        msg.innerHTML = `<div class="fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
+            <div class="flex justify-start items-center border-b-2 border-gray-300 pb-2">
+                <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505">
+                    <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
+                </svg>
+                <p class="text-[11px] ghost pb-1">'.$mensaje.'</p> 
+            </div>
+        </div>`;
+        
+        setTimeout(() => msg.remove(), 4000);
+        document.body.appendChild(msg);
+    </script>';
+    exit;
+}
 
-		if ($resultado_usuario->num_rows > 0) {
-		 
-			$datos_usuario = $resultado_usuario->fetch_assoc();
-		} else {
-			die("El usuario no existe");
-		}
-		$stmt->close();
-	//fin
+function validarCampoUnico($connect, $campo, $valor, $mensajeError) {
+    $stmt = $connect->prepare("SELECT COUNT(*) as total FROM usuario WHERE $campo = ?");
+    $stmt->bind_param("s", $valor);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $existe = $result->fetch_assoc()['total'] > 0;
+    $stmt->close();
+    
+    if ($existe) {
+        mostrarError($mensajeError);
+    }
+}
 
-	if (mysqli_num_rows($resultado_usuario) > 0) {
-		echo '<script>						
-				var msg = document.createElement("div");
+// Validación de campos recibidos (deberías incluir esto)
+/*
+$usuario = $_POST['usuario'] ?? '';
+$correo = $_POST['correo'] ?? '';
+$telefono = $_POST['telefono'] ?? '';
+$cedula = $_POST['cedula'] ?? '';
+$contraseña = $_POST['contraseña'] ?? '';
+*/
 
-							msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-									<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                                            <p class=" text-[11px] ghost pb-1">este usuario ya existe</p> 
-                                    </div>
-							</div>`;
+// Validaciones de formato
+if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+    mostrarError("Ingrese un Correo válido");
+}
 
-			                                var elemento = msg;
-                                            setTimeout(function() {
-                                                elemento.remove();
-                                            }, 4000);
-			document.body.appendChild(msg);
+if (!is_numeric($telefono)) {
+    mostrarError("El teléfono solo debe contener números");
+}
 
-		</script>';
-		exit;
-	}
-	//preparar sentencia 2
-	// Verificar gmail
-		$sql_verificar_correo = "SELECT * FROM usuario WHERE correo = ?";
-		$stmt = $connect->prepare($sql_verificar_correo);
-		$stmt->bind_param("s", $correo);
-		$stmt->execute();
-		$resultado_correo = $stmt->get_result();
+if (strlen($telefono) != 7) {
+    mostrarError("El teléfono debe tener exactamente 7 dígitos");
+}
 
-		if ($resultado_correo->num_rows > 0) {
-			$datos_correo = $resultado_correo->fetch_assoc();
-		} else {
-			die("El correo no existe");
-		}
+if (strlen($cedula) < 8 || strlen($cedula) > 9) {
+    mostrarError("La cédula debe tener entre 8 y 9 caracteres");
+}
 
-		$stmt->close();
-	//fin
-	if (mysqli_num_rows($resultado_correo) > 0) {
-		echo '<script>						
-				var msg = document.createElement("div");
+if (strlen($contraseña) < 16) {
+    mostrarError("La contraseña debe tener al menos 16 caracteres");
+}
 
-							msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-									<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                                            <p class=" text-[11px] ghost pb-1">Ese Correo ya existe</p> 
-                                    </div>
-							</div>`;
+// Validaciones de unicidad
+validarCampoUnico($connect, 'nombre_usuario', $usuario, "Este usuario ya existe");
+validarCampoUnico($connect, 'correo', $correo, "Este correo ya está registrado");
+validarCampoUnico($connect, 'telefono', $telefono, "Este teléfono ya está en uso");
+validarCampoUnico($connect, 'cedula', $cedula, "Esta cédula ya está registrada");
 
-			                                var elemento = msg;
-                                            setTimeout(function() {
-                                                elemento.remove();
-                                            }, 4000);
-			document.body.appendChild(msg);
-
-		</script>';
-		exit;
-	} elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-		echo '<script>						
-				var msg = document.createElement("div");
-
-							msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-									<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                                            <p class=" text-[11px] ghost pb-1">Ingrese un Correo valido</p> 
-                                    </div>
-							</div>`;
-
-			                                var elemento = msg;
-                                            setTimeout(function() {
-                                                elemento.remove();
-                                            }, 4000);
-			document.body.appendChild(msg);
-
-		</script>';
-		exit;
-	}
-
-	//preparar sentencia 3
-	// Verificar teléfono
-		$sql_verificar_telefono = "SELECT * FROM usuario WHERE telefono = ?";
-		$stmt = $connect->prepare($sql_verificar_telefono);
-		$stmt->bind_param("s", $codigo);
-		$stmt->execute();
-		$resultado_telefono = $stmt->get_result();
-		
-		if ($resultado_telefono->num_rows > 0) {
-			$datos_telefono = $resultado_telefono->fetch_assoc();
-		} else {
-			die("El teléfono no existe");
-		}
-		
-		$stmt->close();
-	//fin
-	if (!is_numeric($telefono)) {
-		echo '<script>						
-		var msg = document.createElement("div");
-
-					msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-							<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-									<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-									<p class=" text-[11px] ghost pb-1">Ingrese un Telefono con caracteres validos</p> 
-							</div>
-					</div>`;
-
-									var elemento = msg;
-									setTimeout(function() {
-										elemento.remove();
-									}, 4000);
-	document.body.appendChild(msg);
-
-</script>';
-		exit;
-	} elseif (strlen($telefono) > 7) {
-		echo '<script>						
-		var msg = document.createElement("div");
-
-					msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-							<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-									<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-									<p class=" text-[11px] ghost pb-1">El numero de Telefono debe ser menos largo</p> 
-							</div>
-					</div>`;
-
-									var elemento = msg;
-									setTimeout(function() {
-										elemento.remove();
-									}, 4000);
-	document.body.appendChild(msg);
-
-</script>';
-		exit;
-	} elseif (strlen($telefono) < 7) {
-		echo '<script>						
-		var msg = document.createElement("div");
-
-					msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-							<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-									<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-									<p class=" text-[11px] ghost pb-1">El numero de Telefono debe ser mas largo</p> 
-							</div>
-					</div>`;
-
-									var elemento = msg;
-									setTimeout(function() {
-										elemento.remove();
-									}, 4000);
-	document.body.appendChild(msg);
-
-</script>';
-		exit;
-	} elseif (mysqli_num_rows($resultado_telefono) > 0) {
-		echo '<script>						
-		var msg = document.createElement("div");
-
-					msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-							<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-									<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-									<p class=" text-[11px] ghost pb-1">Ese numero de Telefono ya existe</p> 
-							</div>
-					</div>`;
-
-									var elemento = msg;
-									setTimeout(function() {
-										elemento.remove();
-									}, 4000);
-	document.body.appendChild(msg);
-
-</script>';
-		exit;
-	}
+// Si llegamos aquí, todas las validaciones pasaron
+// Puedes continuar con el registro del usuario
 
 
-	//preparar sentencia 4
-	// Verificar cédula 
-		$sql_verificar_cedula = "SELECT * FROM usuario WHERE cedula = ?";
-		$stmt = $connect->prepare($sql_verificar_cedula);
-		$stmt->bind_param("s", $cedula);
-		$stmt->execute();
-		$resultado_cedula = $stmt->get_result();
-
-		if ($resultado_cedula->num_rows > 0) {
-			$datos_cedula = $resultado_cedula->fetch_assoc();
-		}
-		$stmt->close();
-
-	//fin
-	if (mysqli_num_rows($resultado_cedula) > 0) {
-		echo '<script>						
-		var msg = document.createElement("div");
-
-					msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-							<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-									<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-									<p class=" text-[11px] ghost pb-1">Esa Cedula ya esta registrada</p> 
-							</div>
-					</div>`;
-
-									var elemento = msg;
-									setTimeout(function() {
-										elemento.remove();
-									}, 4000);
-	document.body.appendChild(msg);
-
-</script>';
-		exit;
-	} elseif (strlen($cedula) < 8) {
-		echo '<script>						
-		var msg = document.createElement("div");
-
-					msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-							<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-									<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-									<p class=" text-[11px] ghost pb-1">La cedula debe contener mas caracteres</p> 
-							</div>
-					</div>`;
-
-									var elemento = msg;
-									setTimeout(function() {
-										elemento.remove();
-									}, 4000);
-	document.body.appendChild(msg);
-
-</script>';
-		exit;
-	} elseif (strlen($contraseña) < 16) {
-		echo '<script>						
-		var msg = document.createElement("div");
-
-					msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-							<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-									<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-									<p class=" text-[11px] ghost pb-1">La contraseña requiere un minimoo de 16 caracteres</p> 
-							</div>
-					</div>`;
-
-									var elemento = msg;
-									setTimeout(function() {
-										elemento.remove();
-									}, 4000);
-	document.body.appendChild(msg);
-
-</script>';
-		exit;
-	}
-
-	elseif (strlen($cedula) > 9) {
-		echo '<script>						
-		var msg = document.createElement("div");
-
-					msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-							<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-									<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-									<p class=" text-[11px] ghost pb-1">La cedula debe contener menos caracteres</p> 
-							</div>
-					</div>`;
-
-									var elemento = msg;
-									setTimeout(function() {
-										elemento.remove();
-									}, 4000);
-	document.body.appendChild(msg);
-
-</script>';
-		exit;
-	}
 
 
 		//preparar sentencia 5
@@ -747,12 +536,8 @@ if (isset($_POST['registrar'])) {
 		$stmt = $connect->prepare($sqlusuario);
 		$stmt->bind_param("sssssssss", $nombre, $apellido, $cedula, $codigo, $correo, $usuario, $contraseña_cifrada, $pregunta1_cifrada, $pregunta2_cifrada);
 		$stmt->execute();
-		if ($stmt->execute()) {
-			header("Location: http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php");
-			exit();
-		} else {
-			die("Error: " . $stmt->error);
-		}
+		echo "<script> window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'</script>";
+		
 		
 		$stmt->close();
 		//fin
