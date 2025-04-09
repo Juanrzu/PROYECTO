@@ -56,15 +56,15 @@
               <form method="post" id="formulario" class="w-80 rounded-xl p-4 py-8 shadow-lg bg-gray-100" novalidate>
                   <div class="mb-2">
                       <label>Nombre</label>
-                      <input type="text" class="form-control form-control w-full mt-2 rounded-lg"  placeholder="Nombre del Profesor" maxlength="25" name="nombre" id="nombre" autocomplete="off" required>
+                      <input type="text" class="form-control form-control w-full mt-2 rounded-lg"  placeholder="Nombre del Profesor" maxlength="30" name="nombre" id="nombre" autocomplete="off">
                   </div>
                   <div class="mb-2">
                       <label>Apellido</label>
-                      <input type="text" class="form-control form-control w-full mt-2 rounded-lg"  placeholder="Apellido del Profesor" maxlength="25" name="apellido" id="apellido" autocomplete="off"  required>
+                      <input type="text" class="form-control form-control w-full mt-2 rounded-lg"  placeholder="Apellido del Profesor" maxlength="30" name="apellido" id="apellido" autocomplete="off">
                   </div>
                   <div class="mb-2">
                       <label>Cedula</label>
-                      <input type="text" class="form-control form-control w-full mt-2 rounded-lg" placeholder="Cedula" name="cedula" autocomplete="off" id="cedula" required>
+                      <input type="text" class="form-control form-control w-full mt-2 rounded-lg" placeholder="Cedula" name="cedula" autocomplete="off" maxlength="30" id="cedula" >
                   </div>
                   <div class="mb-2">
                       <label>Grado</label>
@@ -131,6 +131,108 @@
     <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
     <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
 
+
+    <script>
+	document.addEventListener("DOMContentLoaded", () => {
+		const form = document.getElementById('formulario');
+		const inputs = {
+			nombre: document.getElementById('nombre'),
+			apellido: document.getElementById('apellido'),
+			cedula: document.getElementById('cedula')
+		};
+
+		const regex = {
+			soloLetras: /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/,
+			soloNumeros: /^\d+$/
+		};
+
+		const LIMITES = {
+			nombre: 29,
+			apellido: 29,
+			cedula: 8,
+		};
+
+		const mostrarNotificacion = (mensaje, tipo = 'error') => {
+			const sanitizeHTML = (str) => {
+				const temp = document.createElement('div');
+				temp.textContent = str;
+				return temp.innerHTML;
+			};
+
+			const icono = tipo === 'error' ?
+				`<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+					<path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
+				</svg>` :
+				`<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
+				</svg>`;
+
+			const color = tipo === 'error' ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
+
+			document.querySelectorAll('.notificacion').forEach(el => el.remove());
+
+			const notificacion = document.createElement('div');
+			notificacion.className = `notificacion fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ${color} border flex items-center`;
+			notificacion.innerHTML = `
+				<div class="flex-shrink-0 mr-3">${icono}</div>
+				<div class="text-sm">${sanitizeHTML(mensaje)}</div>
+			`;
+
+			document.body.appendChild(notificacion);
+
+			setTimeout(() => {
+				notificacion.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+				setTimeout(() => notificacion.remove(), 500);
+			}, 4000);
+		};
+
+		const validarCampo = (input, regex = null, minLength = 0, maxLength = Infinity, mensaje = null) => {
+			const valor = input.value.trim();
+			input.classList.remove('border-red-500');
+
+			if (!valor) {
+				return { valido: false, mensaje: mensaje || `El campo ${input.id} no puede estar vacío` };
+			}
+
+			if (regex && !regex.test(valor)) {
+				return { valido: false, mensaje: mensaje || `Formato inválido para ${input.id}` };
+			}
+
+			if (valor.length < minLength) {
+				return { valido: false, mensaje: mensaje || `${input.id} debe tener al menos ${minLength} caracteres` };
+			}
+
+			if (valor.length > maxLength) {
+				return { valido: false, mensaje: mensaje || `${input.id} no puede exceder los ${maxLength} caracteres` };
+			}
+
+			return { valido: true };
+		};
+
+		form.addEventListener("submit", (e) => {
+			e.preventDefault();
+
+			Object.values(inputs).forEach(input => input.classList.remove('border-red-500'));
+
+			const validaciones = [
+				{ input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, 1, LIMITES.nombre, `El nombre debe ser válido y tener un máximo de ${LIMITES.nombre} caracteres.`) },
+				{ input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, 1, LIMITES.apellido, `El apellido debe ser válido y tener un máximo de ${LIMITES.apellido} caracteres.`) },
+				{ input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula, LIMITES.cedula, `La cédula debe tener exactamente ${LIMITES.cedula} dígitos.`) },
+      ];
+
+			for (const validacion of validaciones) {
+				if (!validacion.resultado.valido) {
+					validacion.input.classList.add('border-red-500');
+					mostrarNotificacion(validacion.resultado.mensaje);
+					return;
+				}
+			}
+
+			mostrarNotificacion('Formulario enviado correctamente', 'success');
+			form.submit(); // Descomentar para enviar el formulario
+		});
+	});
+</script>
 
 </body>
 </html>
@@ -230,6 +332,10 @@ exit;
           die (mysqli_error($connect));
       } 
   }
+
+
+
+  
 
 
 ?>
