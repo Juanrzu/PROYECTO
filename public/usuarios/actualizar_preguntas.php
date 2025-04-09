@@ -29,8 +29,6 @@ require_once '../contador_sesion.php';
 
 <body class="bg-ghost">
 
-    <div class="container-lg w-full h-full">
-
 
         <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 z-50">
             <div role="status">
@@ -41,7 +39,6 @@ require_once '../contador_sesion.php';
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
-
         <?php
         if ($usuario == "admin" || $usuario == "Admin") {
             include('../header_admin.php');
@@ -56,27 +53,27 @@ require_once '../contador_sesion.php';
         <form method="POST" class="w-80 rounded-xl p-4 py-8 shadow-lg bg-gray-50" id="formulario">
         <div class="mb-6">
             <label for="usuario" class="block text-sm font-medium text-gray-700">Usuario</label>
-            <input type="text" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="usuario" id="usuario" autocomplete="off" value="<?php echo "$usuario"; ?>">
+            <input type="text" maxlength="21" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="usuario" id="usuario" autocomplete="off" value="<?php echo "$usuario"; ?>">
         </div>
 
         <div class="mb-6">
             <label for="p1" class="block text-sm font-medium text-gray-700">Pregunta de seguridad 1</label>
-            <input type="text" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="pregunta1" id="p1" placeholder="¿Cuál es el nombre de su madre o padre?">
+            <input type="text" maxlength="50" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="pregunta1" id="p1" placeholder="¿Cuál es el nombre de su madre o padre?">
         </div>
 
         <div class="mb-6">
             <label for="p2" class="block text-sm font-medium text-gray-700">Pregunta de seguridad 2</label>
-            <input type="text" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="pregunta2" id="p2" placeholder="¿Cuál es su animal favorito?">
+            <input type="text" maxlength="50" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="pregunta2" id="p2" placeholder="¿Cuál es su animal favorito?">
         </div>
 
         <div class="mb-6">
             <label for="pregunta_nueva1" class="block text-sm font-medium text-gray-700">Nueva respuesta de seguridad 1</label>
-            <input type="text" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="pregunta_nueva1" id="pregunta_nueva1" placeholder="Ingrese la nueva respuesta a la pregunta de seguridad 1">
+            <input type="text" maxlength="50" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="pregunta_nueva1" id="pregunta_nueva1" placeholder="Ingrese la nueva respuesta a la pregunta de seguridad 1">
         </div>
 
         <div class="mb-6">
             <label for="pregunta_nueva2" class="block text-sm font-medium text-gray-700">Nueva respuesta de seguridad 2</label>
-            <input type="text" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="pregunta_nueva2" id="pregunta_nueva2" placeholder="Ingrese la nueva respuesta a la pregunta de seguridad 2">
+            <input type="text" maxlength="50" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="pregunta_nueva2" id="pregunta_nueva2" placeholder="Ingrese la nueva respuesta a la pregunta de seguridad 2">
         </div>
 
         <div class="mb-6 flex gap-4">
@@ -130,291 +127,250 @@ require_once '../contador_sesion.php';
 
 
 
-
-    <script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
         const form = document.getElementById('formulario');
-        const btn = document.getElementById('registrar');
-        const usuario = document.getElementById('usuario');
-        const p1 = document.getElementById('p1');
-        const p2 = document.getElementById('p2');
-        const new_pregunta1 = document.getElementById('pregunta_nueva1');
-        const new_pregunta2 = document.getElementById('pregunta_nueva2');
+        const inputs = {
+            usuario: document.getElementById('usuario'),
+            p1: document.getElementById('p1'),
+            p2: document.getElementById('p2'),
+            pregunta_nueva1: document.getElementById('pregunta_nueva1'),
+            pregunta_nueva2: document.getElementById('pregunta_nueva2')
+        };
 
+        const regex = {
+            soloLetras: /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/,
+        };
 
+        const LIMITES = {
+            usuario: 20, // Ajustado al contexto del formulario
+            p1: 50,    // Ajustado al contexto del formulario
+            p2: 50,    // Ajustado al contexto del formulario
+            pregunta_nueva1: 50, // Ajustado al contexto del formulario
+            pregunta_nueva2: 50  // Ajustado al contexto del formulario
+        };
+
+        const mostrarNotificacion = (mensaje, tipo = 'error') => {
+			const sanitizeHTML = (str) => {
+				const temp = document.createElement('div');
+				temp.textContent = str;
+				return temp.innerHTML;
+			};
+
+			const icono = tipo === 'error' ?
+				`<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+					<path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
+				</svg>` :
+				`<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
+				</svg>`;
+
+			const color = tipo === 'error' ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
+
+			document.querySelectorAll('.notificacion').forEach(el => el.remove());
+
+			const notificacion = document.createElement('div');
+			notificacion.className = `notificacion fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ${color} border flex items-center`;
+			notificacion.innerHTML = `
+				<div class="flex-shrink-0 mr-3">${icono}</div>
+				<div class="text-sm">${sanitizeHTML(mensaje)}</div>
+			`;
+
+			document.body.appendChild(notificacion);
+
+			setTimeout(() => {
+				notificacion.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+				setTimeout(() => notificacion.remove(), 500);
+			}, 4000);
+		};
+
+        const validarCampo = (input, regex = null, minLength = 0, maxLength = Infinity, mensajeVacio = null, mensajeInvalido = null, mensajeLongitud = null) => {
+            const valor = input.value.trim();
+            input.classList.remove('border-red-500');
+
+            if (!valor) {
+                return { valido: false, mensaje: mensajeVacio || `El campo ${input.id} no puede estar vacío` };
+            }
+
+            if (regex && !regex.test(valor)) {
+                return { valido: false, mensaje: mensajeInvalido || `Formato inválido para ${input.id}` };
+            }
+
+            if (valor.length < minLength || valor.length > maxLength) {
+                return { valido: false, mensaje: mensajeLongitud || `${input.id} debe tener entre ${minLength} y ${maxLength} caracteres` };
+            }
+
+            return { valido: true };
+        };
 
 
         form.addEventListener("submit", (e) => {
+			e.preventDefault();
 
-            const regex = /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]*$/;
-            var error = "";
-            var msg = document.createElement("div");
+			Object.values(inputs).forEach(input => input.classList.remove('border-red-500'));
 
+			const validaciones = [
+                { input: inputs.usuario, resultado: validarCampo(inputs.usuario, /^[A-Za-z0-9\s]+$/, 1, LIMITES.usuario.min, `El usuario debe ser válido.`) },
+                { input: inputs.usuario, resultado: validarCampo(inputs.usuario, /^[A-Za-z0-9\s]+$/, 1, LIMITES.usuario.max, `El usuario debe ser válido y tener un máximo de ${LIMITES.usuario} caracteres.`) },
+				{ input: inputs.p1, resultado: validarCampo(inputs.p1, regex.soloLetras, 1, LIMITES.p1.min, `La respuesta 1 debe ser válida.`) },
+                { input: inputs.p1, resultado: validarCampo(inputs.p1, regex.soloLetras, 1, LIMITES.p1.max, `La respuesta 1 debe ser válida y tener un máximo de ${LIMITES.p1} caracteres.`) },
+                { input: inputs.p2, resultado: validarCampo(inputs.p2, regex.soloLetras, 1, LIMITES.p2.min, `La respuesta 2 debe ser válida.`) },
+                { input: inputs.p2, resultado: validarCampo(inputs.p2, regex.soloLetras, 1, LIMITES.p2.max, `La respuesta 2 debe ser válida y tener un máximo de ${LIMITES.p2} caracteres.`) },
+                { input: inputs.pregunta_nueva1, resultado: validarCampo(inputs.pregunta_nueva1, regex.soloLetras, 1, LIMITES.pregunta_nueva1.min, `La nueva respuesta 1 debe ser válida`) },
+                { input: inputs.pregunta_nueva1, resultado: validarCampo(inputs.pregunta_nueva1, regex.soloLetras, 1, LIMITES.pregunta_nueva1.max, `La nueva respuesta 1 debe ser válida y tener un máximo de ${LIMITES.pregunta_nueva1} caracteres.`) },
+                { input: inputs.pregunta_nueva2, resultado: validarCampo(inputs.pregunta_nueva2, regex.soloLetras, 1, LIMITES.pregunta_nueva2.min, `La nueva respuesta 2 debe ser válida`) },
+                { input: inputs.pregunta_nueva2, resultado: validarCampo(inputs.pregunta_nueva2, regex.soloLetras, 1, LIMITES.pregunta_nueva2.max, `La nueva respuesta 2 debe ser válida y tener un máximo de ${LIMITES.pregunta_nueva2} caracteres.`) }
+			
+            ];
 
+			for (const validacion of validaciones) {
+				if (!validacion.resultado.valido) {
+					validacion.input.classList.add('border-red-500');
+					mostrarNotificacion(validacion.resultado.mensaje);
+					return;
+				}
+			}
 
-            if (usuario.value == "" || p1.value == "" || p2.value == "" || new_pregunta1.value == "" || new_pregunta2.value == "") {
-                error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                                            <p class=" text-[11px] ghost pb-1">Los campos no pueden estar vacios</p> 
-                                            </div>`;
+			mostrarNotificacion('Formulario enviado correctamente', 'success');
+			form.submit(); // Descomentar para enviar el formulario
+		});
+    });
 
-                usuario.classList.add('is-invalid');
-                usuario.classList.remove('is-valid');
+    // Función para actualizar el contador de caracteres
+    function updateCounter(inputId, maxLength) {
+        const input = document.getElementById(inputId);
+        const currentLength = input.value.length;
 
-                p1.classList.add('is-invalid');
-                p1.classList.remove('is-valid');
+        // Cambiar estilos si se acerca al límite
+        if (currentLength >= maxLength) {
+            input.classList.add('border-red-500', 'text-red-500');
+            input.classList.remove('border-gray-300', 'text-black');
+            mostrarNotificacion(`${inputId} ha excedido el límite de caracteres (${maxLength})`);
+        } else {
+            input.classList.remove('border-red-500', 'text-red-500');
+            input.classList.add('border-gray-300', 'text-black');
+        }
+    }
 
-                p2.classList.add('is-invalid');
-                p2.classList.remove('is-valid');
-
-                new_pregunta1.classList.add('is-invalid');
-                new_pregunta1.classList.remove('is-valid');
-
-                new_pregunta2.classList.add('is-invalid');
-                new_pregunta2.classList.remove('is-valid');
-
-
-            } else {
-                usuario.classList.remove('is-invalid');
-                usuario.classList.add('is-valid');
-
-                p1.classList.remove('is-invalid');
-                p1.classList.add('is-valid');
-
-                p2.classList.remove('is-invalid');
-                p2.classList.add('is-valid');
-
-                new_pregunta1.classList.remove('is-invalid');
-                new_pregunta1.classList.add('is-valid');
-
-                new_pregunta2.classList.remove('is-invalid');
-                new_pregunta2.classList.add('is-valid');
-
-
-                if (!regex.test(usuario.value)) {
-                    error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                            <p class=" text-[11px] ghost pb-1">ingrese un Usuario con caracteres validos</p> 
-                            </div>`;
-                    usuario.classList.add('is-invalid');
-                    usuario.classList.remove('is-valid');
-                } else {
-                    usuario.classList.add('is-valid');
-                    usuario.classList.remove('is-invalid');
-                }
-
-
-                if (!regex.test(p1.value)) {
-                    error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                                            <p class=" text-[11px] ghost pb-1">Ingrese una respuesta con caracteres validos</p> 
-                                            </div>`;
-                    p1.classList.add('is-invalid');
-                    p1.classList.remove('is-valid');
-                } else {
-                    p1.classList.add('is-valid');
-                    p1.classList.remove('is-invalid');
-                }
-
-                if (!regex.test(p2.value)) {
-                    error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                                            <p class=" text-[11px] ghost pb-1">Ingrese una pregunta con caracteres validos</p> 
-                                            </div>`;
-                    p2.classList.add('is-invalid');
-                    p2.classList.remove('is-valid');
-                } else {
-                    p2.classList.add('is-valid');
-                    p2.classList.remove('is-invalid');
-                }
-
-
-
-                if (!regex.test(new_pregunta1.value)) {
-                    error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                                            <p class=" text-[11px] ghost pb-1">Ingrese una respuesta con caracteres validos</p> 
-                                            </div>`;
-                    new_pregunta1.classList.add('is-invalid');
-                    new_pregunta1.classList.remove('is-valid');
-                } else {
-                    new_pregunta1.classList.add('is-valid');
-                    new_pregunta1.classList.remove('is-invalid');
-                }
-
-                if (!regex.test(new_pregunta2.value)) {
-                    error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                                            <p class=" text-[11px] ghost pb-1">Ingrese una pregunta con caracteres validos</p> 
-                                            </div>`;
-                    new_pregunta2.classList.add('is-invalid');
-                    new_pregunta2.classList.remove('is-valid');
-                } else {
-                    new_pregunta2.classList.add('is-valid');
-                    new_pregunta2.classList.remove('is-invalid');
-                }
-
-            }
-
-
-
-
-
-            if (usuario.classList.contains("is-invalid") || p1.classList.contains("is-invalid") || p2.classList.contains("is-invalid") || new_pregunta1.classList.contains("is-invalid") || new_pregunta2.classList.contains("is-invalid")) {
-                msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-blue-500 rounded-xl font-bold w-56 md:w-80">${error}</div>`;
-                document.body.appendChild(msg);
-
-                // Selecciona el elemento div que deseas eliminar
-                var elemento = msg;
-
-                // Configura el timeout para eliminar el div después de 5 segundos (5000 milisegundos)
-                setTimeout(function() {
-                    msg = ""
-                    elemento.remove();
-                }, 4500);
-
-
-
-                e.preventDefault();
-                e.stopPropagation();
-            }
-
-
-
-
-        });
-    </script>
+</script>
 </body>
-
 </html>
 
 
 <?php
 
+function mostrar_mensaje($mensaje, $tipo = 'error') {
+    $color_clase = ($tipo === 'error') ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
+    $icono_svg = '';
+
+    if ($tipo === 'error') {
+        $icono_svg = '<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
+                        </svg>';
+    } elseif ($tipo === 'success') {
+        $icono_svg = '<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
+                        </svg>';
+    }
+
+    echo '<script>
+        var msg = document.createElement("div");
+        msg.innerHTML = ` <div class="fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ' . $color_clase . ' border flex items-center">
+                            <div class="flex-shrink-0 mr-3">' . $icono_svg . '</div>
+                            <div class="text-sm">' . htmlspecialchars($mensaje) . '</div>
+                            </div>`;
+        document.body.appendChild(msg);
+        setTimeout(function() {
+            msg.remove();
+        }, 4000);
+    </script>';
+}
+
 // Verifica si se ha enviado el formulario
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-// Recibir datos del formulario
-$usuario = $_POST['usuario'];
-$pregunta1 = strtolower($_POST['pregunta1']);
-$pregunta2 = strtolower($_POST['pregunta2']);
-$pregunta_nueva1 = strtolower($_POST['pregunta_nueva1']);
-$pregunta_nueva2 = strtolower($_POST['pregunta_nueva2']);
-
-
-if (isset($_POST['registrar'])) {
+    // Recibir datos del formulario
+    $usuario = $_POST['usuario'];
+    $pregunta1 = strtolower($_POST['pregunta1']);
+    $pregunta2 = strtolower($_POST['pregunta2']);
+    $pregunta_nueva1 = strtolower($_POST['pregunta_nueva1']);
+    $pregunta_nueva2 = strtolower($_POST['pregunta_nueva2']);
 
     if (empty($usuario) || empty($pregunta1) || empty($pregunta2) || empty($pregunta_nueva1) || empty($pregunta_nueva2)) {
-        echo "<footer class='error'>
-
-            <div class='container_title btn btn-danger'>
-            <h5 class='title-h1'> Los datos no pueden estar vacios</h5>
-            </div>
-
-    
-            </footer>";
-
+        mostrar_mensaje("Todos los campos son obligatorios.");
         exit;
     }
 
-
-
-
-//prerarar sentencia 1
-// Consulta para verificar las respuestas de seguridad
-        $sql = "SELECT * FROM usuario WHERE nombre_usuario = ?";
-        $stmt = $connect->prepare($sql);
-        $stmt->bind_param("s", $usuario);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-//fin
-
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $pregunta1_bd = $row['respuesta_seguridad1'];
-    $pregunta2_bd = $row['respuesta_seguridad2'];
-    $stmt->close();
-
-    // Verificar las respuestas de seguridad y actualizar la contraseña
-    if (password_verify($pregunta1, $pregunta1_bd) && password_verify($pregunta2, $pregunta2_bd)) {
-        
-        //preparar sentencia 2
-        // Las respuestas coinciden, actualiza la contraseña
-        $pregunta1_cifrada = password_hash($pregunta_nueva1, PASSWORD_ARGON2ID);
-        $pregunta2_cifrada = password_hash($pregunta_nueva2, PASSWORD_ARGON2ID);
-        $update_sql = "UPDATE usuario SET respuesta_seguridad1 = ?, respuesta_seguridad2 = ? WHERE nombre_usuario = ?";
-        $stmt = $connect->prepare($update_sql);
-        $stmt->bind_param("sss", $pregunta1_cifrada, $pregunta2_cifrada, $usuario);
-        //fin
-        if ($stmt->execute()) {
-            if($usuario === 'admin'){
-                echo"<script> window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuario.php'</script>";
-                exit();
-            }else{
-                echo"<script> window.location='http://localhost/dashboard/Proyecto/public/display.php'</script>";
-                exit();
-            }
-            
-        }else {
-
-            echo '<script>						
-		var msg = document.createElement("div");
-
-					msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-							<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-									<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-									<p class=" text-[11px] ghost pb-1">Hay un error en la contraseña</p> 
-							</div>
-					</div>`;
-
-									var elemento = msg;
-									setTimeout(function() {
-										elemento.remove();
-									}, 4000);
-	document.body.appendChild(msg);
-
-</script>' . $connect->error;
-        } $stmt->close();
-    } else {
-        echo '<script>						
-		var msg = document.createElement("div");
-
-					msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-							<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-									<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-									<p class=" text-[11px] ghost pb-1">Las respuestas de seguridad no coinciden</p> 
-							</div>
-					</div>`;
-
-									var elemento = msg;
-									setTimeout(function() {
-										elemento.remove();
-									}, 4000);
-	document.body.appendChild(msg);
-
-</script>';
-		exit;
+    if (!preg_match('/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]*$/', $usuario)) {
+        mostrar_mensaje("Ingrese un Usuario con caracteres válidos.");
+        exit;
     }
-} else {
 
-    echo '<script>						
-		var msg = document.createElement("div");
+    if (!preg_match('/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]*$/', $pregunta1)) {
+        mostrar_mensaje("Ingrese una respuesta con caracteres válidos.");
+        exit;
+    }
 
-					msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-							<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-									<svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-									<p class=" text-[11px] ghost pb-1">Ese Usuario no existe</p> 
-							</div>
-					</div>`;
+    if (!preg_match('/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]*$/', $pregunta2)) {
+        mostrar_mensaje("Ingrese una respuesta con caracteres válidos.");
+        exit;
+    }
 
-									var elemento = msg;
-									setTimeout(function() {
-										elemento.remove();
-									}, 4000);
-	document.body.appendChild(msg);
+    if (!preg_match('/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]*$/', $pregunta_nueva1)) {
+        mostrar_mensaje("Ingrese una respuesta con caracteres válidos.");
+        exit;
+    }
 
-</script>';
-    exit;
+    if (!preg_match('/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]*$/', $pregunta_nueva2)) {
+        mostrar_mensaje("Ingrese una respuesta con caracteres válidos.");
+        exit;
+    }
+
+    // Preparar sentencia 1
+    // Consulta para verificar las respuestas de seguridad
+    $sql = "SELECT respuesta_seguridad1, respuesta_seguridad2 FROM usuario WHERE nombre_usuario = ?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("s", $usuario);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $pregunta1_bd = $row['respuesta_seguridad1'];
+        $pregunta2_bd = $row['respuesta_seguridad2'];
+        $stmt->close();
+
+        // Verificar las respuestas de seguridad y actualizar la contraseña
+        if (password_verify($pregunta1, $pregunta1_bd) && password_verify($pregunta2, $pregunta2_bd)) {
+
+            // Preparar sentencia 2
+            // Las respuestas coinciden, actualiza la contraseña
+            $pregunta1_cifrada = password_hash($pregunta_nueva1, PASSWORD_ARGON2ID);
+            $pregunta2_cifrada = password_hash($pregunta_nueva2, PASSWORD_ARGON2ID);
+            $update_sql = "UPDATE usuario SET respuesta_seguridad1 = ?, respuesta_seguridad2 = ? WHERE nombre_usuario = ?";
+            $stmt = $connect->prepare($update_sql);
+            $stmt->bind_param("sss", $pregunta1_cifrada, $pregunta2_cifrada, $usuario);
+
+            if ($stmt->execute()) {
+                mostrar_mensaje("Preguntas de seguridad actualizadas correctamente.", 'success');
+                if ($usuario === 'admin') {
+                    echo "<script> setTimeout(function(){ window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuario.php'; }, 2000);</script>";
+                    exit();
+                } else {
+                    echo "<script> setTimeout(function(){ window.location='http://localhost/dashboard/Proyecto/public/display.php'; }, 2000);</script>";
+                    exit();
+                }
+
+            } else {
+                mostrar_mensaje("Error al actualizar las preguntas de seguridad: " . $stmt->error);
+            }
+            $stmt->close();
+        } else {
+            mostrar_mensaje("Las respuestas de seguridad no coinciden.");
+        }
+    } else {
+        mostrar_mensaje("Ese Usuario no existe.");
+    }
 }
 
-}
 ?>

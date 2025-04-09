@@ -136,7 +136,7 @@ require_once '../contador_sesion.php';
 </body>
 </html>
 
-<!-- <script>
+<script>
 const form = document.getElementById('formulario');
 const btn = document.getElementById('btn');
 const usuario = document.getElementById('usuario');
@@ -183,21 +183,6 @@ const notificaciones = {
   }
 };
 
-// Función para actualizar el contador de caracteres
-function updateCounter(inputId, maxLength) {
-    const input = document.getElementById(inputId);
-    const currentLength = input.value.length;
-    
-    // Cambiar estilos si se acerca al límite
-    if (currentLength >= maxLength) {
-        input.classList.add('border-red-500', 'text-red-500');
-        input.classList.remove('border-gray-300', 'text-black');
-        notificaciones.mostrar(`${inputId} ha excedido el límite de caracteres (${maxLength})`);
-    } else {
-        input.classList.remove('border-red-500', 'text-red-500');
-        input.classList.add('border-gray-300', 'text-black');
-    }
-}
 
 // Validación de campos
 function validarCampos() {
@@ -242,6 +227,23 @@ function validarCampos() {
     return errores;
 }
 
+// Función para actualizar el contador de caracteres
+function updateCounter(inputId, maxLength) {
+    const input = document.getElementById(inputId);
+    const currentLength = input.value.length;
+    
+    // Cambiar estilos si se acerca al límite
+    if (currentLength >= maxLength) {
+        input.classList.add('border-red-500', 'text-red-500');
+        input.classList.remove('border-gray-300', 'text-black');
+        notificaciones.mostrar(`${inputId} ha excedido el límite de caracteres (${maxLength})`);
+    } else {
+        input.classList.remove('border-red-500', 'text-red-500');
+        input.classList.add('border-gray-300', 'text-black');
+    }
+}
+
+
 // Inicializar contadores al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
     updateCounter('usuario', LIMITES.usuario);
@@ -271,7 +273,7 @@ form.addEventListener("submit", (e) => {
         }
     }
 });
-</script> -->
+</script>
 		
 		
 <?php 
