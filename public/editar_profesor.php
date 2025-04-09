@@ -233,6 +233,16 @@ if (isset($_POST['submit'])){
                 if ($stmt) {
                     $stmt->bind_param("sssiii", $nombre, $apellido, $cedula_nueva, $grado_id, $seccion_id, $id);
                     }
+                
+                //ingresar insert en bitacora
+                $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+                $stmt2 = $connect->prepare($sql2);
+                $accion = "Se actualizaron los datos de un profesor.";
+                $datos_accion = "nombre = $nombre, apellido = $apellido, cedula = $cedula, grado = $grado, seccion = $seccion";
+                $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
+                $resultInsert2 = $stmt2->execute();
+                
+                //aqui termina
     
         if($stmt->execute()){
             //echo "Se ha editado el profesor";
