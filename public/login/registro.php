@@ -165,7 +165,7 @@ require_once '../contador_sesion.php';
 
 
 
-	<!-- <script>
+	<script>
 		const form = document.getElementById('formulario');
 		const btn = document.getElementById('registrar');
 		const nombre = document.getElementById('nombre');
@@ -400,7 +400,7 @@ require_once '../contador_sesion.php';
 
 
 		});
-	</script> -->
+	</script>
 </body>
 
 </html>
@@ -408,16 +408,7 @@ require_once '../contador_sesion.php';
 
 
 <?php
-session_start(); // Asegúrate de iniciar la sesión si aún no lo has hecho
 
-// Asegúrate de que $connect esté definido y la conexión a la base de datos se haya establecido correctamente.
-// Ejemplo (¡NO USAR EN PRODUCCIÓN!):
-// $connect = new mysqli("localhost", "usuario", "contraseña", "basededatos");
-// if ($connect->connect_error) {
-//     die("Error de conexión: " . $connect->connect_error);
-// }
-
-// Función para mostrar mensajes (evita la repetición de código)
 function mostrar_mensaje($mensaje) {
     echo '<script>
         var msg = document.createElement("div");
@@ -427,7 +418,7 @@ function mostrar_mensaje($mensaje) {
 					</svg></div>
 					<div class="text-sm">. htmlspecialchars($mensaje) .</div>
 					</div>
-					
+
 				document.body.appendChild(msg);
 				setTimeout(function() {
 					msg.remove();
