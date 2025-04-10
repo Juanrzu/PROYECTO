@@ -1,8 +1,8 @@
 <?php
 session_start();
 error_reporting(0);
-$usuario = $_SESSION['nombre_usuario'];
-if ($usuario == null || $usuario == '' || ($usuario != 'admin' && $usuario != 'Admin')) {
+$usuarioSeccion = $_SESSION['nombre_usuario'];
+if ($usuarioSeccion == null || $usuarioSeccion == '' || ($usuarioSeccion != 'admin' && $usuarioSeccion != 'Admin')) {
     header('location: ../login/login.php');
     die();
 }
@@ -27,6 +27,18 @@ include '../contador_sesion.php';
        $telefono = $row['telefono'];
        $gmail = $row['correo'];
        $intentos_fallidos= $row['intentos_fallidos'];
+
+
+
+        //guardar datos viejos
+        $nombre_anterior = $nombre;
+        $usuario_anterior = $usuario;
+        $apellido_anterior = $apellido;
+        $cedula_anterior = $cedula;
+        $telefono_anterior = $telefono;
+        $estado_anterior = $estado;
+        $gmail_anterior = $gmail;
+        //fin 
 
 //fin
 ?>
@@ -214,7 +226,45 @@ include '../contador_sesion.php';
                         </div>";
                     exit;
                 }
-           
+                //preparar bitacora
+                $cambios = [];
+            
+                if ($apellido_anterior != $apellido) {
+                    $cambios[] = "Apellido anterior = $apellido_anterior, Apellido actualizado = $apellido";
+                }
+                if ($nombre_anterior != $nombre) {
+                    $cambios[] = "Nombre anterior = $nombre_anterior, Nombre actualizado = $nombre";
+                }
+                if ($cedula_anterior != $cedula) {
+                    $cambios[] = "Cedula anterior = $cen_anterior, Cedula actualizado = $cedula";
+                }           
+                if ($telefono_anterior != $telefono) {
+                    $cambios[] = "Telefono anterior = $telefono_anterior, Telefono actualizado = $codigo";
+                }
+                if ($gmail_anterior != $gmail) {
+                    $cambios[] = "Gmail anterior = $gmail_anterior, Gmail actualizada = $gmail";
+                }
+                if ($estado_anterior != $estado) {
+                    $cambios[] = "Estado anterior = $estado_anterior, Estado actualizada = $estado";
+                }
+                if ($usuario_anterior != $usuario) {
+                    $cambios[] = "Usuario anterior = $usuario_anterior, Usuario actualizada = $usuario";
+                }
+      
+                    // Unir todos los cambios en un string
+                    $datos_accion = implode(", ", $cambios);
+                    $datos_accion = "Cambios: " . $datos_accion;
+        
+                 //ingresar insert en bitacora 
+               $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+               $stmt2 = $connect->prepare($sql2);
+               $accion= "Se actualizo un usuario.";
+               $stmt2->bind_param("sss", $accion, $datos_accion, $usuarioSeccion);
+               $resultInsert2 = $stmt2->execute();
+                 //aqui termina
+
+
+
                 //sentencia 2
                 if ($estado == "Activo"){
                     $sql1 = "UPDATE usuario SET 

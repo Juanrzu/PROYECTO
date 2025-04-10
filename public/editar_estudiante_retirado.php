@@ -272,41 +272,41 @@ if (isset($_POST['submit'])){
             //agregar datos a la bitacora
             $cambios = [];
             
-                if ($apellido_anterior != $apellido_nuevo) {
-                    $cambios[] = "Apellido anterior = $apellido_anterior, Apellido actualizado = $apellido_nuevo";
+                if ($apellido_anterior != $apellido) {
+                    $cambios[] = "Apellido anterior = $apellido_anterior, Apellido actualizado = $apellido";
                 }
-                if ($nombre_anterior != $nombre_nuevo) {
-                    $cambios[] = "Nombre anterior = $nombre_anterior, Nombre actualizado = $nombre_nuevo";
+                if ($nombre_anterior != $nombre) {
+                    $cambios[] = "Nombre anterior = $nombre_anterior, Nombre actualizado = $nombre";
                 }
-                if ($cen_anterior != $cen_nuevo) {
-                    $cambios[] = "CEN anterior = $cen_anterior, CEN actualizado = $cen_nuevo";
+                if ($cen_anterior != $cen) {
+                    $cambios[] = "CEN anterior = $cen_anterior, CEN actualizado = $cen";
                 }
-                if ($nacimiento_anterior != $nacimiento_nuevo) {
-                    $cambios[] = "Fecha de nacimiento anterior = $nacimiento_anterior, Fecha de nacimiento actualizado = $nacimiento_nuevo";
+                if ($nacimiento_anterior != $nacimiento) {
+                    $cambios[] = "Fecha de nacimiento anterior = $nacimiento_anterior, Fecha de nacimiento actualizado = $nacimiento";
                 }
-                if ($sexo_anterior != $sexo_nuevo) {
-                    $cambios[] = "Sexo anterior = $sexo_anterior, Sexo actualizado = $sexo_nuevo";
+                if ($sexo_anterior != $sexo) {
+                    $cambios[] = "Sexo anterior = $sexo_anterior, Sexo actualizado = $sexo";
                 }
-                if ($grado_anterior != $grado_nuevo) {
-                    $cambios[] = "Grado anterior = $grado_anterior, Grado actualizado = $grado_nuevo";
+                if ($grado_anterior != $grado) {
+                    $cambios[] = "Grado anterior = $grado_anterior, Grado actualizado = $grado";
                 }
-                if ($seccion_anterior != $seccion_nuevo) {
-                    $cambios[] = "Sección anterior = $seccion_anterior, Sección actualizada = $seccion_nuevo";
+                if ($seccion_anterior != $seccion) {
+                    $cambios[] = "Sección anterior = $seccion_anterior, Sección actualizada = $seccion";
                 }
-                if ($representante_anterior != $representante_nuevo) {
-                    $cambios[] = "Representante anterior = $representante_anterior, Representante actualizado = $representante_nuevo";
+                if ($representante_anterior != $representante) {
+                    $cambios[] = "Representante anterior = $representante_anterior, Representante actualizado = $representante";
                 }
-                if ($representante_apellido_anterior != $representante_apellido_nuevo) {
-                    $cambios[] = "Apellido del representante anterior = $representante_apellido_anterior, Apellido del representante actualizado = $representante_apellido_nuevo";
+                if ($representante_apellido_anterior != $representante_apellido) {
+                    $cambios[] = "Apellido del representante anterior = $representante_apellido_anterior, Apellido del representante actualizado = $representante_apellido";
                 }
-                if ($cedularepre_anterior != $cedularepre_nuevo) {
-                    $cambios[] = "Cédula de representante anterior = $cedularepre_anterior, Cédula representante actualizado = $cedularepre_nuevo";
+                if ($cedularepre_anterior != $cedularepre) {
+                    $cambios[] = "Cédula de representante anterior = $cedularepre_anterior, Cédula representante actualizado = $cedularepre";
                 }
-                if ($codigo_anterior != $codigo_nuevo) {
-                    $cambios[] = "Teléfono anterior = $codigo_anterior, Teléfono actualizado = $codigo_nuevo";
+                if ($codigo_anterior != $codigo) {
+                    $cambios[] = "Teléfono anterior = $codigo_anterior, Teléfono actualizado = $codigo";
                 }
-                if ($correo_anterior != $correo_nuevo) {
-                    $cambios[] = "Correo anterior = $correo_anterior, Correo actualizado = $correo_nuevo";
+                if ($correo_anterior != $correo) {
+                    $cambios[] = "Correo anterior = $correo_anterior, Correo actualizado = $correo";
                 }
         
                     // Unir todos los cambios en un string

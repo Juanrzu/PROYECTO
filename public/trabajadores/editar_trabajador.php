@@ -19,6 +19,15 @@ include '../contador_sesion.php';
          $telefono= $row['telefono'];
          $cedula=$row['cedula'];
          $rol= $row['rol']; 
+
+
+           //guardar datos viejos
+         $nombre_anterior = $nombre;
+         $apellido_anterior = $apellido;
+         $cedula_anterior = $cedula;
+         $telefono_anterior = $telefono;
+         $rol_anterior = $rol;
+         //fin 
     ?>
 
 
@@ -148,11 +157,13 @@ include '../contador_sesion.php';
 
 <?php
 
-if (isset($_POST['submit'])){
+if (isset($_POST['registrar'])){
         $nombre= $_POST['nombre'];
         $apellido= $_POST['apellido'];
         $cedula_nueva= $_POST['cedula'];
         $telefono=$_POST['telefono'];
+        $codigo=$_POST['codigo'];
+        $codigo = ($codigo . $telefono);
         $rol=$_POST['rol'];
         $error=[];
 
@@ -168,10 +179,38 @@ if (isset($_POST['submit'])){
         }
         
         //Verificar Sección
+        $cambios = [];
+            
+        if ($apellido_anterior != $apellido) {
+            $cambios[] = "Apellido anterior = $apellido_anterior, Apellido actualizado = $apellido";
+        }
+        if ($nombre_anterior != $nombre) {
+            $cambios[] = "Nombre anterior = $nombre_anterior, Nombre actualizado = $nombre";
+        }
+        if ($cedula_anterior != $cedula) {
+            $cambios[] = "Cedula anterior = $cen_anterior, Cedula actualizado = $cedula";
+        }           
+        if ($telefono_anterior != $telefono) {
+            $cambios[] = "Telefono anterior = $telefono_anterior, Telefono actualizado = $codigo";
+        }
+        if ($rol_anterior != $rol) {
+            $cambios[] = "Rol anterior = $rol_anterior, Rol actualizada = $rol";
+        }
 
+            // Unir todos los cambios en un string
+            $datos_accion = implode(", ", $cambios);
+            $datos_accion = "Cambios: " . $datos_accion;
+
+         //ingresar insert en bitacora 
+       $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+       $stmt2 = $connect->prepare($sql2);
+       $accion= "Se actualizo un trabajador.";
+       $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
+       $resultInsert2 = $stmt2->execute();
+         //aqui termina
 
         $sql= "
-        update trabajadores set nombre='$nombre', apellido='$apellido', cedula='$cedula_nueva', telefono = '$telefono', rol = '$rol' where id=$id
+        update trabajadores set nombre='$nombre', apellido='$apellido', cedula='$cedula_nueva', telefono = '$codigo', rol = '$rol' where id=$id
         ";
 
         $result= mysqli_query($connect, $sql);

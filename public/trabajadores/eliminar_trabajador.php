@@ -25,6 +25,17 @@ if (isset($_GET['eliminarid'])) {
 
          if(isset($_GET['eliminarid'])){
             $id=$_GET['eliminarid'];
+
+        //ingresar insert en bitacora 
+        $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+        $stmt2 = $connect->prepare($sql2);
+        $accion= "Se elimino un trabajador.";
+        $datos_accion = "Informacion: nombre = $nombre, apellido = $apellido, cedula = $cedula, telefono = $telefono, rol = $rol";
+        $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
+        $resultInsert2 = $stmt2->execute();
+        //aqui termina
+
+
             $sql="delete from trabajadores where id=$id";
             $result=mysqli_query($connect,$sql);
             if($result){

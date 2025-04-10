@@ -33,9 +33,18 @@ if ($row = $result->fetch_assoc()) {
     $volver = $grado;
     $volver2 = $seccion;
 }
-$stmt->close();
-
-
+  //guardar datos viejos
+  $nombre_anterior = $nombre;
+  $apellido_anterior = $apellido;
+  $cedula_anterior = $cedula;
+  $nacimiento_anterior = $nacimiento;
+  $grado_anterior = $grado;
+  $seccion_anterior = $seccion;
+  //fin
+ 
+ 
+ 
+ $stmt->close();
 ?>
 
 
@@ -380,14 +389,39 @@ if (isset($_POST['submit'])) {
         $stmt = $connect->prepare($sql);
         $stmt->bind_param("sssiii", $nombre, $apellido, $cedula_nueva, $grado_id, $seccion_id, $id);
 
-        if ($stmt->execute()) {
-            // Insertar en bitácora
-            $sql_bitacora = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
-            $stmt_bitacora = $connect->prepare($sql_bitacora);
-            $accion = "Se actualizaron los datos de un profesor.";
-            $datos_accion = "nombre = $nombre, apellido = $apellido, cedula = $cedula_nueva, grado = $grado, seccion = $seccion";
-            $stmt_bitacora->bind_param("sss", $accion, $datos_accion, $usuario);
-            $stmt_bitacora->execute();
+        //preparar datos para bitacora
+                 //agregar datos a la bitacora
+                 $cambios = [];
+            
+                 if ($apellido_anterior != $apellido) {
+                     $cambios[] = "Apellido anterior = $apellido_anterior, Apellido actualizado = $apellido";
+                 }
+                 if ($nombre_anterior != $nombre) {
+                     $cambios[] = "Nombre anterior = $nombre_anterior, Nombre actualizado = $nombre";
+                 }
+                 if ($cedula_anterior != $cedula) {
+                     $cambios[] = "Cedula anterior = $cen_anterior, Cedula actualizado = $cedula";
+                 }           
+                 if ($grado_anterior != $grado) {
+                     $cambios[] = "Grado anterior = $grado_anterior, Grado actualizado = $grado";
+                 }
+                 if ($seccion_anterior != $seccion) {
+                     $cambios[] = "Sección anterior = $seccion_anterior, Sección actualizada = $seccion";
+                 }
+         
+                     // Unir todos los cambios en un string
+                     $datos_accion = implode(", ", $cambios);
+                     $datos_accion = "Cambios: " . $datos_accion;
+     
+     
+                     //ingresar insert en bitacora
+                     $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+                     $stmt2 = $connect->prepare($sql2);
+                     $accion = "Se actualizaron los datos de un profesor.";
+                     $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
+                     $resultInsert2 = $stmt2->execute();
+                     
+                     //aqui termina
 
             echo "<script> window.location='ver_grado.php?gradonombre=$volver&seccion=$volver2'; </script>";
         } else {
@@ -408,5 +442,5 @@ if (isset($_POST['submit'])) {
             setTimeout(() => notificacion.remove(), 4000);
         </script>";
     }
-}
+
 ?>
