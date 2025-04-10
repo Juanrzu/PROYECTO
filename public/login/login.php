@@ -153,7 +153,7 @@ const $minCaracteres = 14;
 const LIMITES = {
   usuario: 20,
   contraseña: {
-            max: 30,
+            max: 25,
             min: 14
         },
   captcha: 6
@@ -221,9 +221,6 @@ function validarCampos() {
                 contraseña.classList.add('border-red-500');
             } else if (!REGEX.contraseña.test(contraseña.value)) {
                 errores.push('La contraseña debe contener al menos una mayúscula, una minúscula y un número');
-                contraseña.classList.add('border-red-500');
-            } else if (contraseña.value.length > LIMITES.contraseña.max) {
-                errores.push(`La contraseña no puede exceder los ${LIMITES.contraseña.max} caracteres`);
                 contraseña.classList.add('border-red-500');
             }
         }

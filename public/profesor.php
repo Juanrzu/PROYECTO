@@ -241,7 +241,7 @@
         { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, `Ingresa una Cedula valida.`) },
         { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, 1, LIMITES.nombre.max, `El nombre debe ser válido.`) },
 				{ input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, 1, LIMITES.apellido.max, `El apellido debe ser válido y tener un máximo de ${LIMITES.apellido} caracteres.`) },
-				{ input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula, LIMITES.cedula.max, `La cédula debe tener exactamente ${LIMITES.cedula} dígitos.`) },
+				{ input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula, LIMITES.cedula.max, `La cédula debe tener exactamente 8 dígitos.`) },
       
       ];
 

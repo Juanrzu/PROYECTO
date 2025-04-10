@@ -54,30 +54,16 @@ $row=mysqli_fetch_assoc($result);
 </head>
 <body>
   <div class="d-flex flex-column flex-shrink-0" style="height: 100vh; justify-content: flex-start; align-items: stretch;">
-  <header class="d-flex align-items-center bg-dark text-white px-4 py-2" style="justify-content: space-between; align-items: center;">
-  <div class="prueba">
-  <img class="imagen" src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" align= "right" style="
-  width: 15%;
-  height: 9%;
-  
-  
-  
-  ">
-<img class="imagen2" src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" align= "left" style="
-  width: 15%;
-  height: 9%;
-  "></div>
-  <div class="encabezado" style="text-align: center;">
-     <h5> REPÚBLICA BOLIVARIANA DE VENEZUELA</h5>
-     <h5>  E.P.N CESAR ARTEAGA CASTRO</h5>
-     <h5> CODIGO PLANTEL: 006568032</h5>
-     <h5> SANTA ANA DE CORO ESTADO FALCÓN</h5><br>
-     <br>
-    <br>
-    <br>
-    <br>
-
-  </div>
+  <header class="flex justify-between items-center bg-gray-800 text-white p-4 rounded shadow-md">
+            <img src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" alt="Escudo" class="w-24 h-auto">
+            <div class="text-center">
+                <h5 class="text-lg font-semibold">REPÚBLICA BOLIVARIANA DE VENEZUELA</h5>
+                <h5 class="text-lg">MINISTERIO DEL PODER POPULAR PARA LA EDUCACIÓN</h5>
+                <h5 class="text-lg">E.P.N CESAR ARTEAGA CASTRO</h5>
+                <h5 class="text-lg">CÓDIGO DEA: OD01601114</h5>
+                <h5 class="text-lg">RIF: J-006568032</h5>
+            </div>
+        </header>
 
   <div class="titulo" style="text-align: center;">
   <h4>Constancia de Inscripcion </h4><br>
