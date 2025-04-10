@@ -111,16 +111,18 @@ $row=mysqli_fetch_assoc($result);
 <?php
 $html = ob_get_clean();
 
-require_once 'C:\xampp\htdocs\dashboard\Proyecto\pdf\dompdf\autoload.inc.php';
-use Dompdf\Dompdf;
-$dompdf = new Dompdf();
+// Generar PDF usando Dompdf
+require_once 'D:\Programas\Xammp\htdocs\dashboard\proyecto\pdf\dompdf\autoload.inc.php';
 
+use Dompdf\Dompdf;
+
+$dompdf = new Dompdf();
 $options = $dompdf->getOptions();
 $options->set(array('isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true));
 $dompdf->setOptions($options);
 
 $dompdf->loadHtml($html);
-$dompdf->setPaper('letter', 'portrait ');
+$dompdf->setPaper('letter', 'portrait');
 $dompdf->render();
-$dompdf->stream("archivo.pdf", array("Attachment" => false));
+$dompdf->stream("Constancia_inscripcion.pdf", array("Attachment" => false));
 ?>

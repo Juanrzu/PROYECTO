@@ -1,15 +1,14 @@
 <?php
 session_start();
-ob_start();
 error_reporting(0);
-$usuario = $_SESSION['nombre_usuario'];
-if ($usuario == null || $usuario == ''){
-      header('location:../../login/login.php');
-      die();
-      
-}
+
+
+
+
 include '../../connect.php';
 $id=$_GET['id'];
+
+
 
 
 $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
@@ -39,6 +38,10 @@ $row=mysqli_fetch_assoc($result);
          $idrepresentante = $row ['representante.id'];
          $nombre=strtoupper(trim($nombre));
          $apellido=strtoupper(trim($apellido));
+
+
+
+         
 ?>
 
 <!DOCTYPE html>
@@ -62,7 +65,6 @@ $row=mysqli_fetch_assoc($result);
                 <h5 class="text-lg">CÓDIGO PLANTEL: 006568032</h5>
                 <h5 class="text-lg">SANTA ANA DE CORO, ESTADO FALCÓN</h5>
             </div>
-            <img src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" alt="Escudo" class="w-24 h-auto">
         </header>
 
         <!-- Contenido -->
@@ -93,7 +95,7 @@ $row=mysqli_fetch_assoc($result);
 $html = ob_get_clean();
 
 // Generar PDF usando Dompdf
-require_once 'C:\xampp\htdocs\dashboard\Proyecto\pdf\dompdf\autoload.inc.php';
+require_once 'D:\Programas\Xammp\htdocs\dashboard\proyecto\pdf\dompdf\autoload.inc.php';
 
 use Dompdf\Dompdf;
 

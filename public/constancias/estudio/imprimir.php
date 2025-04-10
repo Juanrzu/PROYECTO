@@ -107,15 +107,14 @@ $seccion = htmlspecialchars($row['seccion_nombre']);
 <?php
 $html = ob_get_clean();
 
-// Generación del PDF con Dompdf
-require_once 'C:\xampp\htdocs\dashboard\Proyecto\pdf\dompdf\autoload.inc.php';
+// Generar PDF usando Dompdf
+require_once 'D:\Programas\Xammp\htdocs\dashboard\proyecto\pdf\dompdf\autoload.inc.php';
 
 use Dompdf\Dompdf;
 
 $dompdf = new Dompdf();
 $options = $dompdf->getOptions();
-$options->set('isHtml5ParserEnabled', true);
-$options->set('isRemoteEnabled', true);
+$options->set(array('isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true));
 $dompdf->setOptions($options);
 
 $dompdf->loadHtml($html);
@@ -123,3 +122,4 @@ $dompdf->setPaper('letter', 'portrait');
 $dompdf->render();
 $dompdf->stream("Constancia_Estudio.pdf", array("Attachment" => false));
 ?>
+

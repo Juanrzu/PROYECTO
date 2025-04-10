@@ -49,7 +49,6 @@ $row=mysqli_fetch_assoc($result);
                 <h5 class="text-lg">CÓDIGO DEA: OD01601114</h5>
                 <h5 class="text-lg">RIF: J-006568032</h5>
             </div>
-            <img src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" alt="Escudo" class="w-24 h-auto">
         </header>
 
         <!-- Contenido -->
@@ -73,22 +72,26 @@ $row=mysqli_fetch_assoc($result);
 
     <!-- Generador del PDF -->
     <?php
-    $html = ob_get_clean();
+$html = ob_get_clean();
 
-    require_once 'C:\xampp\htdocs\dashboard\Proyecto\pdf\dompdf\autoload.inc.php';
+// Generar PDF usando Dompdf
+require_once 'D:\Programas\Xammp\htdocs\dashboard\proyecto\pdf\dompdf\autoload.inc.php';
 
-    use Dompdf\Dompdf;
+use Dompdf\Dompdf;
 
-    $dompdf = new Dompdf();
-    $options = $dompdf->getOptions();
-    $options->set(array('isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true));
-    $dompdf->setOptions($options);
+$dompdf = new Dompdf();
+$options = $dompdf->getOptions();
+$options->set(array('isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true));
+$dompdf->setOptions($options);
 
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper('letter', 'portrait');
-    $dompdf->render();
-    $dompdf->stream("Constancia_Trabajo.pdf", array("Attachment" => false));
-    ?>
+$dompdf->loadHtml($html);
+$dompdf->setPaper('letter', 'portrait');
+$dompdf->render();
+$dompdf->stream("Constancia_trabajadores.pdf", array("Attachment" => false));
+?>
+
+
+    
 </body>
 
 </html>
