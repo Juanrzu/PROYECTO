@@ -1,277 +1,401 @@
 <?php
-    session_start();
-    error_reporting(0);
-    $usuario = $_SESSION['nombre_usuario'];
-    if ($usuario == null || $usuario == ''){
-          header('location:login/login.php');
-          die();
-    }
-    include 'connect.php';
-    include 'contador_sesion.php';
-    
-    
-    $id=$_GET['editarid'];
+session_start();
+error_reporting(0);
+$usuario = $_SESSION['nombre_usuario'];
 
-    //sentencia preparada
-   
-     
-        $sql = "SELECT profesor.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre 
-                FROM profesor 
-                JOIN seccion ON profesor.idseccion = seccion.id 
-                JOIN grados ON profesor.idgrado = grados.id 
-                WHERE profesor.id = ?";
-        $stmt = $connect->prepare($sql);
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        if ($row = $result->fetch_assoc()) {
-            $nombre = $row['nombre'];
-            $apellido = $row['apellido'];
-            $cedula = $row['cedula'];
-            $grado = $row['grado_nombre'];
-            $seccion = $row['seccion_nombre'];
-            $volver = $grado;
-            $volver2 = $seccion;
-        } $stmt->close();
-        
-    
-    //fin
-    ?>
+if ($usuario == null || $usuario == '') {
+    header('location:login/login.php');
+    die();
+}
+
+include 'connect.php';
+include 'contador_sesion.php';
+
+$id = $_GET['editarid'];
+
+// Consulta para obtener los datos del profesor
+$sql = "SELECT profesor.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre 
+        FROM profesor 
+        JOIN seccion ON profesor.idseccion = seccion.id 
+        JOIN grados ON profesor.idgrado = grados.id 
+        WHERE profesor.id = ?";
+$stmt = $connect->prepare($sql);
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($row = $result->fetch_assoc()) {
+    $nombre = $row['nombre'];
+    $apellido = $row['apellido'];
+    $cedula = $row['cedula'];
+    $grado = $row['grado_nombre'];
+    $seccion = $row['seccion_nombre'];
+    $volver = $grado;
+    $volver2 = $seccion;
+}
+$stmt->close();
 
 
+?>
+
+
+<!-- filepath: d:\Programas\Xammp\htdocs\dashboard\proyecto\public\editar_profesor.php -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crud</title>
+    <title>Editar Profesor</title>
     <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/assets/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" href="http://localhost/dashboard/Proyecto/assets/styles.css">
+    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
 </head>
-</head>
 
-<body>
-    <div class="container-all">
-    <main class="contaianer-sm">
-            <!-- Mostrar el mensaje de error aquí con echo -->
-            
-            <?php if (!empty($error)) : ?>
-            <p class="text-danger"><?php echo $error[0]; ?></p>
-        <?php endif; ?>
-            <form method="post"class="col mx-auto needs-validation p-5" id="formulario" novalidate >
-                <div class="mb-3">
-                    <label>Nombre</label>
-                    <input type="text" class="form-control" placeholder="Nombre del Profesor" name="nombre" maxlength="25" id="nombre" autocomplete="off" value=<?php echo "$nombre"; ?> >
-                </div>
-                <div class="mb-3">
-                    <label>Apellido</label>
-                    <input type="text" class="form-control" placeholder="Apellido del Profesor" name="apellido" maxlength="25" id="apellido" autocomplete="off" value=<?php echo "$apellido"; ?> >
-                </div>
-                <div class="mb-3">
-                    <label>Cedula</label>
-                    <input type="number" class="form-control" placeholder="Cedula" name="cedula" id="cedula" autocomplete="off" maxlength="25" value=<?php echo "$cedula"; ?> >
-                </div>
-                <div class="mb-3">
-                      <label>Grado (<b>presione abajo para desplegar las opciones</b>)</label>
-                  <select class="form-control" name="grado"  required>
-                      <option value=1>1</option>
-                      <option value=2>2</option>
-                      <option value=3>3</option>
-                      <option value=4>4</option>
-                      <option value=5>5</option>
-                      <option value=6>6</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                <label>Seccion (<b>presione abajo para desplegar las opciones</b>)</label>
-                    <select class="form-control" name="seccion">
-                        <?php if ($seccion == "A"){?>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <?php     
-                            }else{
-                            ?>
-                            <option value="B">B</option>
-                            <option value="A">A</option>
-                            <?php
-                            }?>
-                    </select>
-                </div>
-                <div class="container-error text-danger mb-3"></div>
-                <div class="mb-3">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Finalizar</button>
-                </div>
-                <div class="mb-3">
-                    <button type="button" onclick="regresarPaginaAnterior()" class="btn btn-primary">Regresar a la página anterior</button>
+<body class="bg-ghost">
+    <div class="container-lg w-full flex flex-col">
+        <main class="w-full flex justify-center items-center xl:px-56 mt-8">
+            <form method="post" id="formulario" class="w-full max-w-screen-sm rounded-md border border-gray-300 p-6 shadow-sm bg-white">
+                <div class="grid grid-cols-1 gap-4">
+                    <!-- Nombre -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+                        <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
+                               placeholder="Nombre del Profesor" maxlength="25" name="nombre" id="nombre" autocomplete="off" value="<?php echo htmlspecialchars($nombre); ?>" required>
+                    </div>
+
+                    <!-- Apellido -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
+                        <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
+                               placeholder="Apellido del Profesor" maxlength="25" name="apellido" id="apellido" autocomplete="off" value="<?php echo htmlspecialchars($apellido); ?>" required>
+                    </div>
+
+                    <!-- Cédula -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Cédula</label>
+                        <input type="number" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
+                               placeholder="Cédula" name="cedula" id="cedula" autocomplete="off" maxlength="25" value="<?php echo htmlspecialchars($cedula); ?>" required>
+                    </div>
+
+                    <!-- Grado -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Grado</label>
+                        <select class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="grado" required>
+                            <option value="1" <?php echo $grado == "1" ? "selected" : ""; ?>>1</option>
+                            <option value="2" <?php echo $grado == "2" ? "selected" : ""; ?>>2</option>
+                            <option value="3" <?php echo $grado == "3" ? "selected" : ""; ?>>3</option>
+                            <option value="4" <?php echo $grado == "4" ? "selected" : ""; ?>>4</option>
+                            <option value="5" <?php echo $grado == "5" ? "selected" : ""; ?>>5</option>
+                            <option value="6" <?php echo $grado == "6" ? "selected" : ""; ?>>6</option>
+                        </select>
+                    </div>
+
+                    <!-- Sección -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Sección</label>
+                        <select class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="seccion" required>
+                            <option value="A" <?php echo $seccion == "A" ? "selected" : ""; ?>>A</option>
+                            <option value="B" <?php echo $seccion == "B" ? "selected" : ""; ?>>B</option>
+                        </select>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="flex flex-col sm:flex-row gap-3 mt-4">
+                        <button type="button" class="w-full px-4 py-3 rounded-md bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Finalizar
+                        </button>
+                        <button type="button" onclick="regresarPaginaAnterior()" 
+                                class="w-full px-4 py-3 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 shadow-sm border border-gray-300">
+                            Regresar
+                        </button>
+                    </div>
                 </div>
 
-
-
-
+                <!-- Modal -->
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog">
-                          <div class="modal-content">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
                             <div class="modal-header">
-                              <h5 class="modal-title fs-5" id="exampleModalLabel"></h5>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <h5 class="modal-title fs-5" id="exampleModalLabel">Confirmación</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                              <span>esta seguro que quiere editar a este profesor?</span>
+                                <span>¿Está seguro de que quiere editar a este profesor?</span>
                             </div>
                             <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                              <button type="submit" class="btn btn-primary" name="submit" data-bs-dismiss="modal">Si</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                <button type="submit" class="btn btn-primary" name="submit" data-bs-dismiss="modal">Sí</button>
                             </div>
-                          </div>
                         </div>
-                      </div>
                     </div>
+                </div>
             </form>
-       
-    </main>
-
+        </main>
     </div>
-            <script>
-              function regresarPaginaAnterior() {
-              window.history.back();
-                  }
-            </script>
-        <script src="http://localhost/dashboard/Proyecto/assets/bootstrap/js/bootstrap.min.js"></script>
-        <script src="http://localhost/dashboard/Proyecto/assets/modal.js"></script>
-        <script src="http://localhost/dashboard/Proyecto/assets/validacion-profesor.js"></script> 
+
+    <script>
+        function regresarPaginaAnterior() {
+            window.history.back();
+        }
+    </script>
+    <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
+    <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById('formulario');
+    const btn = document.getElementById('btn');
+    const inputs = {
+        nombre: document.getElementById('nombre'),
+        apellido: document.getElementById('apellido'),
+        cedula: document.getElementById('cedula'),
+        grado: document.getElementById('grado'),
+        seccion: document.getElementById('seccion')
+    };
+
+    const regex = {
+        soloLetras: /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/,
+        soloNumeros: /^\d+$/
+    };
+
+    const LIMITES = {
+        nombre: { min: 2, max: 25 },
+        apellido: { min: 2, max: 25 },
+        cedula: { min: 7, max: 8 }
+    };
+
+    const mostrarNotificacion = (mensaje, tipo = 'error') => {
+        const sanitizeHTML = (str) => {
+            const temp = document.createElement('div');
+            temp.textContent = str;
+            return temp.innerHTML;
+        };
+
+        const icono = tipo === 'error' ?
+            `<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
+            </svg>` :
+            `<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
+            </svg>`;
+
+        const color = tipo === 'error' ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
+
+        document.querySelectorAll('.notificacion').forEach(el => el.remove());
+
+        const notificacion = document.createElement('div');
+        notificacion.className = `notificacion fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ${color} border flex items-center`;
+        notificacion.innerHTML = `
+            <div class="flex-shrink-0 mr-3">${icono}</div>
+            <div class="text-sm">${sanitizeHTML(mensaje)}</div>
+        `;
+
+        document.body.appendChild(notificacion);
+
+        setTimeout(() => {
+            notificacion.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+            setTimeout(() => notificacion.remove(), 500);
+        }, 4000);
+    };
+
+    const validarCampo = (input, regex = null, minLength = 0, maxLength = Infinity, mensaje = null) => {
+        const valor = input.value.trim();
+        input.classList.remove('border-red-500');
+
+        if (!valor) {
+            return { valido: false, mensaje: mensaje || `El campo ${input.id} no puede estar vacío` };
+        }
+
+        if (regex && !regex.test(valor)) {
+            return { valido: false, mensaje: mensaje || `Formato inválido para ${input.id}` };
+        }
+
+        if (valor.length < minLength) {
+            return { valido: false, mensaje: mensaje || `${input.id} debe tener al menos ${minLength} caracteres` };
+        }
+
+        if (valor.length > maxLength) {
+            return { valido: false, mensaje: mensaje || `${input.id} no puede exceder los ${maxLength} caracteres` };
+        }
+
+        return { valido: true };
+    };
+
+    btn.addEventListener("click", (e) => {
+        Object.values(inputs).forEach(input => input.classList.remove('border-red-500'));
+
+        const validaciones = [
+            { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, LIMITES.nombre.min, LIMITES.nombre.max, `El nombre debe ser válido.`) },
+            { input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, LIMITES.apellido.min, LIMITES.apellido.max, `El apellido debe ser válido.`) },
+            { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, LIMITES.cedula.max, `La cédula debe ser válida.`) }
+        ];
+
+        for (const validacion of validaciones) {
+            if (!validacion.resultado.valido) {
+                e.preventDefault();
+                validacion.input.classList.add('border-red-500');
+                mostrarNotificacion(validacion.resultado.mensaje);
+                return;
+            }
+        }
+
+        // Validar grado
+        const gradoValido = ['1', '2', '3', '4', '5', '6'].includes(inputs.grado.value);
+        if (!gradoValido) {
+            e.preventDefault();
+            inputs.grado.classList.add('border-red-500');
+            mostrarNotificacion('Seleccione un grado válido.');
+            return;
+        }
+
+        // Validar sección
+        const seccionValida = ['A', 'B'].includes(inputs.seccion.value.toUpperCase());
+        if (!seccionValida) {
+            e.preventDefault();
+            inputs.seccion.classList.add('border-red-500');
+            mostrarNotificacion('Seleccione una sección válida.');
+            return;
+        }
+    });
+});
+    </script>
 </body>
 
 </html>
 
 <?php
+if (isset($_POST['submit'])) {
+    $nombre = trim($_POST['nombre']);
+    $apellido = trim($_POST['apellido']);
+    $cedula_nueva = trim($_POST['cedula']);
+    $grado = trim($_POST['grado']);
+    $seccion = strtoupper(trim($_POST['seccion']));
+    $errores = [];
 
-if (isset($_POST['submit'])){
-        $nombre= $_POST['nombre'];
-        $apellido= $_POST['apellido'];
-        $cedula_nueva= $_POST['cedula'];
-        $grado=$_POST['grado'];
-        $seccion=$_POST['seccion'];
-        $seccion= strtoupper($seccion);
-        $error=[];
+    // Validaciones
+    if (empty($nombre) || strlen($nombre) < 2 || strlen($nombre) > 25) {
+        $errores[] = "El nombre debe tener entre 2 y 25 caracteres.";
+    }
 
-        if (empty($nombre) || empty($apellido) || empty($cedula) || empty($grado) || empty($seccion)) {
-            echo "<footer class='error'>
-            <div class='container_title btn btn-danger'>
-                <h5>Los datos no pueden estar vacios</h5>
-            </div>
-        
-            </footer>";
-              
+    if (empty($apellido) || strlen($apellido) < 2 || strlen($apellido) > 25) {
+        $errores[] = "El apellido debe tener entre 2 y 25 caracteres.";
+    }
+
+    if (empty($cedula_nueva) || !ctype_digit($cedula_nueva)) {
+        $errores[] = "La cédula debe contener solo números.";
+    }
+
+    if (empty($grado) || !in_array($grado, ['1', '2', '3', '4', '5', '6'])) {
+        $errores[] = "El grado seleccionado no es válido.";
+    }
+
+    if (empty($seccion) || !in_array($seccion, ['A', 'B'])) {
+        $errores[] = "La sección debe ser 'A' o 'B'.";
+    }
+
+    // Mostrar errores si existen
+    if (!empty($errores)) {
+        foreach ($errores as $error) {
+            echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `<div class='text-sm'>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</div>`;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+            </script>";
+        }
+        exit();
+    }
+
+    // Verificar existencia de grado y sección
+    $sql_grado_exist = "SELECT id FROM grados WHERE nombre = ?";
+    $stmt_grado = $connect->prepare($sql_grado_exist);
+    $stmt_grado->bind_param("s", $grado);
+    $stmt_grado->execute();
+    $result_grado_exist = $stmt_grado->get_result();
+
+    $sql_seccion_exist = "SELECT id FROM seccion WHERE nombre = ?";
+    $stmt_seccion = $connect->prepare($sql_seccion_exist);
+    $stmt_seccion->bind_param("s", $seccion);
+    $stmt_seccion->execute();
+    $result_seccion_exist = $stmt_seccion->get_result();
+
+    if ($result_grado_exist->num_rows > 0 && $result_seccion_exist->num_rows > 0) {
+        $row_grado = $result_grado_exist->fetch_assoc();
+        $grado_id = $row_grado['id'];
+
+        $row_seccion = $result_seccion_exist->fetch_assoc();
+        $seccion_id = $row_seccion['id'];
+
+        // Verificar si la nueva cédula ya existe en otro profesor
+        $sql_verificar_profesor = "SELECT * FROM profesor WHERE cedula = ? AND id != ?";
+        $stmt_verificar = $connect->prepare($sql_verificar_profesor);
+        $stmt_verificar->bind_param("si", $cedula_nueva, $id);
+        $stmt_verificar->execute();
+        $resultado_profesor = $stmt_verificar->get_result();
+
+        if ($resultado_profesor->num_rows > 0) {
+            echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `<div class='text-sm'>La cédula ingresada ya está registrada en otro profesor.</div>`;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+            </script>";
             exit();
         }
-        //preparar sentencia
-        //Verificar Sección
-        if (empty($error)) {
-            if ($seccion === 'A' || $seccion === 'B') {
 
-                $sql_grado_exist = "SELECT id FROM grados WHERE nombre = ?";
-                $stmt_grado = $connect->prepare($sql_grado_exist);
-                $stmt_grado->bind_param("s", $grado);
-                $stmt_grado->execute();
-                $result_grado_exist = $stmt_grado->get_result();
-            
-                $sql_seccion_exist = "SELECT id FROM seccion WHERE nombre = ?";
-                $stmt_seccion = $connect->prepare($sql_seccion_exist);
-                $stmt_seccion->bind_param("s", $seccion);
-                $stmt_seccion->execute();
-                $result_seccion_exist = $stmt_seccion->get_result();
-            
-                $sqlprofe = "SELECT * FROM profesor WHERE cedula = ?";
-                $stmt_profe = $connect->prepare($sqlprofe);
-                $stmt_profe->bind_param("s", $cedula);
-                $stmt_profe->execute();
-                $resultadoprofesor = $stmt_profe->get_result();
-            
-                if ($row_profe = $resultadoprofesor->fetch_assoc()) {
-                    $profesor = $row_profe['id'];
-                }
-            
-                $stmt_grado->close();
-                $stmt_seccion->close();
-                $stmt_profe->close();
-                //fin
-            }}
+        // Verificar si ya hay 2 profesores asignados a este grado y sección
+        $sql_count = "SELECT COUNT(*) AS total FROM profesor WHERE idgrado = ? AND idseccion = ?";
+        $stmt_count = $connect->prepare($sql_count);
+        $stmt_count->bind_param("ii", $grado_id, $seccion_id);
+        $stmt_count->execute();
+        $result_count = $stmt_count->get_result();
+        $row_count = $result_count->fetch_assoc();
+        $total_profesores = $row_count['total'];
 
-          
-            if ($result_grado_exist->num_rows > 0 && $result_seccion_exist->num_rows > 0) {
-             //preparar sentencia
-                // Obtener IDs de grado y sección
-                $row_grado = $result_grado_exist->fetch_assoc();
-                $grado_id = $row_grado['id'];
-            
-                $row_seccion = $result_seccion_exist->fetch_assoc();
-                $seccion_id = $row_seccion['id'];
-            
-                // Verificar si la nueva cédula ya existe en otro profesor
-                $sql_verificar_estudiante = "SELECT * FROM profesor WHERE cedula = ? AND id != ?";
-                $stmt_verificar = $connect->prepare($sql_verificar_estudiante);
-                $stmt_verificar->bind_param("si", $cedula_nueva, $id);
-                $stmt_verificar->execute();
-                $resultado_estudiante = $stmt_verificar->get_result();
-            
-                if ($resultado_estudiante->num_rows > 0) {
-                    echo "<footer class='error'>
-                            <div class='container_title btn btn-danger'>
-                                <h5>La nueva cédula ingresada coincide con otro profesor</h5>
-                            </div>
-                          </footer>";
-                    $stmt_verificar->close();
-                    exit;
-                }
-                $stmt_verificar->close();
-                // Consulta para contar cuántos profesores hay asignados a un grado y sección específicos
-                    $sql_count = "SELECT COUNT(*) AS total FROM profesor WHERE idgrado = ? AND idseccion = ?";
-                    $stmt = $connect->prepare($sql_count);
-                    $stmt->bind_param("ii", $grado_id, $seccion_id);
-                    $stmt->execute();
-                    $result_count = $stmt->get_result();
-                    $row_count = $result_count->fetch_assoc();
-                    $total_profesores = $row_count['total'];
+        if ($total_profesores >= 2) {
+            echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `<div class='text-sm'>Ya hay 2 profesores asignados a este grado y sección.</div>`;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+            </script>";
+            exit();
+        }
 
+        // Actualizar profesor
+        $sql = "UPDATE profesor SET nombre = ?, apellido = ?, cedula = ?, idgrado = ?, idseccion = ? WHERE id = ?";
+        $stmt = $connect->prepare($sql);
+        $stmt->bind_param("sssiii", $nombre, $apellido, $cedula_nueva, $grado_id, $seccion_id, $id);
 
-                    // Verificar si ya hay 2 profesores asignados a este grado y sección
-                    if ($total_profesores >= 2) {
-                        echo "<footer class='error'>
-                                <div class='container_title btn btn-danger'>
-                                    <h5>Ya hay 2 profesores asignados a este grado y sección</h5>
-                                </div>
-                            </footer>";
-                        exit();
-                    }
-            
-                // Actualizar profesor
-                $sql = "UPDATE profesor SET nombre = ?, apellido = ?, cedula = ?, idgrado = ?, idseccion = ? WHERE id = ?";
-                $stmt = $connect->prepare($sql);
-                if ($stmt) {
-                    $stmt->bind_param("sssiii", $nombre, $apellido, $cedula_nueva, $grado_id, $seccion_id, $id);
-                    }
-                
-                //ingresar insert en bitacora
-                $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
-                $stmt2 = $connect->prepare($sql2);
-                $accion = "Se actualizaron los datos de un profesor.";
-                $datos_accion = "nombre = $nombre, apellido = $apellido, cedula = $cedula, grado = $grado, seccion = $seccion";
-                $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
-                $resultInsert2 = $stmt2->execute();
-                
-                //aqui termina
-    
-        if($stmt->execute()){
-            //echo "Se ha editado el profesor";
-            echo" <script> window.location='ver_grado.php? gradonombre= $volver && seccion= $volver2 '</script>";
-            $stmt->close();
-            //finn
-        }else{
-            die (mysqli_error($connect));
-        } include 'connect.php';
+        if ($stmt->execute()) {
+            // Insertar en bitácora
+            $sql_bitacora = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+            $stmt_bitacora = $connect->prepare($sql_bitacora);
+            $accion = "Se actualizaron los datos de un profesor.";
+            $datos_accion = "nombre = $nombre, apellido = $apellido, cedula = $cedula_nueva, grado = $grado, seccion = $seccion";
+            $stmt_bitacora->bind_param("sss", $accion, $datos_accion, $usuario);
+            $stmt_bitacora->execute();
+
+            echo "<script> window.location='ver_grado.php?gradonombre=$volver&seccion=$volver2'; </script>";
+        } else {
+            echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `<div class='text-sm'>Error al actualizar el profesor.</div>`;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+            </script>";
+        }
     } else {
-        array_push ($error, "Error, La sección no existe. Ingrese al alumno en la sección 'A' o 'B'.");
-        }}
+        echo "<script>
+            const notificacion = document.createElement('div');
+            notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+            notificacion.innerHTML = `<div class='text-sm'>El grado o la sección no existen.</div>`;
+            document.body.appendChild(notificacion);
+            setTimeout(() => notificacion.remove(), 4000);
+        </script>";
+    }
+}
 ?>
