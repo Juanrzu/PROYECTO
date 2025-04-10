@@ -2,104 +2,91 @@
 session_start();
 ob_start();
 error_reporting(0);
-
-// Validar que el usuario esté autenticado
-$usuario = $_SESSION['nombre_usuario'] ?? '';
-if (empty($usuario)) {
-    header('Location: ../../login/login.php');
-    die();
+$usuario = $_SESSION['nombre_usuario'];
+if ($usuario == null || $usuario == ''){
+      header('location:../../login/login.php');
+      die();
+      
 }
+include '../../connect.php';
+$id=$_GET['id'];
 
-// Conectar a la base de datos
-require_once '../../connect.php';
 
-// Validar y sanitizar el parámetro 'id'
-$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-if (!$id) {
-    die("ID inválido o ausente");
-}
+$sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
+representante.nombre as representante_nombre, representante.apellido as representante_apellido,
+representante.cedula as representante_cedula, representante.telefono as representante_telefono,
+representante.correo as representante_correo 
+FROM estudiantes 
+JOIN seccion ON estudiantes.idseccion = seccion.id 
+JOIN grados ON estudiantes.idgrado = grados.id
+JOIN representante On estudiantes.idrepresentante = representante.id
+WHERE estudiantes.id=$id ";
 
-// Preparar consulta SQL para evitar inyección
-$query = "SELECT 
-    e.*, 
-    s.nombre AS seccion_nombre, 
-    g.nombre AS grado_nombre, 
-    r.nombre AS representante_nombre, 
-    r.apellido AS representante_apellido,
-    r.cedula AS representante_cedula, 
-    r.telefono AS representante_telefono,
-    r.correo AS representante_correo 
-FROM estudiantes e
-JOIN seccion s ON e.idseccion = s.id 
-JOIN grados g ON e.idgrado = g.id
-JOIN representante r ON e.idrepresentante = r.id
-WHERE e.id = ?";
-
-$stmt = mysqli_prepare($connect, $query);
-if ($stmt) {
-    mysqli_stmt_bind_param($stmt, 'i', $id);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    if (!$row = mysqli_fetch_assoc($result)) {
-        die("No se encontró el estudiante");
-    }
-    mysqli_stmt_close($stmt);
-} else {
-    die("Error en la consulta");
-}
-
-// Formatear los datos para mostrarlos
-$nombre = strtoupper(trim($row['nombre']));
-$apellido = strtoupper(trim($row['apellido']));
-$cen = htmlspecialchars($row['cen']);
-$nacimiento = htmlspecialchars($row['nacimiento']);
-$sexo = htmlspecialchars($row['sexo']);
-$representante = htmlspecialchars($row['representante_nombre']);
-$representante_apellido = htmlspecialchars($row['representante_apellido']);
-$cedula = htmlspecialchars($row['representante_cedula']);
-$telefono = htmlspecialchars($row['representante_telefono']);
-$correo = htmlspecialchars($row['representante_correo']);
-$grado = htmlspecialchars($row['grado_nombre']);
-$seccion = htmlspecialchars($row['seccion_nombre']);
+$result = mysqli_query($connect, $sql);
+$row=mysqli_fetch_assoc($result);
+         $nombre=$row['nombre'];
+         $apellido=$row['apellido'];
+         $cen=$row['cen'];
+         $nacimiento=$row['nacimiento'];
+         $sexo=$row['sexo'];
+         $representante=$row['representante_nombre'];
+         $representante_apellido=$row['representante_apellido'];
+         $cedula=$row['representante_cedula'];
+         $telefono=$row['representante_telefono'];
+         $correo=$row['representante_correo'];
+         $grado=$row['grado_nombre'];
+         $seccion=$row['seccion_nombre'];
+         $idrepresentante = $row ['representante.id'];
+         $nombre=strtoupper(trim($nombre));
+         $apellido=strtoupper(trim($apellido));
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Constancia de Aceptación</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
+  <title>constancias</title>
+
 </head>
-<body>
-    <div class="container py-4">
+<body class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+    <div class="container mx-auto py-6">
         <!-- Cabecera -->
-        <header class="d-flex justify-content-between align-items-center bg-dark text-white p-3 rounded">
-            <img src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" alt="Escudo" class="img-fluid" style="width: 15%;">
+        <header class="flex justify-between items-center bg-gray-800 text-white p-4 rounded shadow-md">
+            <img src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" alt="Escudo" class="w-24 h-auto">
             <div class="text-center">
-                <h5>REPÚBLICA BOLIVARIANA DE VENEZUELA</h5>
-                <h5>E.P.N CESAR ARTEAGA CASTRO</h5>
-                <h5>CÓDIGO PLANTEL: 006568032</h5>
-                <h5>SANTA ANA DE CORO, ESTADO FALCÓN</h5>
+                <h5 class="text-lg font-semibold uppercase">REPÚBLICA BOLIVARIANA DE VENEZUELA</h5>
+                <h5 class="text-lg uppercase">E.P.N CESAR ARTEAGA CASTRO</h5>
+                <h5 class="text-lg">CÓDIGO PLANTEL: 006568032</h5>
+                <h5 class="text-lg">SANTA ANA DE CORO, ESTADO FALCÓN</h5>
             </div>
+            <img src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" alt="Escudo" class="w-24 h-auto">
         </header>
 
         <!-- Contenido -->
-        <main class="my-4 text-center">
-            <h4>Constancia de Aceptación</h4>
-            <p>
-                Reciba un cordial saludo de parte del personal que labora en la E.P.N CESAR ARTEAGA CASTRO, ubicada en la Av. Los Orumos de la Ciudad de Coro, Municipio Miranda. Por medio de la presente me dirijo a usted para hacer de su conocimiento que el estudiante <b><?= $nombre . ' ' . $apellido ?></b>, C.E\C.I N° <b><?= $cen ?></b>, de ______ años de edad, fue inscrito(a) en este plantel para cursar el: <b><?= $grado ?></b> grado, Sección "<b><?= $seccion ?></b>" Año Escolar ______.
+        <main class="bg-white dark:bg-gray-800 mt-8 p-6 rounded shadow-md">
+            <h4 class="text-xl font-bold text-center mb-4">Constancia de Aceptación</h4>
+            <p class="text-justify leading-relaxed">
+                Reciba un cordial saludo de parte del personal que labora en la E.P.N CESAR ARTEAGA CASTRO, ubicada en la Av. Los Orumos de la Ciudad de Coro, Municipio Miranda. Por medio de la presente me dirijo a usted para hacer de su conocimiento que el estudiante <b class="font-semibold"><?= $nombre . ' ' . $apellido ?></b>, C.E\C.I N° <b class="font-semibold"><?= $cen ?></b>, de ______ años de edad, fue inscrito(a) en este plantel para cursar el: <b class="font-semibold"><?= $grado ?></b> grado, Sección "<b class="font-semibold"><?= $seccion ?></b>" Año Escolar ______.
             </p>
-            <p>
-                Representante: <b><?= $representante ?></b>, C.I N° <b><?= $cedula ?></b>.
+            <p class="text-justify leading-relaxed mt-4">
+                Representante: <b class="font-semibold"><?= $representante ?></b>, C.I N° <b class="font-semibold"><?= $cedula ?></b>.
             </p>
-            <p>
+            <p class="text-justify leading-relaxed mt-4">
                 CONSTANCIA QUE SE EXPIDE EN SANTA ANA DE CORO, A LOS ______ DÍAS DEL MES DE ______ DEL AÑO ______.
             </p>
+            <div class="flex justify-end mt-6">
+                <p>(Sello)</p>
+            </div>
+            <div class="text-center mt-6">
+                <p>_________________</p>
+                <p class="font-semibold">Directora</p>
+            </div>
         </main>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 <?php

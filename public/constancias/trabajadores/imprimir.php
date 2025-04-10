@@ -29,11 +29,12 @@ $row=mysqli_fetch_assoc($result);
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display</title>
-    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/constancias/trabajadores/styles.css">
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
+  <title>constancias</title>
+
 </head>
 
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
@@ -89,3 +90,5 @@ $row=mysqli_fetch_assoc($result);
     $dompdf->stream("Constancia_Trabajo.pdf", array("Attachment" => false));
     ?>
 </body>
+
+</html>

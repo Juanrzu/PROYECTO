@@ -45,13 +45,13 @@ $row=mysqli_fetch_assoc($result);
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display</title>
-    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/assets/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/constancias/estudio/styles.css">
-</head>
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
+  <title>constancias</title>
 
+</head>
 <body>
   <div class="d-flex flex-column flex-shrink-0" style="height: 100vh; justify-content: flex-start; align-items: stretch;">
   <header class="d-flex align-items-center bg-dark text-white px-4 py-2" style="justify-content: space-between; align-items: center;">

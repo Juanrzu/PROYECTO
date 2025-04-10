@@ -88,8 +88,8 @@ if (!isset($usuario)) {
 
                 $result = mysqli_query($connect, $sql);
                 if ($result && mysqli_num_rows($result) > 0) {
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        echo '<tr class="border-b border-gray-300 dark:border-gray-700 hover:bg-gray-50">
+                  while ($row = mysqli_fetch_assoc($result)) {
+                    echo '<tr class="border-b border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
                             <td class="px-4 py-3">' . htmlspecialchars($row['nombre']) . '</td>
                             <td class="px-4 py-3">' . htmlspecialchars($row['apellido']) . '</td>
                             <td class="px-4 py-3">' . htmlspecialchars($row['cen']) . '</td>
@@ -102,14 +102,19 @@ if (!isset($usuario)) {
                             <td class="px-4 py-3">' . htmlspecialchars($row['grado_nombre']) . '</td>
                             <td class="px-4 py-3">' . htmlspecialchars($row['seccion_nombre']) . '</td>
                             <td class="px-4 py-3 text-center">
-                                <a href="imprimir.php?id=' . htmlspecialchars($row['id']) . '" class="text-blue-600 hover:text-blue-800 rounded-md px-3 py-2 transition hover:bg-blue-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                                    </svg>
-                                </a>
+                                <button class="w-full bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors ease-in-out duration-200">
+                                    <a href="imprimir.php?id=' . htmlspecialchars($row['id']) . '" class="block p-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none">
+                                            <g id="File / Cloud_Upload">
+                                                <path id="Vector" d="M12 16V10M12 10L9 12M12 10L15 12M23 15C23 12.7909 21.2091 11 19 11C18.9764 11 18.9532 11.0002 18.9297 11.0006C18.4447 7.60802 15.5267 5 12 5C9.20335 5 6.79019 6.64004 5.66895 9.01082C3.06206 9.18144 1 11.3498 1 13.9999C1 16.7613 3.23858 19.0001 6 19.0001L19 19C21.2091 19 23 17.2091 23 15Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </g>
+                                        </svg>
+                                    </a>
+                                </button>
                             </td>
                         </tr>';
-                    }
+                }
+                
                 } else {
                     echo '<tr>
                         <td colspan="12" class="px-4 py-3 text-center text-sm text-gray-500">No se encontraron estudiantes para este grado y sección.</td>
