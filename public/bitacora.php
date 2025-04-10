@@ -75,61 +75,68 @@ include 'contador_sesion.php';
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <?php while ($row = $result->fetch_assoc()): ?>
-                    <tr class="hover:bg-gray-50">
+                  <tr class="hover:bg-gray-50">
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-black-500"><?= htmlspecialchars($row['accion']) ?></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-black-500"><?= htmlspecialchars($row['fecha_hora']) ?></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-black-500"><?= htmlspecialchars($row['usuario']) ?></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-black-500">
                       <!-- Botón para abrir el modal -->
                       <button 
-                      type="button" 
-                      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                      onclick="document.getElementById('modal-accion-<?= htmlspecialchars($row['id']) ?>').classList.remove('hidden')"
+                        type="button" 
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                        onclick="document.getElementById('modal-accion-<?= htmlspecialchars($row['id']) ?>').classList.remove('hidden')"
                       >
-                      Ver detalles
+                        Ver detalles
                       </button>
 
+                      <!-- Modal mejorado -->
                       <!-- Modal -->
-                      <div id="modal-accion-<?= htmlspecialchars($row['id']) ?>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                      <div class="bg-white rounded-lg shadow-lg w-full max-w-md dark:bg-gray-800 mx-4">
-                        <div class="p-6">
-                        <h3 class="font-bold text-lg text-gray-800 dark:text-white mb-4">Detalles de la Acción</h3>
-                        <ul class="space-y-2 text-gray-700 dark:text-gray-300">
-                          <?php
-                          // Parseamos los datos dinámicamente
-                          $pares = explode(',', $row['accion']);
-                          $datos = [];
-                          foreach ($pares as $par) {
-                          if (strpos($par, '=') !== false) {
-                            list($clave, $valor) = explode('=', trim($par));
-                            $datos[trim($clave)] = trim($valor);
-                          }
-                          }
+<!-- Modal mejorado con scroll -->
+<div id="modal-accion-<?= htmlspecialchars($row['id']) ?>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col dark:bg-gray-800">
+    <!-- Header -->
+    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+      <h3 class="text-xl font-bold text-gray-800 dark:text-white">Detalles de la acción</h3>
+    </div>
+    
+    <!-- Contenido con scroll (¡Aquí está la barra!) -->
+    <div class="p-4 overflow-y-auto">  <!-- `overflow-y-auto` activa la barra solo cuando el contenido excede la altura -->
+      <div class="space-y-3">
+        <?php
+        // Parseo mejorado de datos (incluye trim() y validación)
+        $pares = array_filter(explode(',', $row['datos_accion']));
+        foreach ($pares as $par) {
+          $partes = explode('=', $par, 2); // Limita a 2 partes para valores con "=" incluido
+          if (count($partes) === 2) {
+            $clave = trim($partes[0]);
+            $valor = trim($partes[1]);
+            echo '
+            <div class="grid grid-cols-3 gap-2 text-sm">
+              <div class="font-medium text-gray-800 dark:text-gray-300">' . htmlspecialchars($clave) . '</div>
+              <div class="col-span-2 text-gray-500 dark:text-gray-200 break-all">' . htmlspecialchars($valor) . '</div>
+            </div>';
+          }
+        }
+        ?>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+      <button
+        onclick="document.getElementById('modal-accion-<?= htmlspecialchars($row['id']) ?>').classList.add('hidden')"
+        class="w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg dark:bg-gray-700 dark:hover:bg-gray-600"
+      >
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>
 
-                          // Mostramos los datos en formato uniforme
-                          if (!empty($datos)): ?>
-                          <?php foreach ($datos as $clave => $valor): ?>
-                            <li><strong><?= htmlspecialchars($row['datos_accion']) ?></li>
-                          <?php endforeach; ?>
-                          <?php else: ?>
-                          <li>No hay datos disponibles para esta acción.</li>
-                          <?php endif; ?>
-                        </ul>
-                        </div>
-                        <!-- Botón para cerrar -->
-                        <div class="flex justify-end p-4 border-t border-gray-200 dark:border-gray-700">
-                        <button
-                          type="button"
-                          class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-                          onclick="document.getElementById('modal-accion-<?= htmlspecialchars($row['id']) ?>').classList.add('hidden')"
-                        >
-                          Cerrar
-                        </button>
-                        </div>
-                      </div>
-                      </div>
+
                     </td>
-                    </tr>
+                  </tr>
+
                 <?php endwhile; ?>
               </tbody>
             </table>
