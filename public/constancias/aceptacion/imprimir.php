@@ -109,6 +109,7 @@ $html = ob_get_clean();
 
 // Configuración y generación del PDF usando Dompdf
 require_once 'C:\xampp\htdocs\dashboard\Proyecto\pdf\dompdf\autoload.inc.php';
+
 use Dompdf\Dompdf;
 
 $dompdf = new Dompdf();
@@ -116,6 +117,7 @@ $options = $dompdf->getOptions();
 $options->set('isHtml5ParserEnabled', true);
 $dompdf->setOptions($options);
 
+$dompdf->setOptions($options);
 $dompdf->loadHtml($html);
 $dompdf->setPaper('letter', 'portrait');
 $dompdf->render();
