@@ -80,7 +80,7 @@ $row=mysqli_fetch_assoc($result);
   </div>
 
   <div class="titulo" style="text-align: center;">
-  <h4>Constancia de Estudio </h4><br>
+  <h4>Constancia de Aceptacion </h4><br>
   </div>
 
   <div class="texto" 
@@ -112,15 +112,17 @@ $row=mysqli_fetch_assoc($result);
 $html = ob_get_clean();
 
 require_once 'C:\xampp\htdocs\dashboard\Proyecto\pdf\dompdf\autoload.inc.php';
+
 use Dompdf\Dompdf;
 $dompdf = new Dompdf();
 
 $options = $dompdf->getOptions();
-$options->set(array('isHtml5ParserEnabled' => true));
-$dompdf->setOptions($options);
+$options->set(array('isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true));
 
+$dompdf->setOptions($options);
 $dompdf->loadHtml($html);
 $dompdf->setPaper('letter', 'portrait ');
 $dompdf->render();
 $dompdf->stream("archivo.pdf", array("Attachment" => false));
+
 ?>
