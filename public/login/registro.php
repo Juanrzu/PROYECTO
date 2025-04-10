@@ -366,7 +366,16 @@ if (isset($_POST['registrar'])) {
         }
         exit();
     }
-
+    if ($campo === 'nombre_usuario' && strtolower($valor) === 'admin') {
+        echo "<script>
+            const notificacion = document.createElement('div');
+            notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+            notificacion.innerHTML = `<span>Ya se encuentra un usuario administrador ingresado</span>`;
+            document.body.appendChild(notificacion);
+            setTimeout(() => notificacion.remove(), 4000);
+        </script>";
+        exit();
+    }
     // Validar unicidad de campos
     function validarUnicidad($connect, $campo, $valor, $mensaje) {
         $sql = "SELECT COUNT(*) as total FROM usuario WHERE $campo = ?";
