@@ -39,7 +39,7 @@ $stmt->close();
 ?>
 
 
-<!-- filepath: d:\Programas\Xammp\htdocs\dashboard\proyecto\public\editar_profesor.php -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -60,27 +60,27 @@ $stmt->close();
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
                         <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
-                               placeholder="Nombre del Profesor" maxlength="25" name="nombre" id="nombre" autocomplete="off" value="<?php echo htmlspecialchars($nombre); ?>" required>
+                               placeholder="Nombre del Profesor" maxlength="25" name="nombre" id="nombre" autocomplete="off" value="<?php echo htmlspecialchars($nombre); ?>" >
                     </div>
 
                     <!-- Apellido -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
                         <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
-                               placeholder="Apellido del Profesor" maxlength="25" name="apellido" id="apellido" autocomplete="off" value="<?php echo htmlspecialchars($apellido); ?>" required>
+                               placeholder="Apellido del Profesor" maxlength="25" name="apellido" id="apellido" autocomplete="off" value="<?php echo htmlspecialchars($apellido); ?>" >
                     </div>
 
                     <!-- Cédula -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Cédula</label>
                         <input type="number" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
-                               placeholder="Cédula" name="cedula" id="cedula" autocomplete="off" maxlength="25" value="<?php echo htmlspecialchars($cedula); ?>" required>
+                               placeholder="Cédula" name="cedula" id="cedula" autocomplete="off" maxlength="25" value="<?php echo htmlspecialchars($cedula); ?>" >
                     </div>
 
                     <!-- Grado -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Grado</label>
-                        <select class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="grado" required>
+                        <select class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="grado" >
                             <option value="1" <?php echo $grado == "1" ? "selected" : ""; ?>>1</option>
                             <option value="2" <?php echo $grado == "2" ? "selected" : ""; ?>>2</option>
                             <option value="3" <?php echo $grado == "3" ? "selected" : ""; ?>>3</option>
@@ -93,42 +93,53 @@ $stmt->close();
                     <!-- Sección -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Sección</label>
-                        <select class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="seccion" required>
+                        <select class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="seccion" >
                             <option value="A" <?php echo $seccion == "A" ? "selected" : ""; ?>>A</option>
                             <option value="B" <?php echo $seccion == "B" ? "selected" : ""; ?>>B</option>
                         </select>
                     </div>
 
-                    <!-- Botones -->
-                    <div class="flex flex-col sm:flex-row gap-3 mt-4">
-                        <button type="button" class="w-full px-4 py-3 rounded-md bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                            Finalizar
-                        </button>
-                        <button type="button" onclick="regresarPaginaAnterior()" 
-                                class="w-full px-4 py-3 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 shadow-sm border border-gray-300">
-                            Regresar
-                        </button>
-                    </div>
-                </div>
+              <!-- Botones -->
+      <div class="flex flex-col sm:flex-row gap-3 mt-4">
+        <button type="button" data-modal-target="default-modal" data-modal-toggle="default-modal" 
+                class="w-full px-4 py-3 rounded-md bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm">
+          Finalizar
+        </button>
+        <button type="button" onclick="regresarPaginaAnterior()" 
+                class="w-full px-4 py-3 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 shadow-sm border border-gray-300">
+          Regresar
+        </button>
+      </div>
+    </div>
 
-                <!-- Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title fs-5" id="exampleModalLabel">Confirmación</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <span>¿Está seguro de que quiere editar a este profesor?</span>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                                <button type="submit" class="btn btn-primary" name="submit" data-bs-dismiss="modal">Sí</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+               <!-- Modal -->
+    <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
+      <div class="relative p-4 max-h-full">
+        <div class="relative bg-white rounded-md shadow-md border border-gray-300">
+          <div class="flex items-center justify-between p-4 border-b border-gray-300">
+            <h3 class="text-lg font-semibold text-gray-700">Confirmación</h3>
+            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center" data-modal-hide="default-modal">
+              <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+              </svg>
+            </button>
+          </div>
+          <div class="p-4 space-y-4">
+            <p class="text-sm text-gray-600">¿Está seguro que quiere registrar este profesor?</p>
+          </div>
+          <div class="flex items-center p-4 border-t border-gray-300">
+            <button data-modal-hide="default-modal" type="submit" name="submit" id="btn" 
+                    class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm">
+              Confirmar
+            </button>
+            <button data-modal-hide="default-modal" type="button" 
+                    class="px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 shadow-sm border border-gray-300">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
             </form>
         </main>
     </div>
