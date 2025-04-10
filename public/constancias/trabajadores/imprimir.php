@@ -36,84 +36,56 @@ $row=mysqli_fetch_assoc($result);
     <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/constancias/trabajadores/styles.css">
 </head>
 
-<body>
-  <div class="d-flex flex-column flex-shrink-0" style="height: 100vh; justify-content: flex-start; align-items: stretch;">
-  <header class="d-flex align-items-center bg-dark text-white px-4 py-2" style="justify-content: space-between; align-items: center;">
-  
-  <div class="prueba">
-  <img class="imagen" src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" align= "right" style="
-  width: 15%;
-  height: 9%;
-  
-  
-  
-  ">
-<img class="imagen2" src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" align= "left" style="
-  width: 15%;
-  height: 9%;
-  "></div>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+    <div class="container mx-auto py-6">
+        <!-- Cabecera -->
+        <header class="flex justify-between items-center bg-gray-800 text-white p-4 rounded shadow-md">
+            <img src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" alt="Escudo" class="w-24 h-auto">
+            <div class="text-center">
+                <h5 class="text-lg font-semibold">REPÚBLICA BOLIVARIANA DE VENEZUELA</h5>
+                <h5 class="text-lg">MINISTERIO DEL PODER POPULAR PARA LA EDUCACIÓN</h5>
+                <h5 class="text-lg">E.P.N CESAR ARTEAGA CASTRO</h5>
+                <h5 class="text-lg">CÓDIGO DEA: OD01601114</h5>
+                <h5 class="text-lg">RIF: J-006568032</h5>
+            </div>
+            <img src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" alt="Escudo" class="w-24 h-auto">
+        </header>
 
+        <!-- Contenido -->
+        <main class="bg-white dark:bg-gray-800 mt-8 p-6 rounded shadow-md">
+            <h4 class="text-center text-xl font-bold mb-4">Constancia de Trabajo</h4>
+            <p class="text-justify leading-relaxed">
+                Quien suscribe, LICDA. GIANNA FERRO, portadora de la Cédula de Identidad N° 15.238.553, en mi condición de Directora de la Escuela Primaria Nacional "Cesar Arteaga Castro", Código de Plantel 006568032, que funciona en la Av. Los Orumos con calle Ali Primera, Sector San Bosco del Municipio Miranda, Estado Falcón. Por medio de la presente, hace constar que el ciudadano: <b><?= $nombre . ' ' . $apellido ?></b>, titular de la Cédula de Identidad N° <b><?= $cedula ?></b>, labora en este plantel como personal: <b><?= $rol ?></b>, desde el ______ hasta la presente fecha ______.
+            </p>
+            <p class="text-justify leading-relaxed mt-4">
+                Constancia que se expide a petición de parte interesada en Santa Ana de Coro, a los ______ días del mes de ______ del año ______.
+            </p>
+            <div class="flex justify-end mt-6">
+                <p>(Sello)</p>
+            </div>
+            <div class="text-center mt-6">
+                <p>_________________</p>
+                <p>Directora</p>
+            </div>
+        </main>
+    </div>
 
+    <!-- Generador del PDF -->
+    <?php
+    $html = ob_get_clean();
 
+    require_once 'C:\xampp\htdocs\dashboard\Proyecto\pdf\dompdf\autoload.inc.php';
 
-  <div class="encabezado" style="text-align: center;">
-     <h5> REPÚBLICA BOLIVARIANA DE VENEZUELA</h5>
-     <h5>  MINISTERIO DEL PODER POPILAR PARA LA EDUCACION</h5>
-     <h5>  E.P.N CESAR ARTEAGA CASTRO</h5>
-     <h5> CODIGO DEA: : OD01601114</h5>
-     <h5> RIF: J-006568032</h5>
-    <br>
-    <br>
-    <br>
-  </div>
+    use Dompdf\Dompdf;
 
-  <div class="titulo" style="text-align: center;">
-  <h4>Constancia de Trabajo </h4><br>
-  </div>
+    $dompdf = new Dompdf();
+    $options = $dompdf->getOptions();
+    $options->set(array('isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true));
+    $dompdf->setOptions($options);
 
-  <div class="texto" 
-  style="text-align: center; 
-  line-height: 2;">
-  <p>Quien suscribe, LICDA. GIANNA FERRO portadora de la Cédula de Identidad N° 15.238.553, en mi condición de Directora de la 
-    Escuela Primaria Nacional "Cesar Arteaga Castro". Código de Plantel 006568032, que funciona en la Av. los Orumos con calle Ali Primera, Sector San Bosco del Municipio Miranda, Estado Falcón. Por medio de la presente, hace constar que él Ciudadano: <b><?php echo "$nombre $apellido" ?></b>.  
-    Titular de la Cedula de Identidad N° <b><?php echo "$cedula"; ?></b>. 
-    Labora en este plantel como personal: <b><?php echo "$rol" ?>:</b>. 
-     desde el________ hasta la presente fecha__________<p>
-
-      
- <p> Constancia que se expide a petición de parte interesada en Santa Ana de Coro a los ______ días del mes de:______ del año _____</p>
-
-
-  <div class="titulo" style="text-align: right;">
-  <p>(Sello)</p><br>
-  </div>
-
-  <div class="titulo" style="text-align: center;">
-  <p>_______________ </p>
-  <p>Directora</p>
-</div>
-  
-</header>
-
-
-</html>
-
-<?php
-$html = ob_get_clean();
-
-require_once 'C:\xampp\htdocs\dashboard\Proyecto\pdf\dompdf\autoload.inc.php';
-
-use Dompdf\Dompdf;
-$dompdf = new Dompdf();
-
-$options = $dompdf->getOptions();
-$options->set(array('isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true));
-
-$dompdf->setOptions($options);
-$dompdf->loadHtml($html);
-$dompdf->setPaper('letter', 'portrait ');
-$dompdf->render();
-$dompdf->stream("archivo.pdf", array("Attachment" => false));
-
-
-?>
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('letter', 'portrait');
+    $dompdf->render();
+    $dompdf->stream("Constancia_Trabajo.pdf", array("Attachment" => false));
+    ?>
+</body>
