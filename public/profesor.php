@@ -349,6 +349,7 @@ if (isset($_POST['submit'])) {
     $resultgrado = $stmt->get_result();
     $rowgrado = $resultgrado->fetch_assoc();
     $idgrado = $rowgrado['id'] ?? null;
+    
 
     $sqlseccion = "SELECT id FROM seccion WHERE nombre = ?";
     $stmt = $connect->prepare($sqlseccion);
@@ -407,6 +408,15 @@ if (isset($_POST['submit'])) {
         exit();
     }
 
+
+ //ingresar insert en bitacora
+ $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+ $stmt2 = $connect->prepare($sql2);
+ $accion = "Se Insertó un nuevo profesor.";
+ $datos_accion = "Informacion: nombre = $nombre, apellido = $apellido, cedula = $cedula, grado = $grado, seccion = $seccion";
+ $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
+ $resultInsert2 = $stmt2->execute();
+//fin
     // Insertar profesor en la base de datos
     $sql = "INSERT INTO profesor (nombre, apellido, cedula, idgrado, idseccion) VALUES (?, ?, ?, ?, ?)";
     $stmt = $connect->prepare($sql);

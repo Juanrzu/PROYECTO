@@ -214,7 +214,15 @@ if (isset($_POST['registrar'])){
                 exit;
             }
 
-      
+       //ingresar insert en bitacora 
+       $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+       $datos_accion = "Informacion: nombre = $nombre, apellido = $apellido, cedula = $cedula, telefono = $codigo, rol = $rol";
+       $stmt2 = $connect->prepare($sql2);
+       $accion= "Se agrego a un trabajador.";
+       $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
+       $resultInsert2 = $stmt2->execute();
+         //aqui termina
+
             
         // Inserción en la tabla de estudiantes
         $sql = "INSERT INTO trabajadores (nombre, apellido, cedula, telefono,rol ) 
