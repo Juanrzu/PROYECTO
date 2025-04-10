@@ -2,128 +2,122 @@
 session_start();
 ob_start();
 error_reporting(0);
-$usuario = $_SESSION['nombre_usuario'];
-if ($usuario == null || $usuario == ''){
-      header('location:../../login/login.php');
-      die();
-      
+
+// Validar que el usuario esté autenticado
+$usuario = $_SESSION['nombre_usuario'] ?? '';
+if (empty($usuario)) {
+    header('Location: ../../login/login.php');
+    die();
 }
-include '../../connect.php';
-$id=$_GET['id'];
 
+// Conectar a la base de datos
+require_once '../../connect.php';
 
-$sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
-representante.nombre as representante_nombre, representante.apellido as representante_apellido,
-representante.cedula as representante_cedula, representante.telefono as representante_telefono,
-representante.correo as representante_correo 
-FROM estudiantes 
-JOIN seccion ON estudiantes.idseccion = seccion.id 
-JOIN grados ON estudiantes.idgrado = grados.id
-JOIN representante On estudiantes.idrepresentante = representante.id
-WHERE estudiantes.id=$id ";
+// Validar y sanitizar el parámetro 'id'
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+if (!$id) {
+    die("ID inválido o ausente");
+}
 
-$result = mysqli_query($connect, $sql);
-$row=mysqli_fetch_assoc($result);
-         $nombre=$row['nombre'];
-         $apellido=$row['apellido'];
-         $cen=$row['cen'];
-         $nacimiento=$row['nacimiento'];
-         $sexo=$row['sexo'];
-         $representante=$row['representante_nombre'];
-         $representante_apellido=$row['representante_apellido'];
-         $cedula=$row['representante_cedula'];
-         $telefono=$row['representante_telefono'];
-         $correo=$row['representante_correo'];
-         $grado=$row['grado_nombre'];
-         $seccion=$row['seccion_nombre'];
-         $idrepresentante = $row ['representante.id'];
-         $nombre=strtoupper(trim($nombre));
-         $apellido=strtoupper(trim($apellido));
+// Preparar consulta SQL para evitar inyección
+$query = "SELECT 
+    e.*, 
+    s.nombre AS seccion_nombre, 
+    g.nombre AS grado_nombre, 
+    r.nombre AS representante_nombre, 
+    r.apellido AS representante_apellido,
+    r.cedula AS representante_cedula, 
+    r.telefono AS representante_telefono,
+    r.correo AS representante_correo 
+FROM estudiantes e
+JOIN seccion s ON e.idseccion = s.id 
+JOIN grados g ON e.idgrado = g.id
+JOIN representante r ON e.idrepresentante = r.id
+WHERE e.id = ?";
+
+$stmt = mysqli_prepare($connect, $query);
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, 'i', $id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$row = mysqli_fetch_assoc($result)) {
+        die("No se encontró el estudiante");
+    }
+    mysqli_stmt_close($stmt);
+} else {
+    die("Error en la consulta");
+}
+
+// Formatear los datos para mostrarlos
+$nombre = strtoupper(trim($row['nombre']));
+$apellido = strtoupper(trim($row['apellido']));
+$cen = htmlspecialchars($row['cen']);
+$nacimiento = htmlspecialchars($row['nacimiento']);
+$sexo = htmlspecialchars($row['sexo']);
+$representante = htmlspecialchars($row['representante_nombre']);
+$representante_apellido = htmlspecialchars($row['representante_apellido']);
+$cedula = htmlspecialchars($row['representante_cedula']);
+$telefono = htmlspecialchars($row['representante_telefono']);
+$correo = htmlspecialchars($row['representante_correo']);
+$grado = htmlspecialchars($row['grado_nombre']);
+$seccion = htmlspecialchars($row['seccion_nombre']);
 ?>
-
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display</title>
-    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/assets/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/constancias/estudio/styles.css">
+    <title>Constancia de Aceptación</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-
 <body>
-  <div class="d-flex flex-column flex-shrink-0" style="height: 100vh; justify-content: flex-start; align-items: stretch;">
-  <header class="d-flex align-items-center bg-dark text-white px-4 py-2" style="justify-content: space-between; align-items: center;">
-  <div class="prueba">
-  <img class="imagen" src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" align= "right" style="
-  width: 15%;
-  height: 9%;
-  
-  
-  
-  ">
-<img class="imagen2" src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" align= "left" style="
-  width: 15%;
-  height: 9%;
-  "></div>
-  <div class="encabezado" style="text-align: center;">
-     <h5> REPÚBLICA BOLIVARIANA DE VENEZUELA</h5>
-     <h5>  E.P.N CESAR ARTEAGA CASTRO</h5>
-     <h5> CODIGO PLANTEL: 006568032</h5>
-     <h5> SANTA ANA DE CORO ESTADO FALCÓN</h5><br>
-     <br>
-    <br>
-    <br>
-    <br>
+    <div class="container py-4">
+        <!-- Cabecera -->
+        <header class="d-flex justify-content-between align-items-center bg-dark text-white p-3 rounded">
+            <img src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" alt="Escudo" class="img-fluid" style="width: 15%;">
+            <div class="text-center">
+                <h5>REPÚBLICA BOLIVARIANA DE VENEZUELA</h5>
+                <h5>E.P.N CESAR ARTEAGA CASTRO</h5>
+                <h5>CÓDIGO PLANTEL: 006568032</h5>
+                <h5>SANTA ANA DE CORO, ESTADO FALCÓN</h5>
+            </div>
+            <img src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" alt="Escudo" class="img-fluid" style="width: 15%;">
+        </header>
 
-  </div>
+        <!-- Contenido -->
+        <main class="my-4 text-center">
+            <h4>Constancia de Aceptación</h4>
+            <p>
+                Reciba un cordial saludo de parte del personal que labora en la E.P.N CESAR ARTEAGA CASTRO, ubicada en la Av. Los Orumos de la Ciudad de Coro, Municipio Miranda. Por medio de la presente me dirijo a usted para hacer de su conocimiento que el estudiante <b><?= $nombre . ' ' . $apellido ?></b>, C.E\C.I N° <b><?= $cen ?></b>, de ______ años de edad, fue inscrito(a) en este plantel para cursar el: <b><?= $grado ?></b> grado, Sección "<b><?= $seccion ?></b>" Año Escolar ______.
+            </p>
+            <p>
+                Representante: <b><?= $representante ?></b>, C.I N° <b><?= $cedula ?></b>.
+            </p>
+            <p>
+                CONSTANCIA QUE SE EXPIDE EN SANTA ANA DE CORO, A LOS ______ DÍAS DEL MES DE ______ DEL AÑO ______.
+            </p>
+        </main>
+    </div>
 
-  <div class="titulo" style="text-align: center;">
-  <h4>Constancia de Aceptacion </h4><br>
-  </div>
-
-  <div class="texto" 
-  style="text-align: center; 
-  line-height: 1.5;">
-  <p>Reciba un cordial saludo de parte del personal que labora en la E.P.N CESAR ARTEAGA CASTRO, 
-    ubicada en la Av. los Orumos de la Ciudad de Coro, Municipio Miranda, por medio de la presente me dirijo a usted para hacer
-    de su conocimiento que el estudiante <b><?php echo "$nombre $apellido" ?></b> C.E\C.I N°  <b><?php echo "$cen"; ?></b>. 
-    De:_____ años de edad, FUE INSCRITO(A) en este plantel para cursar el:<b><?php echo "$grado"; ?></b> grado,
-    Sección"<b><?php echo "$seccion"; ?></b>" Año Escolar______<p>
-     
-  
-   <p>Representante<b><?php echo "$representante"; ?></b>
-      C.I.N<b><?php echo "$cedularepre"; ?></b> <p>
-      
- <p> CONSTANCIA QUE SE EXPIDE EN SANTA ANA DE CORO, A LOS ______ DÍAS DEL MES DE:______ DEL AÑO_____<p>
-
-
- 
-</div>
-
-  
-</header>
-
-
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
-
 <?php
 $html = ob_get_clean();
 
+// Generar PDF usando Dompdf
 require_once 'C:\xampp\htdocs\dashboard\Proyecto\pdf\dompdf\autoload.inc.php';
 
 use Dompdf\Dompdf;
-$dompdf = new Dompdf();
 
+$dompdf = new Dompdf();
 $options = $dompdf->getOptions();
 $options->set(array('isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true));
-
 $dompdf->setOptions($options);
+
 $dompdf->loadHtml($html);
-$dompdf->setPaper('letter', 'portrait ');
+$dompdf->setPaper('letter', 'portrait');
 $dompdf->render();
-$dompdf->stream("archivo.pdf", array("Attachment" => false));
-
-
+$dompdf->stream("Constancia_Aceptacion.pdf", array("Attachment" => false));
 ?>
