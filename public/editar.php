@@ -51,6 +51,22 @@ if ($row = $result->fetch_assoc()) {
     $correo = $row['representante_correo'];
     $grado = $row['grado_nombre'];
     $seccion = $row['seccion_nombre'];
+
+
+
+     //guardar datos viejos
+  $nombre_anterior = $nombre;
+  $apellido_anterior = $apellido;
+  $cen_anterior = $cen;
+  $sexo_anterior = $sexo;
+  $cedula_anterior = $cedula;
+  $representante_anterior = $representante;
+  $representante_apellido_anterior = $representante_apellido;
+  $telefono_anterior = $telefono;
+  $correo_anterior = $correo;
+  $grado_anterior = $grado;
+  $seccion_anterior = $seccion;
+  //fin
 }
 $stmt->close();
 ?>
@@ -390,6 +406,64 @@ if (isset($_POST['submit'])) {
         exit();
     }
     
+    $cambios = [];
+            
+    if ($apellido_anterior != $apellido) {
+        $cambios[] = "Apellido anterior = $apellido_anterior, Apellido actualizado = $apellido";
+    }
+    
+    if ($nombre_anterior != $nombre) {
+        $cambios[] = "Nombre anterior = $nombre_anterior, Nombre actualizado = $nombre";
+    }
+    
+    if ($cedula_anterior != $cedula) {
+        $cambios[] = "Cedula anterior = $cedula_anterior, Cedula actualizado = $cedula";
+    }   
+    
+    if ($representante_anterior != $representante) {
+        $cambios[] = "Representante anterior = $representante_anterior, Representante actualizado = $representante";
+    }
+    
+    if ($representante_apellido_anterior != $representante_apellido) {
+        $cambios[] = "Apellido de representante anterior = $representante_apellido_anterior, Apellido actualizado = $representante_apellido";
+    }
+    
+    if ($telefono_anterior != $telefono) {
+        $cambios[] = "Teléfono anterior = $telefono_anterior, Teléfono actualizado = $telefono";
+    }
+    
+    if ($correo_anterior != $correo) {
+        $cambios[] = "Correo anterior = $correo_anterior, Correo actualizado = $correo";
+    }
+    
+    if ($grado_anterior != $grado) {
+        $cambios[] = "Grado anterior = $grado_anterior, Grado actualizado = $grado";
+    }
+    
+    if ($seccion_anterior != $seccion) {
+        $cambios[] = "Sección anterior = $seccion_anterior, Sección actualizada = $seccion";
+    }
+    
+    if ($cen_anterior != $cen) {
+        $cambios[] = "CEN anterior = $cen_anterior, CEN actualizado = $cen";
+    }
+    
+    if ($sexo_anterior != $sexo) {
+        $cambios[] = "Sexo anterior = $sexo_anterior, Sexo actualizado = $sexo";
+    }
+ // Unir todos los cambios en un string
+ $datos_accion = implode(", ", $cambios);
+ $datos_accion = "Cambios: " . $datos_accion;
+
+
+ //ingresar insert en bitacora
+ $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+ $stmt2 = $connect->prepare($sql2);
+ $accion = "Se actualizaron los datos de un estudiante.";
+ $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
+ $resultInsert2 = $stmt2->execute();
+ 
+ //aqui termina
 
     // Actualizar en la base de datos
     // Actualizar estudiante
