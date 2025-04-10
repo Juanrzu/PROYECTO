@@ -347,6 +347,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Las respuestas coinciden, actualiza la contraseña
             $pregunta1_cifrada = password_hash($pregunta_nueva1, PASSWORD_ARGON2ID);
             $pregunta2_cifrada = password_hash($pregunta_nueva2, PASSWORD_ARGON2ID);
+                
+            
+            //ingresar insert en bitacora al eliminar estudiante
+            $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+            $datos_accion = "Por motivos de seguridad no podemos mostrar informacion";
+            
+            $stmt2 = $connect->prepare($sql2);
+            $accion= "Se Actualizaron las preguntas del usuario.";
+            $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
+            $resultInsert2 = $stmt2->execute();
+                //aqui termina
+
+
             $update_sql = "UPDATE usuario SET respuesta_seguridad1 = ?, respuesta_seguridad2 = ? WHERE nombre_usuario = ?";
             $stmt = $connect->prepare($update_sql);
             $stmt->bind_param("sss", $pregunta1_cifrada, $pregunta2_cifrada, $usuario);

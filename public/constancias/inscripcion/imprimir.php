@@ -56,14 +56,14 @@ $row=mysqli_fetch_assoc($result);
   <div class="d-flex flex-column flex-shrink-0" style="height: 100vh; justify-content: flex-start; align-items: stretch;">
   <header class="d-flex align-items-center bg-dark text-white px-4 py-2" style="justify-content: space-between; align-items: center;">
   <div class="prueba">
-  <img class="imagen" src="http://localhost/dashboard/Proyecto/src/1er_grado.jpg" align= "right" style="
+  <img class="imagen" src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" align= "right" style="
   width: 15%;
   height: 9%;
   
   
   
   ">
-<img class="imagen2" src="http://localhost/dashboard/Proyecto/src/1er_grado.jpg" align= "left" style="
+<img class="imagen2" src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" align= "left" style="
   width: 15%;
   height: 9%;
   "></div>
@@ -80,7 +80,7 @@ $row=mysqli_fetch_assoc($result);
   </div>
 
   <div class="titulo" style="text-align: center;">
-  <h4>Constancia de Estudio </h4><br>
+  <h4>Constancia de Inscripcion </h4><br>
   </div>
 
   <div class="texto" 

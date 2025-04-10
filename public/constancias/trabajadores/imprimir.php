@@ -11,10 +11,7 @@ include '../../connect.php';
 $id=$_GET['id'];
 
 
-$sql = "SELECT trabajadores.*, rol.nombre as rol_nombre
-FROM trabajadores
-JOIN rol ON trabajadores.idrol = rol.id  
-WHERE trabajadores.id = $id";
+$sql = "SELECT * FROM trabajadores WHERE id = $id";
 
 $result=mysqli_query($connect,$sql);
 $row=mysqli_fetch_assoc($result);
@@ -22,7 +19,7 @@ $row=mysqli_fetch_assoc($result);
      $apellido=$row['apellido'];
      $telefono = $row['telefono'];
      $cedula=$row['cedula'];
-     $rol = $row['rol_nombre'];
+     $rol = $row['rol'];
      $nombre=strtoupper(trim($nombre));
      $apellido=strtoupper(trim($apellido));
      $rol=strtoupper(trim($rol));
@@ -44,14 +41,14 @@ $row=mysqli_fetch_assoc($result);
   <header class="d-flex align-items-center bg-dark text-white px-4 py-2" style="justify-content: space-between; align-items: center;">
   
   <div class="prueba">
-  <img class="imagen" src="http://localhost/dashboard/Proyecto/src/1er_grado.jpg" align= "right" style="
+  <img class="imagen" src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" align= "right" style="
   width: 15%;
   height: 9%;
   
   
   
   ">
-<img class="imagen2" src="http://localhost/dashboard/Proyecto/src/1er_grado.jpg" align= "left" style="
+<img class="imagen2" src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" align= "left" style="
   width: 15%;
   height: 9%;
   "></div>

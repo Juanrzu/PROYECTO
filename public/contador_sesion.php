@@ -58,7 +58,16 @@
 
                 n--;
 
-                
+                if (n <= 30) {
+                    // Mostrar el modal a los 30 segundos
+                    document.getElementById("modal-retirar").classList.remove("hidden");
+                }
+
+                if (n <= 0) { // Cuando el tiempo llega a 0
+                    alert("La sesión expiró");
+                    clearInterval(contador); // Detener el contador
+                    location.href = "http://localhost/dashboard/Proyecto/public/login/acciones/salir.php";
+                }
             }
         }
 
