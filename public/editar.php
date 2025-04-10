@@ -257,7 +257,7 @@ if ($usuario == "admin" || $usuario == "Admin") {
             };
 
             const nacimientoError = document.getElementById('nacimiento-error');
-            };
+            
 
             const regex = {
                 soloLetras: /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/,
