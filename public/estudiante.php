@@ -512,5 +512,90 @@ if (isset($_POST['submit'])) {
     }
 
     // Continuar con la lógica de inserción en la base de datos...
+     // El representante no existe, insertarlo y obtener su nuevo ID
+     $queryInsertRepre = "INSERT INTO representante (nombre, apellido, cedula, telefono, correo) VALUES (?, ?, ?, ?, ?)";
+     $stmt = $connect->prepare($queryInsertRepre);
+     $stmt->bind_param("sssss", $representante, $representante_apellido, $cedularepre, $codigo, $correo);
+     $resultInsertRepre = $stmt->execute();
+     
+     if (!$resultInsertRepre) {
+         die("Error al insertar el nuevo representante: " . mysqli_error($connect));
+     }
+
+     $idRepre = mysqli_insert_id($connect);
+ 
+ if (!is_numeric($telefono)) {
+     $errores[] = "El teléfono debe ser ingresado con numeros";
+
+ } elseif (strlen($codigo) > 12) {
+     $errores[] = "El número de teléfono es muy largo";
+ } elseif (strlen($codigo) < 11) {
+     $errores[] = "El número de teléfono es muy corta";
+ }
+
+ if (!is_numeric($cedularepre)) {
+     $errores[] = "La cédula del representante debe ser ingresado con numeros";
+
+ } elseif (strlen($codigo) > 12) {
+     $errores[] = "El número de teléfono es muy largo";
+ } elseif (strlen($codigo) < 11) {
+     $errores[] = "El número de teléfono es muy corta";
+ }
+
+
+ // Obtener el ID del grado
+ $queryGrado = "SELECT id FROM grados WHERE nombre = ?";
+ $stmt = $connect->prepare($queryGrado);
+ $stmt->bind_param("s", $grado);
+ $stmt->execute();
+ $resultGrado = $stmt->get_result();
+ if (!$resultGrado) {
+     die("Error al obtener el ID del grado: " . mysqli_error($connect));
+ }
+
+ $rowGrado = $resultGrado->fetch_assoc();
+ $idgrado = $rowGrado['id'];
+ 
+
+ // Obtener el ID de la sección
+ $querySeccion = "SELECT id FROM seccion WHERE nombre = ?";
+ $stmt = $connect->prepare($querySeccion);
+ $stmt->bind_param("s", $seccion);
+ $stmt->execute();
+ $resultSeccion = $stmt->get_result();
+
+ if (!$resultSeccion) {
+     die("Error al obtener el ID de la sección: " . $stmt->error);
+ }
+
+ $rowSeccion = $resultSeccion->fetch_assoc();
+ $idseccion = $rowSeccion['id'];
+
+
+ // Inserción en la tabla de estudiantes
+ $sql = "INSERT INTO estudiantes (nombre, apellido, cen, nacimiento, sexo, idgrado, idseccion, idrepresentante) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+ $stmt = $connect->prepare($sql);
+ $stmt->bind_param("sssssiii", $nombre, $apellido, $cen, $nacimiento, $sexo, $idgrado, $idseccion, $idRepre);
+ $resultInsert = $stmt->execute();
+ 
+  
+ //ingresar insert en bitacora
+ $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+ $stmt2 = $connect->prepare($sql2);
+ $accion = "Se Insertó un nuevo estudiante.";
+ $datos_accion = "Informacion: nombre = $nombre, apellido = $apellido, cen = $cen, nacimiento = $nacimiento, sexo = $sexo, grado = $grado, seccion = $seccion, representante = $representante, Apellido del representante = $representante_apellido, cedula representante = $cedularepre, telefono = $codigo, correo = $correo";
+ $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
+ $resultInsert2 = $stmt2->execute();
+ 
+ //aqui termina
+
+
+ if ($resultInsert) {
+     echo "<script> window.location='ver_grado.php? gradonombre= $volver && seccion= $volver2 '</script>";
+ } else {
+     die(mysqli_error($connect));
+ }
+
 }
-?> 
+
+?>
