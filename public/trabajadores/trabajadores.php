@@ -77,6 +77,7 @@ require_once '../contador_sesion.php';
             <th scope="col" class="px-6 py-3">Apellido</th>
             <th scope="col" class="px-6 py-3">Cédula</th>
             <th scope="col" class="px-6 py-3">Teléfono</th>
+            <th scope="col" class="px-6 py-3">Rol</th>
             <th scope="col" class="px-6 py-3">Editar</th>
             <th scope="col" class="px-6 py-3">Borrar</th>
           </tr>
@@ -89,6 +90,7 @@ require_once '../contador_sesion.php';
               <td class="px-6 py-4"><?= htmlspecialchars($row['apellido']) ?></td>
               <td class="px-6 py-4"><?= htmlspecialchars($row['cedula']) ?></td>
               <td class="px-6 py-4"><?= htmlspecialchars($row['telefono']) ?></td>
+              <td class="px-6 py-4"><?= htmlspecialchars($row['rol']) ?></td>
               <td class="px-6 py-4">
                 <a href="editar_trabajador.php?editarid=<?= $row['id'] ?>" class="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-blue-50 transition-colors duration-200">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

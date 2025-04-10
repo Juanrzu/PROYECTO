@@ -448,7 +448,53 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registrar'])) {
 
     // Resto del código de validación y actualización...
     // ... (mantener el código existente de consulta a la base de datos y actualización)
+// Consulta preparada para verificar el usuario
+$sql = "SELECT respuesta_seguridad1, respuesta_seguridad2 FROM usuario WHERE nombre_usuario = ?";
+$stmt = $connect->prepare($sql);
 
+if (!$stmt) {
+    mostrarNotificacion('Error en la preparación de la consulta: ' . $connect->error);
+    exit;
+}
+
+$stmt->bind_param("s", $usuario);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows === 0) {
+    mostrarNotificacion('Usuario no encontrado');
+    $stmt->close();
+    exit;
+}
+
+$row = $result->fetch_assoc();
+$stmt->close();
+
+// Verificar respuestas de seguridad
+if (!password_verify($pregunta1, $row['respuesta_seguridad1']) || 
+    !password_verify($pregunta2, $row['respuesta_seguridad2'])) {
+        mostrarNotificacion('Las respuestas de seguridad no coinciden');
+    exit;
+}
+
+// Actualizar contraseña con hash seguro
+$opciones = [
+    'memory_cost' => 1<<17, // 128MB
+    'time_cost'   => 4,
+    'threads'     => 3,
+];
+
+$contraseña_cifrada = password_hash($nueva_contraseña, PASSWORD_ARGON2ID, $opciones);
+
+$update_sql = "UPDATE usuario SET contraseña = ? WHERE nombre_usuario = ?";
+$stmt = $connect->prepare($update_sql);
+
+if (!$stmt) {
+    mostrarNotificacion('Error en la preparación de la actualización: ' . $connect->error);
+    exit;
+}
+
+$stmt->bind_param("ss", $contraseña_cifrada, $usuario);
     if ($stmt->execute()) {
         // Notificación de éxito con redirección
         echo '

@@ -77,12 +77,8 @@ include '../contador_sesion.php';
                         </div>
                 </div>
                 <div class="mb-2">
-                      <label>Rol (<b>presione abajo para desplegar las opciones</b>)</label>
-                  <select class=" w-full mt-2 rounded-lg" name="rol">
-                      <option value=1>Administrador</option>
-                      <option value=2>Docente</option>
-                      <option value=3>Obrero</option>
-                  </select>
+                <label>Rol</label>
+                <input type="text" class=" w-full mt-2 rounded-lg" placeholder="Rol" name="rol" autocomplete="off"  maxlength="25" id="rol" required>
                 </div>
                 <div class="mb-2">
                     <button type="button" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 ghost bg-blue-500 shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" data-modal-target="default-modal" data-modal-toggle="default-modal">Finalizar</button>
@@ -110,7 +106,7 @@ include '../contador_sesion.php';
                             <!-- Modal body -->
                             <div class="p-4 md:p-5 space-y-4">
                                 <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                    ¿Esta Seguro Que Quiere Registrar Un Usuario?
+                                    ¿Esta Seguro?
                                 </p>
                             </div>
                             <!-- Modal footer -->
@@ -144,7 +140,7 @@ include '../contador_sesion.php';
 
 <?php
 
-if (isset($_POST['submit'])){
+if (isset($_POST['registrar'])){
     
     $nombre= $_POST['nombre'];
     $apellido= $_POST['apellido'];
@@ -152,7 +148,7 @@ if (isset($_POST['submit'])){
     $telefono= strval($_POST['telefono']);
     $codigo= strval($_POST['codigo']);
     $codigo = ($codigo . $telefono);
-    $rol= $_POST ['rol'];
+    $rol= $_POST['rol'];
     $error=[];
 
         if (empty($nombre) || empty($apellido) || empty($cedula) || empty($codigo) || empty($rol)) {
@@ -202,8 +198,7 @@ if (isset($_POST['submit'])){
                 $errores[] = "Este telefono ya se encuentra registrado con otro trabajador";
 
 
-            } 
-          
+            }           
             if(!empty($errores)){
                 echo "<div >
                         <div class='container_title btn btn-danger'>
@@ -219,26 +214,11 @@ if (isset($_POST['submit'])){
                 exit;
             }
 
-        if (!is_numeric($telefono)){
-            $errores[] = "El teléfono debe ser ingresado con numeros";
-
-         }elseif(strlen($telefono) > 12){
-            $errores[] = "El número de teléfono es muy largo";
-            }
-            elseif(strlen($telefono) < 11){ 
-            $errores[] = "El número de teléfono es muy corta";
-            }
+      
             
-            elseif(strlen($telefono) > 12){
-            $errores[] = "El número de teléfono es muy largo";
-            }
-            elseif(strlen($telefono) < 11){ 
-            $errores[] = "El número de teléfono es muy corta";
-            }
-
         // Inserción en la tabla de estudiantes
-        $sql = "INSERT INTO trabajadores (nombre, apellido, cedula, telefono,idrol ) 
-                        VALUES ('$nombre', '$apellido', '$cedula','$codigo', $idrol)";
+        $sql = "INSERT INTO trabajadores (nombre, apellido, cedula, telefono,rol ) 
+                        VALUES ('$nombre', '$apellido', '$cedula','$codigo', '$rol')";
 
         $resultInsert = mysqli_query($connect, $sql);
 //aqui termina

@@ -11,17 +11,14 @@ include './../connect.php';
 include '../contador_sesion.php';
     
     $id=$_GET['editarid'];
-    $sql = "SELECT trabajadores.*, rol.nombre as rol_nombre
-    FROM trabajadores
-    JOIN rol ON trabajadores.idrol = rol.id  
-    WHERE trabajadores.id = $id";
+    $sql = "SELECT * FROM trabajadores WHERE id = $id";
     $result=mysqli_query($connect,$sql);
     $row=mysqli_fetch_assoc($result);
         $nombre=$row['nombre'];
          $apellido=$row['apellido'];
-         $telefono = $row['telefono'];
+         $telefono= $row['telefono'];
          $cedula=$row['cedula'];
-         $rol = $row['rol_nombre']; 
+         $rol= $row['rol']; 
     ?>
 
 
@@ -88,16 +85,12 @@ include '../contador_sesion.php';
                                 <option value=0426>0426</option>
                                 <option value=0412>0412</option>
                             </select>
-                            <input type="text" class=" w-[63%] mt-2 rounded-lg" placeholder="Telefono" name="telefono" autocomplete="off" maxlength="7"  id="telefono" required>
+                            <input type="text" class=" w-[63%] mt-2 rounded-lg" placeholder="Telefono" name="telefono" autocomplete="off" maxlength="7"  id="telefono" required value=<?php echo "$telefono"; ?> >
                         </div>
                 </div>
                 <div class="mb-2">
-                      <label>Rol (<b>presione abajo para desplegar las opciones</b>)</label>
-                  <select class=" w-full mt-2 rounded-lg" name="rol">
-                      <option value=Administrativo>Administrativo</option>
-                      <option value=Docente>Docente</option>
-                      <option value=Obrero>Obrero</option>
-                  </select>
+                    <label>Rol</label>
+                    <input type="text" class=" w-full mt-2 rounded-lg" placeholder="Rol" name="rol" id="rol" autocomplete="off" maxlength="25" value=<?php echo "$rol"; ?> >
                 </div>
             
                 <div class="mb-2">
@@ -175,14 +168,10 @@ if (isset($_POST['submit'])){
         }
         
         //Verificar Sección
-        $queryGrado = "SELECT id FROM rol WHERE nombre = '$rol'";
-        $resultGrado = mysqli_query($connect, $queryGrado);
-        $rowGrado = mysqli_fetch_assoc($resultGrado);
-        $idrol = $rowGrado['id']; 
 
 
         $sql= "
-        update trabajadores set id='$id',nombre='$nombre', apellido='$apellido', cedula='$cedula_nueva', telefono = $telefono, idrol = $idrol where id=$id
+        update trabajadores set nombre='$nombre', apellido='$apellido', cedula='$cedula_nueva', telefono = '$telefono', rol = '$rol' where id=$id
         ";
 
         $result= mysqli_query($connect, $sql);
