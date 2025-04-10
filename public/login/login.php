@@ -4,7 +4,7 @@ session_start();
 error_reporting(0);
 
 require_once './../connect.php';
-require_once '../contador_sesion.php';
+
 
 ?>
 
@@ -103,7 +103,7 @@ require_once '../contador_sesion.php';
                         <div class="flex-1 border rounded-md p-1 bg-gray-50">
                             <img src="../captcha/captcha.php" class="w-full h-16 object-contain">
                         </div>
-                        <button type="button" id="btn_recargar" class="p-2 text-gray-600 hover:text-blue-500 transition-colors rounded-md hover:bg-gray-100">
+                        <button type="button" id="btn_recargar" onclick="recargarCaptcha()" class="p-2 text-gray-600 hover:text-blue-500 transition-colors rounded-md hover:bg-gray-100">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
                             </svg>
@@ -137,6 +137,11 @@ require_once '../contador_sesion.php';
 </html>
 
 <script>
+    document.getElementById('btn_recargar').addEventListener('click', function() {
+    const captchaImg = document.querySelector('.bg-gray-50 img');
+    // Agregamos un parámetro de tiempo para evitar cache
+    captchaImg.src = '../captcha/captcha.php?' + new Date().getTime();
+});
 const form = document.getElementById('formulario');
 const btn = document.getElementById('btn');
 const usuario = document.getElementById('usuario');
