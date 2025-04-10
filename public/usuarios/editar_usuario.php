@@ -26,6 +26,17 @@ $cedula = $row['cedula'];
 $telefono = $row['telefono'];
 $gmail = $row['correo'];
 $intentos_fallidos = $row['intentos_fallidos'];
+
+
+ //guardar datos viejos
+ $nombre_anterior = $nombre;
+ $usuario_anterior = $usuario;
+ $apellido_anterior = $apellido;
+ $cedula_anterior = $cedula;
+ $telefono_anterior = $telefono;
+ $estado_anterior = $estado;
+ $gmail_anterior = $gmail;
+ //fin 
 ?>
 
 
