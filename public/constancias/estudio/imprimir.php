@@ -83,7 +83,6 @@ $seccion = htmlspecialchars($row['seccion_nombre']);
             <h5>CÓDIGO PLANTEL: 006568032</h5>
             <h5>SANTA ANA DE CORO, ESTADO FALCÓN</h5>
         </div>
-        <img src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" alt="Escudo" class="img-fluid" style="width: 15%; height: auto;">
     </header>
 
     <!-- Contenido del documento -->
