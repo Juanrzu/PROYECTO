@@ -400,7 +400,7 @@ if (isset($_POST['submit'])) {
         'representante' => ['min' => 2, 'max' => 25],
         'representante_apellido' => ['min' => 2, 'max' => 25],
         'cedularepre' => ['min' => 6, 'max' => 12],
-        'telefono' => ['min' => 7, 'max' => 7],
+        'telefono' => ['min' => 7, 'max' => 8],
         'correo' => ['min' => 5, 'max' => 50],
     ];
 
