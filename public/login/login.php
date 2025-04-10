@@ -384,14 +384,15 @@ if (isset($_POST['registrar'])) {
 
 			// Registrar inicio de sesión en bitácora
 			$accion = "Se ha iniciado la sesión";
-			$sql2 = "INSERT INTO bitacora (accion, usuario) VALUES (?, ?)";
+            $accion_datos= "Sesion iniciada";
+			$sql2 = "INSERT INTO bitacora (accion, usuario, datos_accion) VALUES (?, ?, ?)";
 			$stmt = $connect->prepare($sql2);
-
+          
 			if (!$stmt) {
 				die("Error al preparar la consulta: " . $connect->error);
 			}
 
-			$stmt->bind_param("ss", $accion, $usuario_db);
+			$stmt->bind_param("sss", $accion, $usuario_db, $accion);
 			$stmt->execute();
 			$stmt->close();
 
