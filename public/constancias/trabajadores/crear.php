@@ -63,9 +63,6 @@ if (!isset($usuario)) {
         <th scope="col" class="px-3 py-2 ">Cedula</th>
         <th scope="col" class="px-3 py-2 bg-gray-200 dark:bg-gray-800">Telefono</th>
         <th scope="col" class="px-3 py-2">Rol</th>
-        <th scope="col" class="px-3 py-2 bg-blue-400 dark:bg-blue-800">
-                                Editar
-                            </th>
       </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -81,12 +78,8 @@ if (!isset($usuario)) {
             $apellido = $row['apellido'];  
             $cedula = $row['cedula'];
             $telefono = $row['telefono'];
-            $idrol = $row['idrol'];
+            $rol = $row['rol'];
             
-            $queryGrado = "SELECT nombre FROM rol WHERE id = '$idrol'";
-            $resultGrado = mysqli_query($connect, $queryGrado);
-            $rowGrado = mysqli_fetch_assoc($resultGrado);
-            $rol = $rowGrado['nombre'];
 
 
               echo  '<tr>
