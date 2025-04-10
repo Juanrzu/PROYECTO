@@ -8,7 +8,9 @@ if (!isset($usuario)) {
 } else {
     include('connect.php');
     include 'contador_sesion.php';
-}if (isset($_POST['submit'])) {
+}
+
+if (isset($_POST['submit'])) {
     $nombre = trim($_POST['nombre']);
     $apellido = trim($_POST['apellido']);
     $cen = trim($_POST['cen']);
@@ -55,45 +57,21 @@ if (!isset($usuario)) {
     $stmt = $connect->prepare($sql);
     $stmt->bind_param("sssssi", $nombre, $apellido, $cen, $nacimiento, $sexo, $id);
     if ($stmt->execute()) {
-        // Obtener el grado y la sección del estudiante actualizado
-        $sql_grado_seccion = "SELECT grados.nombre AS grado_nombre, seccion.nombre AS seccion_nombre 
-                              FROM estudiantes 
-                              JOIN grados ON estudiantes.idgrado = grados.id 
-                              JOIN seccion ON estudiantes.idseccion = seccion.id 
-                              WHERE estudiantes.id = ?";
-        $stmt_grado_seccion = $connect->prepare($sql_grado_seccion);
-        $stmt_grado_seccion->bind_param("i", $id);
-        $stmt_grado_seccion->execute();
-        $result_grado_seccion = $stmt_grado_seccion->get_result();
+        echo "<script>
+            const notificacion = document.createElement('div');
+            notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-green-100 text-green-700 border flex items-center';
+            notificacion.innerHTML = `
+              <div class='flex-shrink-0 mr-3 text-green-700'>
+                <svg fill='#4BB543' width='24px' height='24px' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+                  <path d='M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z'/>
+                </svg>
+              </div>
+              <div class='text-sm'>Estudiante actualizado correctamente.</div>
+            `;
+            document.body.appendChild(notificacion);
 
-        if ($row_grado_seccion = $result_grado_seccion->fetch_assoc()) {
-            $grado = $row_grado_seccion['grado_nombre'];
-            $seccion = $row_grado_seccion['seccion_nombre'];
-
-            echo "<script>
-                const notificacion = document.createElement('div');
-                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-green-100 text-green-700 border flex items-center';
-                notificacion.innerHTML = `
-                  <div class='flex-shrink-0 mr-3 text-green-700'>
-                    <svg fill='#4BB543' width='24px' height='24px' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
-                      <path d='M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z'/>
-                    </svg>
-                  </div>
-                  <div class='text-sm'>Estudiante actualizado correctamente.</div>
-                `;
-                document.body.appendChild(notificacion);
-                setTimeout(() => notificacion.remove(), 4000);
-                window.location.href='ver_grado.php?gradonombre=$grado&seccion=$seccion';
-                </script>";
-        } else {
-            echo "<script>
-                const notificacion = document.createElement('div');
-                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
-                notificacion.innerHTML = `<span>Error al obtener el grado y la sección del estudiante.</span>`;
-                document.body.appendChild(notificacion);
-                setTimeout(() => notificacion.remove(), 4000);
-                </script>";
-        }
+            window.history.go(-2);
+            </script>";
     } else {
         echo "<script>
             const notificacion = document.createElement('div');
@@ -108,8 +86,6 @@ if (!isset($usuario)) {
 $id = $_GET['editarid'];
 // Consulta para obtener los datos del estudiante
 $sql = "SELECT estudiantes.*, 
-        seccion.nombre AS seccion_nombre, 
-        grados.nombre AS grado_nombre,
         representante.nombre AS representante_nombre, 
         representante.apellido AS representante_apellido,
         representante.cedula AS representante_cedula, 
@@ -117,8 +93,6 @@ $sql = "SELECT estudiantes.*,
         representante.correo AS representante_correo,
         representante.id AS representante_id
         FROM estudiantes 
-        JOIN seccion ON estudiantes.idseccion = seccion.id 
-        JOIN grados ON estudiantes.idgrado = grados.id
         JOIN representante ON estudiantes.idrepresentante = representante.id
         WHERE estudiantes.id = ?";
 
@@ -138,12 +112,8 @@ if ($row = $result->fetch_assoc()) {
     $cedula = $row['representante_cedula'];
     $telefono = $row['representante_telefono'];
     $correo = $row['representante_correo'];
-    $grado = $row['grado_nombre'];
-    $seccion = $row['seccion_nombre'];
 }
 $stmt->close();
-
-
 ?>
 
 <!DOCTYPE html>
@@ -359,102 +329,3 @@ if ($usuario == "admin" || $usuario == "Admin") {
     </script>
 </body>
 </html>
-
-<?php
-if (isset($_POST['submit'])) {
-    $nombre = trim($_POST['nombre']);
-    $apellido = trim($_POST['apellido']);
-    $cen = trim($_POST['cen']);
-    $nacimiento = trim($_POST['nacimiento']);
-    $sexo = trim($_POST['sexo']);
-
-    $errores = [];
-
-    // Validaciones
-    if (empty($nombre) || strlen($nombre) < 2 || strlen($nombre) > 30) {
-        $errores[] = "El nombre debe tener entre 2 y 30 caracteres.";
-    }
-
-    if (empty($apellido) || strlen($apellido) < 2 || strlen($apellido) > 30) {
-        $errores[] = "El apellido debe tener entre 2 y 30 caracteres.";
-    }
-
-    if (empty($cen) || !is_numeric($cen)) {
-        $errores[] = "El C.E.N debe ser un número válido.";
-    }
-
-    if (!empty($errores)) {
-        foreach ($errores as $error) {
-            echo "<script>
-                const notificacion = document.createElement('div');
-                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
-                notificacion.innerHTML = `
-                  <div class='flex-shrink-0 mr-3 text-red-700'>
-                    <svg fill='#f00505' width='24px' height='24px' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'>
-                      <path d='M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z'></path>
-                    </svg>
-                  </div>
-                  <div class='text-sm'>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</div>
-                `;
-                document.body.appendChild(notificacion);
-                setTimeout(() => notificacion.remove(), 4000);
-                </script>";
-        }
-        exit();
-    }
-
-    // Actualizar en la base de datos
-    $sql = "UPDATE estudiantes SET nombre = ?, apellido = ?, cen = ?, nacimiento = ?, sexo = ? WHERE id = ?";
-    $stmt = $connect->prepare($sql);
-    $stmt->bind_param("sssssi", $nombre, $apellido, $cen, $nacimiento, $sexo, $id);
-    if ($stmt->execute()) {
-        // Obtener el grado y la sección del estudiante actualizado
-        $sql_grado_seccion = "SELECT grados.nombre AS grado_nombre, seccion.nombre AS seccion_nombre 
-                              FROM estudiantes 
-                              JOIN grados ON estudiantes.idgrado = grados.id 
-                              JOIN seccion ON estudiantes.idseccion = seccion.id 
-                              WHERE estudiantes.id = ?";
-        $stmt_grado_seccion = $connect->prepare($sql_grado_seccion);
-        $stmt_grado_seccion->bind_param("i", $id);
-        $stmt_grado_seccion->execute();
-        $result_grado_seccion = $stmt_grado_seccion->get_result();
-
-        if ($row_grado_seccion = $result_grado_seccion->fetch_assoc()) {
-            $grado = $row_grado_seccion['grado_nombre'];
-            $seccion = $row_grado_seccion['seccion_nombre'];
-
-            echo "<script>
-                const notificacion = document.createElement('div');
-                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-green-100 text-green-700 border flex items-center';
-                notificacion.innerHTML = `
-                  <div class='flex-shrink-0 mr-3 text-green-700'>
-                    <svg fill='#4BB543' width='24px' height='24px' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
-                      <path d='M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z'/>
-                    </svg>
-                  </div>
-                  <div class='text-sm'>Estudiante actualizado correctamente.</div>
-                `;
-                document.body.appendChild(notificacion);
-                setTimeout(() => notificacion.remove(), 4000);
-                window.location.href='ver_grado.php?gradonombre=$grado&seccion=$seccion';
-                </script>";
-        } else {
-            echo "<script>
-                const notificacion = document.createElement('div');
-                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
-                notificacion.innerHTML = `<span>Error al obtener el grado y la sección del estudiante.</span>`;
-                document.body.appendChild(notificacion);
-                setTimeout(() => notificacion.remove(), 4000);
-                </script>";
-        }
-    } else {
-        echo "<script>
-            const notificacion = document.createElement('div');
-            notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
-            notificacion.innerHTML = `<span>Error al actualizar el estudiante.</span>`;
-            document.body.appendChild(notificacion);
-            setTimeout(() => notificacion.remove(), 4000);
-            </script>";
-    }
-}
-?>
