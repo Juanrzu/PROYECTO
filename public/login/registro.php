@@ -51,7 +51,7 @@ include '../contador_sesion.php';
 				<!-- Nombres -->
 				<div>
 				<label for="nombre" class="block text-sm font-medium text-gray-700">Nombres</label>
-				<input type="text" name="nombre" id="nombre" maxlength="50"
+				<input type="text" name="nombre" id="nombre" maxlength="25"
 					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
 					placeholder="Ingrese su nombre">
 				</div>
@@ -59,7 +59,7 @@ include '../contador_sesion.php';
 				<!-- Apellidos -->
 				<div>
 				<label for="apellido" class="block text-sm font-medium text-gray-700">Apellidos</label>
-				<input type="text" name="apellido" id="apellido" maxlength="50"
+				<input type="text" name="apellido" id="apellido" maxlength="25"
 					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
 					placeholder="Ingrese su apellido">
 				</div>
@@ -160,243 +160,121 @@ include '../contador_sesion.php';
 	<script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
 	<script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
 
-
-
 	<script>
-		const form = document.getElementById('formulario');
-		const btn = document.getElementById('registrar');
-		const nombre = document.getElementById('nombre');
-		const apellido = document.getElementById('apellido');
-		const cedula = document.getElementById('cedula');
-		const telefono = document.getElementById('telefono');
-		const email = document.getElementById('email');
-		const usuario = document.getElementById('usuario');
-		const pass = document.getElementById('contraseña');
-		const p1 = document.getElementById('p1');
-		const p2 = document.getElementById('p2');
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById('formulario');
+    const btn = document.getElementById('registrar');
+    const inputs = {
+        nombre: document.getElementById('nombre'),
+        apellido: document.getElementById('apellido'),
+        cedula: document.getElementById('cedula'),
+        telefono: document.getElementById('telefono'),
+        email: document.getElementById('email'),
+        usuario: document.getElementById('usuario'),
+        contraseña: document.getElementById('contraseña'),
+        pregunta1: document.getElementById('p1'),
+        pregunta2: document.getElementById('p2')
+    };
 
+    const regex = {
+        soloLetras: /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/,
+        soloNumeros: /^\d+$/,
+        email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    };
 
+    const LIMITES = {
+        nombre: { min: 2, max: 25 },
+        apellido: { min: 2, max: 25 },
+        cedula: { min: 7, max: 9 },
+        telefono: { min: 7, max: 7 },
+        email: { min: 5, max: 100 },
+        usuario: { min: 5, max: 30 },
+        contraseña: { min: 14, max: 50 },
+        pregunta: { min: 2, max: 100 }
+    };
 
+    const mostrarNotificacion = (mensaje, tipo = 'error') => {
+        const sanitizeHTML = (str) => {
+            const temp = document.createElement('div');
+            temp.textContent = str;
+            return temp.innerHTML;
+        };
 
+        const icono = tipo === 'error' ?
+            `<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
+            </svg>` :
+            `<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
+            </svg>`;
 
-		form.addEventListener("submit", (e) => {
+        const color = tipo === 'error' ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
 
+        document.querySelectorAll('.notificacion').forEach(el => el.remove());
 
-			const regexCedula = /[-._!"`'#%&,:;<>=@{}~\$\(\)\*\+\/\\\?\[\]\^\|]+/;
-			const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-			const regex = /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]*$/;
-			var error = "";
-			var msg = document.createElement("div");
+        const notificacion = document.createElement('div');
+        notificacion.className = `notificacion fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ${color} border flex items-center`;
+        notificacion.innerHTML = `
+            <div class="flex-shrink-0 mr-3">${icono}</div>
+            <div class="text-sm">${sanitizeHTML(mensaje)}</div>
+        `;
 
+        document.body.appendChild(notificacion);
 
+        setTimeout(() => {
+            notificacion.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+            setTimeout(() => notificacion.remove(), 500);
+        }, 4000);
+    };
 
+    const validarCampo = (input, regex = null, minLength = 0, maxLength = Infinity, mensaje = null) => {
+        const valor = input.value.trim();
+        input.classList.remove('border-red-500');
 
-			if (nombre.value == "" || apellido.value == "" || cedula.value == "" || usuario.value == "" || telefono.value == "" || pass.value == "" || p1.value == "" || p2.value == "") {
-				error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                                            <p class=" text-[11px] ghost pb-1">Los campos no pueden estar vacios</p> 
-                                            </div>`;
-				nombre.classList.add('is-invalid');
-				nombre.classList.remove('is-valid');
+        if (!valor) {
+            return { valido: false, mensaje: mensaje || `El campo ${input.id} no puede estar vacío` };
+        }
 
-				apellido.classList.add('is-invalid');
-				apellido.classList.remove('is-valid');
+        if (regex && !regex.test(valor)) {
+            return { valido: false, mensaje: mensaje || `Formato inválido para ${input.id}` };
+        }
 
-				cedula.classList.add('is-invalid');
-				cedula.classList.remove('is-valid');
+        if (valor.length < minLength) {
+            return { valido: false, mensaje: mensaje || `${input.id} debe tener al menos ${minLength} caracteres` };
+        }
 
-				usuario.classList.add('is-invalid');
-				usuario.classList.remove('is-valid');
+        if (valor.length > maxLength) {
+            return { valido: false, mensaje: mensaje || `${input.id} no puede exceder los ${maxLength} caracteres` };
+        }
 
-				telefono.classList.add('is-invalid');
-				telefono.classList.remove('is-valid');
+        return { valido: true };
+    };
 
-				pass.classList.add('is-invalid');
-				pass.classList.remove('is-valid');
+    btn.addEventListener("click", (e) => {
+        Object.values(inputs).forEach(input => input.classList.remove('border-red-500'));
 
-				p1.classList.add('is-invalid');
-				p1.classList.remove('is-valid');
+        const validaciones = [
+            { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, LIMITES.nombre.min, LIMITES.nombre.max, `El nombre debe ser válido.`) },
+            { input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, LIMITES.apellido.min, LIMITES.apellido.max, `El apellido debe ser válido.`) },
+            { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, LIMITES.cedula.max, `La cédula debe tener entre ${LIMITES.cedula.min} y ${LIMITES.cedula.max} caracteres.`) },
+            { input: inputs.telefono, resultado: validarCampo(inputs.telefono, regex.soloNumeros, LIMITES.telefono.min, LIMITES.telefono.max, `El teléfono debe tener exactamente ${LIMITES.telefono.max} dígitos.`) },
+            { input: inputs.email, resultado: validarCampo(inputs.email, regex.email, LIMITES.email.min, LIMITES.email.max, `El correo electrónico no es válido.`) },
+            { input: inputs.usuario, resultado: validarCampo(inputs.usuario, null, LIMITES.usuario.min, LIMITES.usuario.max, `El usuario debe tener entre ${LIMITES.usuario.min} y ${LIMITES.usuario.max} caracteres.`) },
+            { input: inputs.contraseña, resultado: validarCampo(inputs.contraseña, null, LIMITES.contraseña.min, LIMITES.contraseña.max, `La contraseña debe tener al menos ${LIMITES.contraseña.min} caracteres.`) },
+            { input: inputs.pregunta1, resultado: validarCampo(inputs.pregunta1, regex.soloLetras, LIMITES.pregunta.min, LIMITES.pregunta.max, `La pregunta 1 debe ser válida.`) },
+            { input: inputs.pregunta2, resultado: validarCampo(inputs.pregunta2, regex.soloLetras, LIMITES.pregunta.min, LIMITES.pregunta.max, `La pregunta 2 debe ser válida.`) }
+        ];
 
-				p2.classList.add('is-invalid');
-				p2.classList.remove('is-valid');
-
-			} else {
-				nombre.classList.remove('is-invalid');
-				nombre.classList.add('is-valid');
-				apellido.classList.remove('is-invalid');
-				apellido.classList.add('is-valid');
-				cedula.classList.remove('is-invalid');
-				cedula.classList.add('is-valid');
-				usuario.classList.remove('is-invalid');
-				usuario.classList.add('is-valid');
-				telefono.classList.remove('is-invalid');
-				telefono.classList.add('is-valid');
-				pass.classList.remove('is-invalid');
-				pass.classList.add('is-valid');
-				p1.classList.remove('is-invalid');
-				p1.classList.add('is-valid');
-				p2.classList.remove('is-invalid');
-				p2.classList.add('is-valid');
-
-			}
-
-			if (!regexEmail.test(email.value)) {
-				error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                                            <p class=" text-[11px] ghost pb-1">ingrese un correo valido</p> 
-                                            </div>`;
-				email.classList.add('is-invalid');
-				email.classList.remove('is-valid');
-			} else {
-				email.classList.add('is-valid');
-				email.classList.remove('is-invalid');
-			}
-
-			if (!regex.test(nombre.value)) {
-				error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                            <p class=" text-[11px] ghost pb-1">ingrese un Nombre con caracteres validos</p> 
-                            </div>`;
-				nombre.classList.add('is-invalid');
-				nombre.classList.remove('is-valid');
-			} else {
-				nombre.classList.add('is-valid');
-				nombre.classList.remove('is-invalid');
-			}
-
-			if (!regex.test(apellido.value)) {
-				error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                            <p class=" text-[11px] ghost pb-1">ingrese un Apellido con caracteres validos</p> 
-                            </div>`;
-				apellido.classList.add('is-invalid');
-				apellido.classList.remove('is-valid');
-			} else {
-				apellido.classList.add('is-valid');
-				apellido.classList.remove('is-invalid');
-			}
-
-			if (regexCedula.test(cedula.value)) {
-				error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                            <p class=" text-[11px] ghost pb-1">ingrese una Cedula con caracteres validos</p> 
-                            </div>`;
-				cedula.classList.add('is-invalid');
-				cedula.classList.remove('is-valid');
-			} else {
-
-				if (cedula.value.length < 7) {
-					error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                            <p class=" text-[11px] ghost pb-1">la Cedula debe contener mas caracteres</p> 
-                            </div>`;
-					cedula.classList.add('is-invalid');
-					cedula.classList.remove('is-valid');
-				} else {
-					if (cedula.value.length > 8) {
-						error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                                <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                                <p class=" text-[11px] ghost pb-1">la Cedula debe contener menos caracteres</p> 
-                                </div>`;
-						cedula.classList.add('is-invalid');
-						cedula.classList.remove('is-valid');
-					} else {
-						cedula.classList.add('is-valid');
-						cedula.classList.remove('is-invalid');
-					}
-				}
-			}
-
-			if (!regex.test(usuario.value)) {
-				error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                            <p class=" text-[11px] ghost pb-1">ingrese un Usuario con caracteres validos</p> 
-                            </div>`;
-				usuario.classList.add('is-invalid');
-				usuario.classList.remove('is-valid');
-			} else {
-				usuario.classList.add('is-valid');
-				usuario.classList.remove('is-invalid');
-			}
-
-			if (regexCedula.test(telefono.value)) {
-				error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                            <p class=" text-[11px] ghost pb-1">ingrese un Telefono con caracteres validos</p> 
-                            </div>`;
-				telefono.classList.add('is-invalid');
-				telefono.classList.remove('is-valid');
-			} else {
-				if (telefono.value.length < 7) {
-					error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                                            <p class=" text-[11px] ghost pb-1">el Telefono debe contener mas caracteres</p> 
-                                            </div>`;
-					telefono.classList.add('is-invalid');
-					telefono.classList.remove('is-valid');
-				} else {
-					if (telefono.value.length > 7) {
-						error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                                            <p class=" text-[11px] ghost pb-1">el Telefono debe contener menos caracteres</p> 
-                                            </div>`;
-						telefono.classList.add('is-invalid');
-						telefono.classList.remove('is-valid');
-					} else {
-						telefono.classList.add('is-valid');
-						telefono.classList.remove('is-invalid');
-					}
-				}
-			}
-
-			if (!regex.test(p1.value)) {
-				error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                                            <p class=" text-[11px] ghost pb-1">La pregunta 1 no debe contener numeros</p> 
-                                            </div>`;
-				p1.classList.add('is-invalid');
-				p1.classList.remove('is-valid');
-			} else {
-				p1.classList.add('is-valid');
-				p1.classList.remove('is-invalid');
-			}
-
-			if (!regex.test(p2.value)) {
-				error += `<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2 mt-2">
-                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                                            <p class=" text-[11px] ghost pb-1">La pregunta 2 no debe contener numeros</p> 
-                                            </div>`;
-				p2.classList.add('is-invalid');
-				p2.classList.remove('is-valid');
-			} else {
-				p2.classList.add('is-valid');
-				p2.classList.remove('is-invalid');
-			}
-
-
-
-			if (usuario.classList.contains("is-invalid") || contraseña.classList.contains("is-invalid") || nombre.classList.contains("is-invalid") || pass.classList.contains("is-invalid") || cedula.classList.contains("is-invalid") || telefono.classList.contains("is-invalid") || email.classList.contains("is-invalid") || p1.classList.contains("is-invalid") || p2.classList.contains("is-invalid")) {
-				msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-blue-500 rounded-xl font-bold w-56 md:w-80">${error}</div>`;
-				document.body.appendChild(msg);
-
-				// Selecciona el elemento div que deseas eliminar
-				var elemento = msg;
-
-				// Configura el timeout para eliminar el div después de 5 segundos (5000 milisegundos)
-				setTimeout(function() {
-					msg = ""
-					elemento.remove();
-				}, 4500);
-
-
-
-				e.preventDefault();
-				e.stopPropagation();
-			}
-
-
-
-		});
+        for (const validacion of validaciones) {
+            if (!validacion.resultado.valido) {
+                e.preventDefault();
+                validacion.input.classList.add('border-red-500');
+                mostrarNotificacion(validacion.resultado.mensaje);
+                return;
+            }
+        }
+    });
+});
 	</script>
 </body>
 
@@ -405,152 +283,139 @@ include '../contador_sesion.php';
 
 
 <?php
-
+session_start();
+error_reporting(0);
+$usuarioSesion = $_SESSION['nombre_usuario'];
+if ($usuarioSesion == null || $usuarioSesion == '') {
+    header('location: ./../login/login.php');
+    die();
+}
+include './../connect.php';
+include '../contador_sesion.php';
 
 if (isset($_POST['registrar'])) {
+    $nombre = trim($_POST['nombre']);
+    $apellido = trim($_POST['apellido']);
+    $cedula = trim($_POST['cedula']);
+    $telefono = trim($_POST['telefono']);
+    $codigo = strval($_POST['codigo']);
+    $codigo = ($codigo . $telefono);
+    $correo = trim($_POST['correo']);
+    $usuario = trim($_POST['usuario']);
+    $contraseña = trim($_POST['contraseña']);
+    $pregunta1 = strtolower(trim($_POST['pregunta1']));
+    $pregunta2 = strtolower(trim($_POST['pregunta2']));
+    $contraseña_cifrada = password_hash($contraseña, PASSWORD_ARGON2ID);
+    $pregunta1_cifrada = password_hash($pregunta1, PASSWORD_ARGON2ID);
+    $pregunta2_cifrada = password_hash($pregunta2, PASSWORD_ARGON2ID);
 
-	$nombre = $_POST['nombre'];
-	$apellido = $_POST['apellido'];
-	$cedula = $_POST['cedula'];
-	$telefono = $_POST['telefono'];
-	$codigo = strval($_POST['codigo']);
-	$codigo = ($codigo . $telefono);
-	$correo = $_POST['correo'];
-	$usuario = $_POST['usuario'];
-	$contraseña = $_POST['contraseña'];
-	$pregunta1 = strtolower($_POST['pregunta1']);
-	$pregunta2 = strtolower($_POST['pregunta2']);
-	$contraseña_cifrada = password_hash($contraseña, PASSWORD_ARGON2ID);
-	$pregunta1_cifrada = password_hash($pregunta1, PASSWORD_ARGON2ID);
-	$pregunta2_cifrada = password_hash($pregunta2, PASSWORD_ARGON2ID);
+    // Configuración de límites y expresiones regulares
+    $LIMITES = [
+        'nombre' => ['min' => 2, 'max' => 25],
+        'apellido' => ['min' => 2, 'max' => 25],
+        'cedula' => ['min' => 7, 'max' => 9],
+        'telefono' => ['min' => 7, 'max' => 7],
+        'correo' => ['min' => 5, 'max' => 100],
+        'usuario' => ['min' => 5, 'max' => 30],
+        'contraseña' => ['min' => 14, 'max' => 50],
+        'pregunta' => ['min' => 2, 'max' => 100],
+    ];
 
+    $regex = [
+        'soloLetras' => '/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/',
+        'soloNumeros' => '/^\d+$/',
+        'email' => '/^[^\s@]+@[^\s@]+\.[^\s@]+$/'
+    ];
 
-	if (empty($nombre) || empty($apellido) || empty($cedula) || empty($codigo) || empty($correo) || empty($usuario) || empty($contraseña) || empty($pregunta1) || empty($pregunta2)) {
+    $errores = [];
 
-
-
-
-		echo '<script>						
-				var msg = document.createElement("div");
-
-							msg.innerHTML = `<div class="fixed bottom-12 right-2 fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-									<div class=" flex justify-start items-center border-b-2 border-gray-300 pb-2">
-                                            <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505" transform="matrix(1, 0, 0, 1, 0, 0)" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cross-round</title> <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path></g></svg>
-                                            <p class=" text-[11px] ghost pb-1">Los campos no pueden estar vacios</p> 
-                                    </div>
-							</div>`;
-
-			                                var elemento = msg;
-                                            setTimeout(function() {
-                                                elemento.remove();
-                                            }, 4000);
-			document.body.appendChild(msg);
-
-		</script>';
-		exit;
-	}
-	// Verificar usuario 
-	//preparar sentencia 1
-	// Verificar usuario 
-			
-	
-	
-// Funciones auxiliares
-function mostrarError($mensaje) {
-    echo '<script> 
-        var msg = document.createElement("div");
-        msg.innerHTML = `<div class="fixed bottom-12 right-2 mt-2 px-2 py-4 text-center bg-indigo-500 rounded-xl">
-            <div class="flex justify-start items-center border-b-2 border-gray-300 pb-2">
-                <svg fill="#f00505" width="40px" height="30px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#f00505">
-                    <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
-                </svg>
-                <p class="text-[11px] ghost pb-1">'.$mensaje.'</p> 
-            </div>
-        </div>`;
-        
-        setTimeout(() => msg.remove(), 4000);
-        document.body.appendChild(msg);
-    </script>';
-    exit;
-}
-
-function validarCampoUnico($connect, $campo, $valor, $mensajeError) {
-    $stmt = $connect->prepare("SELECT COUNT(*) as total FROM usuario WHERE $campo = ?");
-    $stmt->bind_param("s", $valor);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $existe = $result->fetch_assoc()['total'] > 0;
-    $stmt->close();
-    
-    if ($existe) {
-        mostrarError($mensajeError);
+    // Función para validar campos
+    function validarCampo($valor, $regex = null, $limites, $campo) {
+        if (empty($valor)) return "$campo no puede estar vacío.";
+        if ($regex && !preg_match($regex, $valor)) return "Formato inválido en $campo.";
+        if (strlen($valor) < $limites['min'] || strlen($valor) > $limites['max']) {
+            return "$campo debe tener entre {$limites['min']} y {$limites['max']} caracteres.";
+        }
+        return null;
     }
+
+    // Validar todos los campos
+    $errores[] = validarCampo($nombre, $regex['soloLetras'], $LIMITES['nombre'], 'Nombre');
+    $errores[] = validarCampo($apellido, $regex['soloLetras'], $LIMITES['apellido'], 'Apellido');
+    $errores[] = validarCampo($cedula, $regex['soloNumeros'], $LIMITES['cedula'], 'Cédula');
+    $errores[] = validarCampo($telefono, $regex['soloNumeros'], $LIMITES['telefono'], 'Teléfono');
+    $errores[] = validarCampo($correo, $regex['email'], $LIMITES['correo'], 'Correo');
+    $errores[] = validarCampo($usuario, null, $LIMITES['usuario'], 'Usuario');
+    $errores[] = validarCampo($contraseña, null, $LIMITES['contraseña'], 'Contraseña');
+    $errores[] = validarCampo($pregunta1, $regex['soloLetras'], $LIMITES['pregunta'], 'Pregunta 1');
+    $errores[] = validarCampo($pregunta2, $regex['soloLetras'], $LIMITES['pregunta'], 'Pregunta 2');
+
+    // Filtrar errores vacíos
+    $errores = array_filter($errores);
+
+    // Validaciones específicas
+    if (!empty($errores)) {
+        foreach ($errores as $error) {
+            echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `<span>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</span>`;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+                </script>";
+        }
+        exit();
+    }
+
+    // Validar unicidad de campos
+    function validarUnicidad($connect, $campo, $valor, $mensaje) {
+        $sql = "SELECT COUNT(*) as total FROM usuario WHERE $campo = ?";
+        $stmt = $connect->prepare($sql);
+        $stmt->bind_param("s", $valor);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $existe = $result->fetch_assoc()['total'] > 0;
+        $stmt->close();
+
+        if ($existe) {
+            echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `<span>" . htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8') . "</span>`;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+                </script>";
+            exit();
+        }
+    }
+
+    validarUnicidad($connect, 'nombre_usuario', $usuario, 'Este usuario ya existe.');
+    validarUnicidad($connect, 'correo', $correo, 'Este correo ya está registrado.');
+    validarUnicidad($connect, 'telefono', $telefono, 'Este teléfono ya está registrado.');
+    validarUnicidad($connect, 'cedula', $cedula, 'Esta cédula ya está registrada.');
+
+    // Insertar usuario en la base de datos
+    $sql = "INSERT INTO usuario (id, nombre, apellido, cedula, telefono, correo, nombre_usuario, contraseña, intentos_fallidos, estado, respuesta_seguridad1, respuesta_seguridad2) 
+            VALUES ('', ?, ?, ?, ?, ?, ?, ?, 0, 'Activo', ?, ?)";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("sssssssss", $nombre, $apellido, $cedula, $codigo, $correo, $usuario, $contraseña_cifrada, $pregunta1_cifrada, $pregunta2_cifrada);
+    $stmt->execute();
+
+    // Registrar acción en la bitácora
+    $sqlBitacora = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+    $stmtBitacora = $connect->prepare($sqlBitacora);
+    $accion = "Se insertó un nuevo usuario.";
+    $datosAccion = "nombre = $nombre, apellido = $apellido, cedula = $cedula, telefono = $codigo, correo = $correo, usuario = $usuario";
+    $stmtBitacora->bind_param("sss", $accion, $datosAccion, $usuarioSesion);
+    $stmtBitacora->execute();
+
+    echo "<script>
+        const notificacion = document.createElement('div');
+        notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-green-100 text-green-700 border flex items-center';
+        notificacion.innerHTML = `<span>Usuario registrado correctamente.</span>`;
+        document.body.appendChild(notificacion);
+        setTimeout(() => notificacion.remove(), 4000);
+        </script>";
+    echo "<script> window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'</script>";
 }
-
-// Validación de campos recibidos (deberías incluir esto)
-/*
-$usuario = $_POST['usuario'] ?? '';
-$correo = $_POST['correo'] ?? '';
-$telefono = $_POST['telefono'] ?? '';
-$cedula = $_POST['cedula'] ?? '';
-$contraseña = $_POST['contraseña'] ?? '';
-*/
-
-// Validaciones de formato
-if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-    mostrarError("Ingrese un Correo válido");
-}
-
-if (!is_numeric($telefono)) {
-    mostrarError("El teléfono solo debe contener números");
-}
-
-if (strlen($telefono) != 7) {
-    mostrarError("El teléfono debe tener exactamente 7 dígitos");
-}
-
-if (strlen($cedula) < 8 || strlen($cedula) > 9) {
-    mostrarError("La cédula debe tener entre 8 y 9 caracteres");
-}
-
-if (strlen($contraseña) < 16) {
-    mostrarError("La contraseña debe tener al menos 16 caracteres");
-}
-
-// Validaciones de unicidad
-validarCampoUnico($connect, 'nombre_usuario', $usuario, "Este usuario ya existe");
-validarCampoUnico($connect, 'correo', $correo, "Este correo ya está registrado");
-validarCampoUnico($connect, 'telefono', $telefono, "Este teléfono ya está en uso");
-validarCampoUnico($connect, 'cedula', $cedula, "Esta cédula ya está registrada");
-
-// Si llegamos aquí, todas las validaciones pasaron
-// Puedes continuar con el registro del usuario
-
-
-  //ingresar insert en bitacora
-  $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
-  $stmt2 = $connect->prepare($sql2);
-  $accion = "Se Insertó un nuevo Usuario.";
-  $datos_accion = "nombre = $nombre, apellido = $apellido, cedula = $cedula, codigo = $codigo, correo = $correo, usuario= $usuario";
-  $stmt2->bind_param("sss", $accion, $datos_accion, $usuarioSesion);
-  $resultInsert2 = $stmt2->execute();
-  
-  //aqui termina
-
-		//preparar sentencia 5
-
-		$sqlusuario = "INSERT INTO usuario (id, nombre, apellido, cedula, telefono, correo, nombre_usuario, contraseña, intentos_fallidos, estado, respuesta_seguridad1, respuesta_seguridad2) 
-		VALUES ('', ?, ?, ?, ?, ?, ?, ?, 0, 'Activo', ?, ?)";
-		$stmt = $connect->prepare($sqlusuario);
-		$stmt->bind_param("sssssssss", $nombre, $apellido, $cedula, $codigo, $correo, $usuario, $contraseña_cifrada, $pregunta1_cifrada, $pregunta2_cifrada);
-		$stmt->execute();
-		echo "<script> window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'</script>";
-		
-		
-		$stmt->close();
-		//fin
-		
-	}
-
-
 ?>

@@ -1,80 +1,150 @@
 <?php
-    session_start();
-    error_reporting(0);
-    $usuario = $_SESSION['nombre_usuario'];
-    if ($usuario == null || $usuario == ''){
-          header('location:login/login.php');
-          die();
-    }
-    include 'connect.php';
+session_start();
+$usuario = $_SESSION['nombre_usuario'];
+
+if (!isset($usuario)) {
+    header("location: login.php");
+    die();
+} else {
+    include('connect.php');
     include 'contador_sesion.php';
+}if (isset($_POST['submit'])) {
+    $nombre = trim($_POST['nombre']);
+    $apellido = trim($_POST['apellido']);
+    $cen = trim($_POST['cen']);
+    $nacimiento = trim($_POST['nacimiento']);
+    $sexo = trim($_POST['sexo']);
 
-    $id=$_GET['editarid'];
-    // preparar sentencia
-    // PREPARED STATEMENT FOR STUDENT DATA QUERY
-            $sql = "SELECT estudiantes.*, 
-            seccion.nombre AS seccion_nombre, 
-            grados.nombre AS grado_nombre,
-            representante.nombre AS representante_nombre, 
-            representante.apellido AS representante_apellido,
-            representante.cedula AS representante_cedula, 
-            representante.telefono AS representante_telefono,
-            representante.correo AS representante_correo,
-            representante.id AS representante_id
-            FROM estudiantes 
-            JOIN seccion ON estudiantes.idseccion = seccion.id 
-            JOIN grados ON estudiantes.idgrado = grados.id
-            JOIN representante ON estudiantes.idrepresentante = representante.id
-            WHERE estudiantes.id = ?";
+    $errores = [];
 
-            $stmt = $connect->prepare($sql);
+    // Validaciones
+    if (empty($nombre) || strlen($nombre) < 2 || strlen($nombre) > 30) {
+        $errores[] = "El nombre debe tener entre 2 y 30 caracteres.";
+    }
 
-            if (!$stmt) {
-            die("Error en preparación: " . $connect->error);
-            }
+    if (empty($apellido) || strlen($apellido) < 2 || strlen($apellido) > 30) {
+        $errores[] = "El apellido debe tener entre 2 y 30 caracteres.";
+    }
 
-            // Bind parameters and execute
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-            $result = $stmt->get_result();
+    if (empty($cen) || !is_numeric($cen)) {
+        $errores[] = "El C.E.N debe ser un número válido.";
+    }
 
-            if ($row = $result->fetch_assoc()) {
-            // Assign variables (preserving your original structure)
-            $nombre = $row['nombre'];
-            $apellido = $row['apellido'];
-            $cen = $row['cen'];
-            $nacimiento = $row['nacimiento'];
-            $sexo = $row['sexo'];
-            $representante = $row['representante_nombre'];
-            $representante_apellido = $row['representante_apellido'];
-            $cedula = $row['representante_cedula'];
-            $telefono = $row['representante_telefono'];
-            $correo = $row['representante_correo'];
-            $grado = $row['grado_nombre'];
-            $seccion = $row['seccion_nombre'];
-            $idrepresentante = $row['representante_id'];  // Fixed column name
-            $volver=$grado;
-            $volver2=$seccion;
-            }
+    if (!empty($errores)) {
+        foreach ($errores as $error) {
+            echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `
+                  <div class='flex-shrink-0 mr-3 text-red-700'>
+                    <svg fill='#f00505' width='24px' height='24px' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'>
+                      <path d='M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z'></path>
+                    </svg>
+                  </div>
+                  <div class='text-sm'>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</div>
+                `;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+                </script>";
+        }
+        exit();
+    }
 
-            //guardar datos viejos
-            $nombre_anterior = $nombre;
-            $apellido_anterior = $apellido;
-            $cen_anterior = $cen;
-            $nacimiento_anterior = $nacimiento;
-            $sexo_anterior = $sexo;
-            $grado_anterior = $grado;
-            $seccion_anterior = $seccion;
-            $representante_anterior = $representante;
-            $representante_apellido_anterior = $representante_apellido;
-            $cedularepre_anterior = $cedularepre;
-            $codigo_anterior = $telefono;
-            $correo_anterior = $correo;
-            $stmt->close();
-            //fin
-         
+    // Actualizar en la base de datos
+    $sql = "UPDATE estudiantes SET nombre = ?, apellido = ?, cen = ?, nacimiento = ?, sexo = ? WHERE id = ?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("sssssi", $nombre, $apellido, $cen, $nacimiento, $sexo, $id);
+    if ($stmt->execute()) {
+        // Obtener el grado y la sección del estudiante actualizado
+        $sql_grado_seccion = "SELECT grados.nombre AS grado_nombre, seccion.nombre AS seccion_nombre 
+                              FROM estudiantes 
+                              JOIN grados ON estudiantes.idgrado = grados.id 
+                              JOIN seccion ON estudiantes.idseccion = seccion.id 
+                              WHERE estudiantes.id = ?";
+        $stmt_grado_seccion = $connect->prepare($sql_grado_seccion);
+        $stmt_grado_seccion->bind_param("i", $id);
+        $stmt_grado_seccion->execute();
+        $result_grado_seccion = $stmt_grado_seccion->get_result();
+
+        if ($row_grado_seccion = $result_grado_seccion->fetch_assoc()) {
+            $grado = $row_grado_seccion['grado_nombre'];
+            $seccion = $row_grado_seccion['seccion_nombre'];
+
+            echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-green-100 text-green-700 border flex items-center';
+                notificacion.innerHTML = `
+                  <div class='flex-shrink-0 mr-3 text-green-700'>
+                    <svg fill='#4BB543' width='24px' height='24px' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+                      <path d='M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z'/>
+                    </svg>
+                  </div>
+                  <div class='text-sm'>Estudiante actualizado correctamente.</div>
+                `;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+                window.location.href='ver_grado.php?gradonombre=$grado&seccion=$seccion';
+                </script>";
+        } else {
+            echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `<span>Error al obtener el grado y la sección del estudiante.</span>`;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+                </script>";
+        }
+    } else {
+        echo "<script>
+            const notificacion = document.createElement('div');
+            notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+            notificacion.innerHTML = `<span>Error al actualizar el estudiante.</span>`;
+            document.body.appendChild(notificacion);
+            setTimeout(() => notificacion.remove(), 4000);
+            </script>";
+    }
+}
+
+$id = $_GET['editarid'];
+// Consulta para obtener los datos del estudiante
+$sql = "SELECT estudiantes.*, 
+        seccion.nombre AS seccion_nombre, 
+        grados.nombre AS grado_nombre,
+        representante.nombre AS representante_nombre, 
+        representante.apellido AS representante_apellido,
+        representante.cedula AS representante_cedula, 
+        representante.telefono AS representante_telefono,
+        representante.correo AS representante_correo,
+        representante.id AS representante_id
+        FROM estudiantes 
+        JOIN seccion ON estudiantes.idseccion = seccion.id 
+        JOIN grados ON estudiantes.idgrado = grados.id
+        JOIN representante ON estudiantes.idrepresentante = representante.id
+        WHERE estudiantes.id = ?";
+
+$stmt = $connect->prepare($sql);
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($row = $result->fetch_assoc()) {
+    $nombre = $row['nombre'];
+    $apellido = $row['apellido'];
+    $cen = $row['cen'];
+    $nacimiento = $row['nacimiento'];
+    $sexo = $row['sexo'];
+    $representante = $row['representante_nombre'];
+    $representante_apellido = $row['representante_apellido'];
+    $cedula = $row['representante_cedula'];
+    $telefono = $row['representante_telefono'];
+    $correo = $row['representante_correo'];
+    $grado = $row['grado_nombre'];
+    $seccion = $row['seccion_nombre'];
+}
+$stmt->close();
+
+
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -82,413 +152,309 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crud</title>
-    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/assets/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" href="http://localhost/dashboard/Proyecto/assets/styles.css">
+    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
+    <title>Editar Estudiante</title>
 </head>
 
-<body>
+<body class="bg-ghost">
+<div class="container-lg w-full flex flex-col">
 
-    <div class="container-all">
-        <main class="container-sm">
-           
-                     <!-- Mostrar el mensaje de error aquí con echo -->
-                    <?php if (!empty($error)) : ?>
-                        <p class="text-danger"><?php echo $error[0]; ?></p>
-                    <?php endif; ?>
-                
-                <form method="post" class="col mx-auto" id="formulario" novalidate>
-                    <div class="mb-3">
-                        <label>Nombres</label>
-                        <input type="text" class="form-control" placeholder="Nombres del Alumno" name="nombre" autocomplete="off" value=<?php echo "$nombre"; ?> id="nombre" required>
+<div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700">
+  <div role="status">
+    <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+      viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+        fill="currentColor" />
+      <path
+        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+        fill="currentFill" />
+    </svg>
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+
+<?php
+if ($usuario == "admin" || $usuario == "Admin") {
+  include('./header_admin.php');
+} else {
+  include('./header.php');
+}
+
+?>
+        <main class="w-full flex justify-center items-center xl:px-56 mt-8">
+            <form method="post" id="formulario" class="w-full max-w-screen-sm rounded-md border border-gray-300 p-6 shadow-sm bg-white">
+                <div class="grid grid-cols-1 gap-4">
+                    <!-- Nombre -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+                        <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
+                               placeholder="Nombre del Estudiante" maxlength="30" name="nombre" id="nombre" autocomplete="off" value="<?php echo htmlspecialchars($nombre); ?>" required>
                     </div>
-                    <div class="mb-3">
-                        <label>Apellidos</label>
-                        <input type="text" class="form-control" placeholder="Apellidos del Alumno" name="apellido" autocomplete="off" value=<?php echo "$apellido"; ?> id="apellido" required>
+
+                    <!-- Apellido -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
+                        <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
+                               placeholder="Apellido del Estudiante" maxlength="30" name="apellido" id="apellido" autocomplete="off" value="<?php echo htmlspecialchars($apellido); ?>" required>
                     </div>
-                    <div class="mb-3">
-                        <label>C.E.N</label>
-                        <input type="number" class="form-control" placeholder="C.E.N" name="cen" autocomplete="off" value=<?php echo "$cen"; ?> id="cen" required>
+
+                    <!-- C.E.N -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">C.E.N</label>
+                        <input type="number" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
+                               placeholder="C.E.N" name="cen" id="cen" autocomplete="off" value="<?php echo htmlspecialchars($cen); ?>" required>
                     </div>
-                    <div class="mb-3">
-                        <label>Nacimiento</label>
-                        <input type="date" class="form-control" placeholder="Fecha de Nacimiento" name="nacimiento" autocomplete="off" value=<?php echo "$nacimiento"; ?> id="nacimiento" required>
+
+                    <!-- Nacimiento -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Fecha de Nacimiento</label>
+                        <input type="date" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
+                               name="nacimiento" id="nacimiento" autocomplete="off" value="<?php echo htmlspecialchars($nacimiento); ?>" required>
+                        <small id="nacimiento-error" class="text-red-500 hidden">Por favor, ingrese una fecha válida.</small>
                     </div>
-                    <div class="mb-3">
-                    <label>Sexo (<b>presione abajo para desplegar las opciones</b>)</label>
-                        <select class="form-control" name="sexo">
-                            <?php if ($sexo == "Masculino"){?>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Femenino">Femenino</option>
-                            <?php     
-                                }else{
-                                ?>
-                                <option value="Femenino">Femenino</option> 
-                                <option value="Masculino">Masculino</option>
-                                <?php
-                                }?>
+
+                    <!-- Sexo -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Sexo</label>
+                        <select class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="sexo" id="sexo" required>
+                            <option value="Masculino" <?php echo $sexo == "Masculino" ? "selected" : ""; ?>>Masculino</option>
+                            <option value="Femenino" <?php echo $sexo == "Femenino" ? "selected" : ""; ?>>Femenino</option>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label>Nombre del representante</label>
-                        <input type="text" class="form-control" placeholder="Nombre del Representante" name="representante" autocomplete="off" value=<?php echo "$representante"; ?> id="representante-nombre" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Apellido del representante</label>
-                        <input type="text" class="form-control" placeholder="Apellido del Representante" name="representante_apellido" autocomplete="off" value=<?php echo "$representante_apellido"; ?> id="representante-apellido" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>C.I Representante</label>
-                        <input type="number" class="form-control" placeholder="Cédula del Representante" name="cedularepre" id="cedula" autocomplete="off" value=<?php echo "$cedula"; ?>>
-                    </div>
-                    <div class="mb-3">
-                        <label>Telefono</label>
 
-                            <input type="number" class="form-control" placeholder="Telefono" name="telefono" autocomplete="off" maxlength="7" value=<?php echo "$telefono"; ?> id="telefono" required>
-                        </div>
-                    <div class="mb-3">
-                        <label>Correo Electornico</label>
-                        <input type="email" class="form-control" placeholder="Correo" name="correo" id="email" autocomplete="off" value=<?php echo "$correo"; ?> required>
+                    <!-- Botones -->
+                    <div class="flex flex-col sm:flex-row gap-3 mt-4">
+                        <button type="submit" name="submit" id="btn" 
+                                class="w-full px-4 py-3 rounded-md bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm">
+                            Guardar Cambios
+                        </button>
+                        <button type="button" onclick="regresarPaginaAnterior()" 
+                                class="w-full px-4 py-3 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 shadow-sm border border-gray-300">
+                            Regresar
+                        </button>
                     </div>
-
-                                
-                    <div class="mb-3">
-                      <label>Grado (<b>presione abajo para desplegar las opciones</b>)</label>
-                  <select class="form-control" name="grado"  required>
-                      <option value=1>1</option>
-                      <option value=2>2</option>
-                      <option value=3>3</option>
-                      <option value=4>4</option>
-                      <option value=5>5</option>
-                      <option value=6>6</option>
-                  </select>
                 </div>
-                    <div class="mb-3">
-                    <label>Seccion (<b>presione abajo para desplegar las opciones</b>)</label>
-                        <select class="form-control" name="seccion">
-                            <?php if ($seccion == "A"){?>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <?php     
-                                }else{
-                                ?>
-                                <option value="B">B</option>
-                                <option value="A">A</option>
-                                <?php
-                                }?>
-                        </select>
-                    </div>
-                    <div class="container-error text-danger mb-3">
-
-                    </div>
-                    <div class="mb-3">
-                        <button type="button" class="btn btn-primary" id="btn-modal" data-bs-toggle="modal" data-bs-target="#exampleModal">Finalizar</button>
-                    </div>
-
-                    <div class="mb-3">
-                        <button type="button" onclick="regresarPaginaAnterior()" class="btn btn-primary">Regresar a la página anterior</button>
-                    </div>
-
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                            
-                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                              <span>esta seguro que quiere editar?</span>
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                              <button type="submit" class="btn btn-primary" name="submit" >Si</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                </form>
-
+            </form>
         </main>
+    </div>
+    <script>
+        function regresarPaginaAnterior() {
+            window.history.back();
+        }
+    </script>
+    <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
+    <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById('formulario');
+            const inputs = {
+                nombre: document.getElementById('nombre'),
+                apellido: document.getElementById('apellido'),
+                cen: document.getElementById('cen'),
+                nacimiento: document.getElementById('nacimiento'),
+                sexo: document.getElementById('sexo')
+            };
 
-    </div>    
-        <script>
-              function regresarPaginaAnterior() {
-              window.history.back();
-                  }
-              </script>
- <script src="http://localhost/dashboard/Proyecto/assets/bootstrap/js/bootstrap.min.js"></script>  
- <script src="http://localhost/dashboard/Proyecto/assets/validacion-estudiante.js"></script>  
+            const nacimientoError = document.getElementById('nacimiento-error');
+            };
+
+            const regex = {
+                soloLetras: /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/,
+                soloNumeros: /^\d+$/
+            };
+
+            const LIMITES = {
+                nombre: { min: 2, max: 30 },
+                apellido: { min: 2, max: 30 },
+                cen: { min: 1, max: 25 }
+            };
+
+            const mostrarNotificacion = (mensaje, tipo = 'error') => {
+                const sanitizeHTML = (str) => {
+                    const temp = document.createElement('div');
+                    temp.textContent = str;
+                    return temp.innerHTML;
+                };
+
+                const icono = tipo === 'error' ?
+                    `<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
+                    </svg>` :
+                    `<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
+                    </svg>`;
+
+                const color = tipo === 'error' ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
+
+                document.querySelectorAll('.notificacion').forEach(el => el.remove());
+
+                const notificacion = document.createElement('div');
+                notificacion.className = `notificacion fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ${color} border flex items-center`;
+                notificacion.innerHTML = `
+                    <div class="flex-shrink-0 mr-3">${icono}</div>
+                    <div class="text-sm">${sanitizeHTML(mensaje)}</div>
+                `;
+
+                document.body.appendChild(notificacion);
+
+                setTimeout(() => {
+                    notificacion.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                    setTimeout(() => notificacion.remove(), 500);
+                }, 4000);
+            };
+
+            const validarCampo = (input, regex = null, minLength = 0, maxLength = Infinity, mensaje = null) => {
+                const valor = input.value.trim();
+                input.classList.remove('border-red-500');
+
+                if (!valor) {
+                    return { valido: false, mensaje: mensaje || `El campo ${input.id} no puede estar vacío` };
+                }
+
+                if (regex && !regex.test(valor)) {
+                    return { valido: false, mensaje: mensaje || `Formato inválido para ${input.id}` };
+                }
+
+                if (valor.length < minLength) {
+                    return { valido: false, mensaje: mensaje || `${input.id} debe tener al menos ${minLength} caracteres` };
+                }
+
+                if (valor.length > maxLength) {
+                    return { valido: false, mensaje: mensaje || `${input.id} no puede exceder los ${maxLength} caracteres` };
+                }
+
+                return { valido: true };
+            };
+
+            btn.addEventListener("click", (e) => {
+                const validaciones = [
+                    { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, LIMITES.nombre.min, LIMITES.nombre.max, `El nombre debe ser válido.`) },
+                    { input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, LIMITES.apellido.min, LIMITES.apellido.max, `El apellido debe ser válido.`) }
+                ];
+
+                const nacimientoValue = inputs.nacimiento.value.trim();
+                
+                if (!nacimientoValue || isNaN(Date.parse(nacimientoValue))) {
+                    e.preventDefault();
+                    inputs.nacimiento.classList.add('border-red-500');
+                    nacimientoError.classList.remove('hidden');
+                    mostrarNotificacion('Por favor, ingrese una fecha de nacimiento válida.');
+                    return;
+                } else {
+                    inputs.nacimiento.classList.remove('border-red-500');
+                    nacimientoError.classList.add('hidden');
+                }
+
+                for (const validacion of validaciones) {
+                    if (!validacion.resultado.valido) {
+                        e.preventDefault();
+                        validacion.input.classList.add('border-red-500');
+                        mostrarNotificacion(validacion.resultado.mensaje);
+                        return;
+                    }
+                }
+            });
+        });
+    </script>
 </body>
-
 </html>
 
 <?php
-if (isset($_POST['submit'])){
-        $nombre= $_POST['nombre'];
-        $apellido= $_POST['apellido'];
-        $cen= $_POST['cen'];
-        $nacimiento= $_POST['nacimiento'];
-        $sexo= $_POST['sexo'];
-        $representante= $_POST['representante'];
-        $representante_apellido= $_POST['representante_apellido'];
-        $cedularepre= $_POST['cedularepre'];
-        $telefono= strval($_POST['telefono']);
-        $codigo= strval($_POST['codigo']);
-        $codigo = ($codigo . $telefono);
-        
-       
-        $correo= $_POST['correo'];
-        $grado=$_POST['grado'];
-        $seccion=$_POST['seccion'];
-    
-        $seccion= strtoupper($seccion);
-        $sexo=strtoupper($sexo);
-        $error=[];
+if (isset($_POST['submit'])) {
+    $nombre = trim($_POST['nombre']);
+    $apellido = trim($_POST['apellido']);
+    $cen = trim($_POST['cen']);
+    $nacimiento = trim($_POST['nacimiento']);
+    $sexo = trim($_POST['sexo']);
 
+    $errores = [];
 
+    // Validaciones
+    if (empty($nombre) || strlen($nombre) < 2 || strlen($nombre) > 30) {
+        $errores[] = "El nombre debe tener entre 2 y 30 caracteres.";
+    }
 
-        //  Validar que ningún campo esté vacío
-    if (empty($nombre) || empty($apellido) || empty($cen) || empty($nacimiento) || empty($sexo) || empty($representante) || empty($representante_apellido)||empty($cedula) || empty($telefono) || empty($correo) || empty($grado) || empty($seccion)) {
-        echo "<div >
-        <div class='container_title btn btn-danger'>
-            <h5>Los datos no pueden estar vacios</h5>
-        </div>
+    if (empty($apellido) || strlen($apellido) < 2 || strlen($apellido) > 30) {
+        $errores[] = "El apellido debe tener entre 2 y 30 caracteres.";
+    }
 
-    </div>";
+    if (empty($cen) || !is_numeric($cen)) {
+        $errores[] = "El C.E.N debe ser un número válido.";
+    }
 
-    
+    if (!empty($errores)) {
+        foreach ($errores as $error) {
+            echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `
+                  <div class='flex-shrink-0 mr-3 text-red-700'>
+                    <svg fill='#f00505' width='24px' height='24px' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'>
+                      <path d='M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z'></path>
+                    </svg>
+                  </div>
+                  <div class='text-sm'>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</div>
+                `;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+                </script>";
+        }
         exit();
     }
 
+    // Actualizar en la base de datos
+    $sql = "UPDATE estudiantes SET nombre = ?, apellido = ?, cen = ?, nacimiento = ?, sexo = ? WHERE id = ?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("sssssi", $nombre, $apellido, $cen, $nacimiento, $sexo, $id);
+    if ($stmt->execute()) {
+        // Obtener el grado y la sección del estudiante actualizado
+        $sql_grado_seccion = "SELECT grados.nombre AS grado_nombre, seccion.nombre AS seccion_nombre 
+                              FROM estudiantes 
+                              JOIN grados ON estudiantes.idgrado = grados.id 
+                              JOIN seccion ON estudiantes.idseccion = seccion.id 
+                              WHERE estudiantes.id = ?";
+        $stmt_grado_seccion = $connect->prepare($sql_grado_seccion);
+        $stmt_grado_seccion->bind_param("i", $id);
+        $stmt_grado_seccion->execute();
+        $result_grado_seccion = $stmt_grado_seccion->get_result();
 
-        if ($sexo === "M" || $sexo === "MASCULINO") {
-            $sexo = "Masculino";
-        } elseif ($sexo === "F" || $sexo === "FEMENINO") {
-            $sexo = "Femenino";
+        if ($row_grado_seccion = $result_grado_seccion->fetch_assoc()) {
+            $grado = $row_grado_seccion['grado_nombre'];
+            $seccion = $row_grado_seccion['seccion_nombre'];
+
+            echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-green-100 text-green-700 border flex items-center';
+                notificacion.innerHTML = `
+                  <div class='flex-shrink-0 mr-3 text-green-700'>
+                    <svg fill='#4BB543' width='24px' height='24px' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+                      <path d='M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z'/>
+                    </svg>
+                  </div>
+                  <div class='text-sm'>Estudiante actualizado correctamente.</div>
+                `;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+                window.location.href='ver_grado.php?gradonombre=$grado&seccion=$seccion';
+                </script>";
         } else {
-            array_push($error, "Error al registrar el género, por favor compruebe el dato.") ;
+            echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `<span>Error al obtener el grado y la sección del estudiante.</span>`;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+                </script>";
         }
-        if (empty($error)) {
-        if ($seccion === 'A' || $seccion === 'B') {
-
-    //preparar sentencia
-        $sql_grado_exist = "SELECT id FROM grados WHERE nombre = ?";
-        $stmt_grado = $connect->prepare($sql_grado_exist);
-        $stmt_grado->bind_param("s", $grado);
-        $stmt_grado->execute();
-        $result_grado_exist = $stmt_grado->get_result();
-
-        $sql_seccion_exist = "SELECT id FROM seccion WHERE nombre = ?";
-        $stmt_seccion = $connect->prepare($sql_seccion_exist);
-        $stmt_seccion->bind_param("s", $seccion);
-        $stmt_seccion->execute();
-        $result_seccion_exist = $stmt_seccion->get_result();
-
-        $sql_idrepre_exist = "SELECT id FROM representante WHERE cedula = ?";
-        $stmt_repre = $connect->prepare($sql_idrepre_exist);
-        $stmt_repre->bind_param("s", $cedula);
-        $stmt_repre->execute();
-        $result_idrepre_exist = $stmt_repre->get_result();
-        $idrepresentante = $row_idrepre_exist['id'];
-        
-        // Close statements
-        $stmt_grado->close();
-        $stmt_seccion->close();
-        $stmt_repre->close();
-
-    //fin
-    //preparar sentencia
-    if (mysqli_num_rows($result_grado_exist) > 0 && mysqli_num_rows($result_seccion_exist) > 0) {
-        //verificar estudiante
-        $sql_verificar_estudiante = "SELECT * FROM estudiantes WHERE cen = ? AND id != ?";
-        $stmt = $connect->prepare($sql_verificar_estudiante);
-        $stmt->bind_param("si", $cen, $id);
-        $stmt->execute();
-        $resultado_estudiante = $stmt->get_result();
-        if ($resultado_estudiante->num_rows > 0) {
-            echo "<div>
-                    <div class='container_title btn btn-danger'>
-                        <h5>*La nueva cédula escolar ingresada coincide con la de otro estudiante</h5>
-                    </div>
-                </div>";
-            
-            $stmt->close();
-            exit;
-        }
-
-        $stmt->close();
-        if ($cen==$cedularepre   ){
-            $errores[] = "La cedula del estudiante y la del representante son las mismas";
-        }
-            //verificar representante
-                $sql_verificar_cedula = "SELECT id FROM representante WHERE cedula = ?";
-                $stmt = $connect->prepare($sql_verificar_cedula);
-                $stmt->bind_param("s", $cen);
-                if ($stmt->execute()) {
-                    $resultado_cedula = $stmt->get_result();
-                    if ($resultado_cedula->num_rows > 0) {
-                        $errores[] = "La cédula escolar ingresada para el estudiante se encuentra registrada con un representante";
-                    }
-                
-                $stmt->close();
-
-                $sql_verificar_cedula = "SELECT * FROM representante WHERE cedula = ?";
-                $stmt = $connect->prepare($sql_verificar_cedula);
-                $stmt->bind_param("s", $cen);
-                $stmt->execute();
-                $resultado_cedula = $stmt->get_result();
-
-            if($resultado_cedula->num_rows > 0){
-                $errores[] = "La cedula escolar ingresada para el estudiante  se encuenta registrada con un representante";
-            }
-            
-            $sql_verificar_cedula = "SELECT * FROM profesor WHERE cedula = ?";
-            $stmt = $connect->prepare($sql_verificar_cedula);
-            $stmt->bind_param("s", $cen);
-            $stmt->execute();
-            $resultado_cedula = $stmt->get_result();
-            
-            if($resultado_cedula->num_rows > 0) {
-                $errores[] = "La cédula escolar ingresada se encuentra registrada con un profesor";
-            }
-            
-           $sql_verificar_cedula = "SELECT * FROM estudiantes WHERE cen = ?";
-            $stmt = $connect->prepare($sql_verificar_cedula);
-            $stmt->bind_param("s", $cedularepre);
-            $stmt->execute();
-            $resultado_cedula = $stmt->get_result();
-
-            if($resultado_cedula->num_rows > 0) {
-                $errores[] = "La cédula del representante ingresada se encuentra registrada con un estudiante";
-            }
-
-           
-           $sql_verificar_telefono = "SELECT * FROM representante WHERE telefono = ? AND id != ?";
-            $stmt = $connect->prepare($sql_verificar_telefono);
-            $stmt->bind_param("si", $codigo, $idrepresentante);
-            $stmt->execute();
-            $resultado_telefono = $stmt->get_result();
-
-            if($resultado_telefono->num_rows > 0) {
-                $errores[] = "Este telefono ya se encuentra registrado con otro representante";
-            }
-
-            $sql_verificar_correo = "SELECT * FROM representante WHERE correo = ? AND id != ?";
-            $stmt = $connect->prepare($sql_verificar_correo);
-            $stmt->bind_param("si", $correo, $idrepresentante);
-            $stmt->execute();
-            $resultado_correo = $stmt->get_result();
-
-            if($resultado_correo->num_rows > 0) {
-                $errores[] = "Este correo ya se encuentra registrado con otro representante";
-            }
-
-          
-            if(!empty($errores)){
-                echo "<div >
-                        <div class='container_title btn btn-danger'>
-                        
-                            <h5>Se encontraron los siguientes errores:</h5>";
-              
-                foreach($errores as $error){
-                    echo "<h5>*$error</h5>";
-                }
-               
-                echo "</div>
-                    </div>";
-                exit;
-            }
-
-
-
-
-
-
-
-           
-
-
-        $row_grado = mysqli_fetch_assoc($result_grado_exist);
-        $grado_id = $row_grado['id'];
-
-        $row_seccion = mysqli_fetch_assoc($result_seccion_exist);
-        $seccion_id = $row_seccion['id'];
-            
-            $sql1 = "UPDATE estudiantes SET idgrado = $grado_id, idseccion = $seccion_id WHERE id = $id";
-            
-            $sql2 = "UPDATE estudiantes SET nombre = '$nombre', apellido = '$apellido', cen = $cen, nacimiento = '$nacimiento', sexo = '$sexo' WHERE id = $id";
-            $sql3 = "UPDATE representante SET nombre = '$representante',  apellido='$representante_apellido',cedula ='$cedularepre', telefono = '$codigo', correo = '$correo' WHERE cedula = $cedula";
-            
-            // Ejecutar todas las consultas
-           
-            
-            //agregar datos a la bitacora
-            $cambios = [];
-            
-                if ($apellido_anterior != $apellido_nuevo) {
-                    $cambios[] = "Apellido anterior = $apellido_anterior, Apellido actualizado = $apellido_nuevo";
-                }
-                if ($nombre_anterior != $nombre_nuevo) {
-                    $cambios[] = "Nombre anterior = $nombre_anterior, Nombre actualizado = $nombre_nuevo";
-                }
-                if ($cen_anterior != $cen_nuevo) {
-                    $cambios[] = "CEN anterior = $cen_anterior, CEN actualizado = $cen_nuevo";
-                }
-                if ($nacimiento_anterior != $nacimiento_nuevo) {
-                    $cambios[] = "Fecha de nacimiento anterior = $nacimiento_anterior, Fecha de nacimiento actualizado = $nacimiento_nuevo";
-                }
-                if ($sexo_anterior != $sexo_nuevo) {
-                    $cambios[] = "Sexo anterior = $sexo_anterior, Sexo actualizado = $sexo_nuevo";
-                }
-                if ($grado_anterior != $grado_nuevo) {
-                    $cambios[] = "Grado anterior = $grado_anterior, Grado actualizado = $grado_nuevo";
-                }
-                if ($seccion_anterior != $seccion_nuevo) {
-                    $cambios[] = "Sección anterior = $seccion_anterior, Sección actualizada = $seccion_nuevo";
-                }
-                if ($representante_anterior != $representante_nuevo) {
-                    $cambios[] = "Representante anterior = $representante_anterior, Representante actualizado = $representante_nuevo";
-                }
-                if ($representante_apellido_anterior != $representante_apellido_nuevo) {
-                    $cambios[] = "Apellido del representante anterior = $representante_apellido_anterior, Apellido del representante actualizado = $representante_apellido_nuevo";
-                }
-                if ($cedularepre_anterior != $cedularepre_nuevo) {
-                    $cambios[] = "Cédula de representante anterior = $cedularepre_anterior, Cédula representante actualizado = $cedularepre_nuevo";
-                }
-                if ($codigo_anterior != $codigo_nuevo) {
-                    $cambios[] = "Teléfono anterior = $codigo_anterior, Teléfono actualizado = $codigo_nuevo";
-                }
-                if ($correo_anterior != $correo_nuevo) {
-                    $cambios[] = "Correo anterior = $correo_anterior, Correo actualizado = $correo_nuevo";
-                }
-        
-                    // Unir todos los cambios en un string
-                    $datos_accion = implode(", ", $cambios);
-                    $datos_accion = "Nombre: $nombre_anterior, Apellido: $apellido_anterior, CEN: $cen_anterior. Cambios: " . $datos_accion;
-
-                    // insertar en la bitácora
-                    $sql4 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES ('Se actualizaron los datos de un estudiante.', 
-                    '$datos_accion', '$usuario')";
-                    
-                    $result = mysqli_multi_query($connect, $sql3 . ";" . $sql1. ";" . $sql2 . ";" . $sql4);
-               
-                    
-                    //fin
-    
-            if ($result) {
-            
-                echo" <script> window.location='ver_grado.php? gradonombre= $volver && seccion= $volver2 '</script>";
-            } else {
-                die(mysqli_error($connect));
-            }
-        } else {
-            array_push ($error, "Error, La sección no existe. Ingrese al alumno en la sección 'A' o 'B'.");
-        }
-    }
+    } else {
+        echo "<script>
+            const notificacion = document.createElement('div');
+            notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+            notificacion.innerHTML = `<span>Error al actualizar el estudiante.</span>`;
+            document.body.appendChild(notificacion);
+            setTimeout(() => notificacion.remove(), 4000);
+            </script>";
     }
 }
-}
-
-    ?>
+?>
