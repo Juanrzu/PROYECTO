@@ -490,6 +490,50 @@ if (isset($_POST['submit'])) {
     $sql1 = "UPDATE retiro_estudiantes SET nombre = ?, apellido = ?, cen = ?, nacimiento = ?, sexo = ?, grado = ?, seccion = ?, representante = ?, representante_apellido = ?, cedula_repre = ?, telefono = ?, correo = ? WHERE id = ?";
     $stmt = $connect->prepare($sql1);
     $stmt->bind_param("ssssssssssssi", $nombre, $apellido, $cen, $nacimiento, $sexo, $grado, $seccion, $representante, $representante_apellido, $cedula, $telefono, $correo, $id);
+    
+    //agregar datos a la bitacora
+    $cambios = [];
+                
+    if ($apellido_anterior != $apellido) {
+        $cambios[] = "Apellido anterior = $apellido_anterior, Apellido actualizado = $apellido";
+    }
+    if ($nombre_anterior != $nombre) {
+        $cambios[] = "Nombre anterior = $nombre_anterior, Nombre actualizado = $nombre";
+    }
+    if ($cen_anterior != $cen) {
+        $cambios[] = "CEN anterior = $cen_anterior, CEN actualizado = $cen";
+    }
+    if ($nacimiento_anterior != $nacimiento) {
+        $cambios[] = "Fecha de nacimiento anterior = $nacimiento_anterior, Fecha de nacimiento actualizado = $nacimiento";
+    }
+    if ($sexo_anterior != $sexo) {
+        $cambios[] = "Sexo anterior = $sexo_anterior, Sexo actualizado = $sexo";
+    }
+    if ($grado_anterior != $grado) {
+        $cambios[] = "Grado anterior = $grado_anterior, Grado actualizado = $grado";
+    }
+    if ($seccion_anterior != $seccion) {
+        $cambios[] = "Sección anterior = $seccion_anterior, Sección actualizada = $seccion";
+    }
+    if ($representante_anterior != $representante) {
+        $cambios[] = "Representante anterior = $representante_anterior, Representante actualizado = $representante";
+    }
+    if ($representante_apellido_anterior != $representante_apellido) {
+        $cambios[] = "Apellido del representante anterior = $representante_apellido_anterior, Apellido del representante actualizado = $representante_apellido";
+    }
+    if ($cedularepre_anterior != $cedularepre) {
+        $cambios[] = "Cédula de representante anterior = $cedularepre_anterior, Cédula representante actualizado = $cedularepre";
+    }
+    if ($codigo_anterior != $codigo) {
+        $cambios[] = "Teléfono anterior = $codigo_anterior, Teléfono actualizado = $codigo";
+    }
+    if ($correo_anterior != $correo) {
+        $cambios[] = "Correo anterior = $correo_anterior, Correo actualizado = $correo";
+    }
+
+    // Unir todos los cambios en un string
+    $datos_accion = implode(", ", $cambios);
+    $datos_accion = "Cambios: " . $datos_accion;
 
     if ($stmt->execute()) {
         // Registrar en la bitácora

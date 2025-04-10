@@ -24,9 +24,12 @@ $sql = "SELECT estudiantes.*,
         representante.cedula AS representante_cedula, 
         representante.telefono AS representante_telefono,
         representante.correo AS representante_correo,
-        representante.id AS representante_id
+        representante.id AS representante_id,
+        seccion.nombre as seccion_nombre, grados.nombre as grado_nombre 
         FROM estudiantes 
         JOIN representante ON estudiantes.idrepresentante = representante.id
+        JOIN seccion ON estudiantes.idseccion = seccion.id 
+        JOIN grados ON estudiantes.idgrado = grados.id 
         WHERE estudiantes.id = ?";
 
 $stmt = $connect->prepare($sql);
@@ -40,11 +43,14 @@ if ($row = $result->fetch_assoc()) {
     $cen = $row['cen'];
     $nacimiento = $row['nacimiento'];
     $sexo = $row['sexo'];
+    $idrepre = $row['representante_id'];
     $representante = $row['representante_nombre'];
     $representante_apellido = $row['representante_apellido'];
     $cedula = $row['representante_cedula'];
     $telefono = $row['representante_telefono'];
     $correo = $row['representante_correo'];
+    $grado = $row['grado_nombre'];
+    $seccion = $row['seccion_nombre'];
 }
 $stmt->close();
 ?>
@@ -164,26 +170,24 @@ if ($usuario == "admin" || $usuario == "Admin") {
 
         <!-- Grado -->
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Grado</label>
-            <select class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="grado" required>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-            </select>
-        </div>
-
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Grado</label>
+                        <select class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="grado" >
+                            <option value="1" <?php echo $grado == "1" ? "selected" : ""; ?>>1</option>
+                            <option value="2" <?php echo $grado == "2" ? "selected" : ""; ?>>2</option>
+                            <option value="3" <?php echo $grado == "3" ? "selected" : ""; ?>>3</option>
+                            <option value="4" <?php echo $grado == "4" ? "selected" : ""; ?>>4</option>
+                            <option value="5" <?php echo $grado == "5" ? "selected" : ""; ?>>5</option>
+                            <option value="6" <?php echo $grado == "6" ? "selected" : ""; ?>>6</option>
+                        </select>
+                    </div>
         <!-- Sección -->
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Sección</label>
-            <select class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="seccion" required>
-                <option value="A">A</option>
-                <option value="B">B</option>
-            </select>
-        </div>
-    </div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Sección</label>
+                        <select class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="seccion" >
+                            <option value="A" <?php echo $seccion == "A" ? "selected" : ""; ?>>A</option>
+                            <option value="B" <?php echo $seccion == "B" ? "selected" : ""; ?>>B</option>
+                        </select>
+                    </div>
 
     <!-- Botones -->
     <div class="flex flex-col sm:flex-row gap-3 mt-4">
@@ -320,13 +324,38 @@ if ($usuario == "admin" || $usuario == "Admin") {
 <?php
 
 if (isset($_POST['submit'])) {
-    $nombre = trim($_POST['nombre']);
-    $apellido = trim($_POST['apellido']);
+    $nombre = trim(htmlspecialchars($_POST['nombre']));
+    $apellido = trim(htmlspecialchars($_POST['apellido']));
     $cen = trim($_POST['cen']);
     $nacimiento = trim($_POST['nacimiento']);
     $sexo = trim($_POST['sexo']);
+    $representante = trim(htmlspecialchars($_POST['representante']));
+    $representante_apellido = trim(htmlspecialchars($_POST['representante_apellido']));
+    $cedularepre = trim($_POST['cedularepre']);
+    $telefono = trim($_POST['telefono']);
+    $correo = trim($_POST['correo']);
+    $grado = intval($_POST['grado']);
+    $seccion = trim($_POST['seccion']);
+
+
+    $sql = "SELECT id FROM grados WHERE nombre = ?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("s", $grado);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $idgrado = $row['id'];  
+
+    $sql = "SELECT id FROM seccion WHERE nombre = ?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("s", $seccion);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $idseccion = $row['id'];  
 
     $errores = [];
+   
 
     // Validaciones
     if (empty($nombre) || strlen($nombre) < 2 || strlen($nombre) > 30) {
@@ -360,11 +389,56 @@ if (isset($_POST['submit'])) {
         }
         exit();
     }
+    
 
     // Actualizar en la base de datos
-    $sql = "UPDATE estudiantes SET nombre = ?, apellido = ?, cen = ?, nacimiento = ?, sexo = ? WHERE id = ?";
-    $stmt = $connect->prepare($sql);
-    $stmt->bind_param("sssssi", $nombre, $apellido, $cen, $nacimiento, $sexo, $id);
+    // Actualizar estudiante
+    $sql = "UPDATE estudiantes SET 
+    nombre = ?, 
+    apellido = ?, 
+    cen = ?, 
+    nacimiento = ?, 
+    sexo = ?,
+    idrepresentante = ?,
+    idgrado = ?,
+    idseccion = ?
+    WHERE id = ?";
+
+$stmt = $connect->prepare($sql);
+$stmt->bind_param(
+"sssssiiii", // Nota el 'i' final para el ID
+$nombre,
+$apellido,
+$cen,
+$nacimiento,
+$sexo,
+$idrepre,
+$idgrado,
+$idseccion,
+$id
+);
+
+
+$sql_representante = "UPDATE representante SET
+    nombre = ?,
+    apellido = ?,
+    cedula = ?,
+    telefono = ?,
+    correo = ?
+    WHERE id = ?"; // Usamos el ID del estudiante como referencia
+
+$stmt_representante = $connect->prepare($sql_representante);
+$stmt_representante->bind_param(
+    "sssssi",
+    $representante,
+    $representante_apellido,
+    $cedularepre,
+    $telefono,
+    $correo,
+    $idrepre);
+    $stmt_representante->execute();
+
+
     if ($stmt->execute()) {
         echo "<script>
             const notificacion = document.createElement('div');
