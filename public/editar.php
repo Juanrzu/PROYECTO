@@ -187,7 +187,7 @@ if ($usuario == "admin" || $usuario == "Admin") {
 
     <!-- Botones -->
     <div class="flex flex-col sm:flex-row gap-3 mt-4">
-        <button type="button" data-modal-target="default-modal" data-modal-toggle="default-modal"
+        <button type="button"  data-modal-target="default-modal" data-modal-toggle="default-modal"
                 class="w-full px-4 py-3 rounded-md bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm">
             Guardar Cambios
         </button>

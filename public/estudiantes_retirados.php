@@ -46,7 +46,7 @@ include 'contador_sesion.php';
 
   <?php include($usuario === "admin" || $usuario === "Admin" ? './header_admin.php' : './header.php'); ?>
   
-  <main class="container h-screen mx-auto px-4 py-8">
+  <main class="container h-screen mx-auto px-2 md:px-20 py-8">
     <!-- Encabezado y controles -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
       <h1 class="text-2xl font-bold text-gray-800">Gestión de Estudiantes Retirados</h1>
@@ -64,61 +64,63 @@ include 'contador_sesion.php';
             $stmt->execute();
             $result = $stmt->get_result();
 
-            if ($result->num_rows > 0) {
-              while ($row = $result->fetch_assoc()) {
-                $id = $row['id'];
-                $fecha = date('d/m/Y', strtotime($row['fecha_hora']));
-                echo ' <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apellido</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">C.E.N</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nacimiento</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sexo</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Representante</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">C.I Rep.</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grado</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sección</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">motivo</th>
-              <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-            </tr>
-          </thead>
-
-          <tbody class="bg-white divide-y divide-gray-200">
-                <tr class="hover:bg-gray-50 transition-colors duration-150">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">' . htmlspecialchars($row['nombre']) . '</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['apellido']) . '</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['cen']) . '</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['nacimiento']) . '</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['sexo']) . '</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['representante'] . ' ' . $row['representante_apellido']) . '</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['cedula_repre']) . '</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['telefono']) . '</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['grado']) . '</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['seccion']) . '</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . $fecha . '</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['motivo']) . '</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex justify-center space-x-2">
-                          <a href="editar_estudiante_retirado.php?editarid=' . $id . '" class="text-blue-600 hover:text-blue-900 p-2 rounded-full hover:bg-blue-50 transition-colors duration-200" title="Editar">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                            </svg>
-                          </a>
-                          <form method="POST" action="restaurar_estudiantes_retirados.php?eliminarid=' . $id . '" class="inline">
-                            <button type="submit" class="text-green-600 hover:text-green-900 p-2 rounded-full hover:bg-green-50 transition-colors duration-200" title="Restaurar">
+              if ($result->num_rows > 0) {
+                echo '<div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apellido</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">C.E.N</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nacimiento</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sexo</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Representante</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">C.I Rep.</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grado</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sección</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">motivo</th>
+                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">';
+                while ($row = $result->fetch_assoc()) {
+                  $id = $row['id'];
+                  $fecha = date('d/m/Y', strtotime($row['fecha_hora']));
+                  echo '<tr class="hover:bg-gray-50 transition-colors duration-150">
+                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">' . htmlspecialchars($row['nombre']) . '</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['apellido']) . '</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['cen']) . '</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['nacimiento']) . '</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['sexo']) . '</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['representante'] . ' ' . $row['representante_apellido']) . '</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['cedula_repre']) . '</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['telefono']) . '</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['grado']) . '</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['seccion']) . '</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . $fecha . '</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['motivo']) . '</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex justify-center space-x-2">
+                            <a href="editar_estudiante_retirado.php?editarid=' . $id . '" class="text-blue-600 hover:text-blue-900 p-2 rounded-full hover:bg-blue-50 transition-colors duration-200" title="Editar">
                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                               </svg>
-                            </button>
-                          </form>
-                        </td>
-                      </tr>';
-              }
-            } else {
+                            </a>
+                            <form method="POST" action="restaurar_estudiantes_retirados.php?eliminarid=' . $id . '" class="inline">
+                              <button type="submit" class="text-green-600 hover:text-green-900 p-2 rounded-full hover:bg-green-50 transition-colors duration-200" title="Restaurar">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                                </svg>
+                              </button>
+                            </form>
+                          </td>
+                        </tr>';
+                }
+                echo '</tbody>
+          </table>
+        </div>';
+              } else {
               echo '<div class="w-full bg-white p-8 text-center rounded-lg shadow">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

@@ -244,7 +244,7 @@ include 'contador_sesion.php';
       </svg>
     </button>
 
-    <div id="tooltip" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium ghost transition-opacity duration-300 bg-gray-800 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+    <div id="tooltip" role="tooltip" class=" absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium ghost transition-opacity duration-300 bg-gray-800 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
       <p class="flex items-center">Haz click en VER para entrar los grados</p>
       <div class="tooltip-arrow" data-popper-arrow></div>
     </div>

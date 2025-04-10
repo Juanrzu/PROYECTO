@@ -291,17 +291,23 @@ if (isset($_POST['submit'])) {
     $seccion = strtoupper(trim($_POST['seccion']));
     $errores = [];
 
+    // Expresiones regulares
+    $regex = [
+        'soloLetras' => '/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/',
+        'soloNumeros' => '/^\d+$/'
+    ];
+
     // Validaciones
-    if (empty($nombre) || strlen($nombre) < 2 || strlen($nombre) > 25) {
-        $errores[] = "El nombre debe tener entre 2 y 25 caracteres.";
+    if (empty($nombre) || !preg_match($regex['soloLetras'], $nombre) || strlen($nombre) < 2 || strlen($nombre) > 25) {
+        $errores[] = "El nombre debe contener solo letras y tener entre 2 y 25 caracteres.";
     }
 
-    if (empty($apellido) || strlen($apellido) < 2 || strlen($apellido) > 25) {
-        $errores[] = "El apellido debe tener entre 2 y 25 caracteres.";
+    if (empty($apellido) || !preg_match($regex['soloLetras'], $apellido) || strlen($apellido) < 2 || strlen($apellido) > 25) {
+        $errores[] = "El apellido debe contener solo letras y tener entre 2 y 25 caracteres.";
     }
 
-    if (empty($cedula_nueva) || !ctype_digit($cedula_nueva)) {
-        $errores[] = "La cédula debe contener solo números.";
+    if (empty($cedula_nueva) || !preg_match($regex['soloNumeros'], $cedula_nueva) || strlen($cedula_nueva) < 7 || strlen($cedula_nueva) > 8) {
+        $errores[] = "La cédula debe contener solo números y tener entre 7 y 8 dígitos.";
     }
 
     if (empty($grado) || !in_array($grado, ['1', '2', '3', '4', '5', '6'])) {
@@ -389,41 +395,15 @@ if (isset($_POST['submit'])) {
         $stmt = $connect->prepare($sql);
         $stmt->bind_param("sssiii", $nombre, $apellido, $cedula_nueva, $grado_id, $seccion_id, $id);
 
-        //preparar datos para bitacora
-                 //agregar datos a la bitacora
-                 $cambios = [];
-            
-                 if ($apellido_anterior != $apellido) {
-                     $cambios[] = "Apellido anterior = $apellido_anterior, Apellido actualizado = $apellido";
-                 }
-                 if ($nombre_anterior != $nombre) {
-                     $cambios[] = "Nombre anterior = $nombre_anterior, Nombre actualizado = $nombre";
-                 }
-                 if ($cedula_anterior != $cedula) {
-                     $cambios[] = "Cedula anterior = $cen_anterior, Cedula actualizado = $cedula";
-                 }           
-                 if ($grado_anterior != $grado) {
-                     $cambios[] = "Grado anterior = $grado_anterior, Grado actualizado = $grado";
-                 }
-                 if ($seccion_anterior != $seccion) {
-                     $cambios[] = "Sección anterior = $seccion_anterior, Sección actualizada = $seccion";
-                 }
-         
-                     // Unir todos los cambios en un string
-                     $datos_accion = implode(", ", $cambios);
-                     $datos_accion = "Cambios: " . $datos_accion;
-     
-     
-                     //ingresar insert en bitacora
-                     $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
-                     $stmt2 = $connect->prepare($sql2);
-                     $accion = "Se actualizaron los datos de un profesor.";
-                     $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
-                     $resultInsert2 = $stmt2->execute();
-                     
-                     //aqui termina
-
-            echo "<script> window.location='ver_grado.php?gradonombre=$volver&seccion=$volver2'; </script>";
+        if ($stmt->execute()) {
+            echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-green-100 text-green-700 border flex items-center';
+                notificacion.innerHTML = `<div class='text-sm'>Profesor actualizado correctamente.</div>`;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+                window.location='ver_grado.php?gradonombre=$volver&seccion=$volver2';
+            </script>";
         } else {
             echo "<script>
                 const notificacion = document.createElement('div');
@@ -433,14 +413,6 @@ if (isset($_POST['submit'])) {
                 setTimeout(() => notificacion.remove(), 4000);
             </script>";
         }
-    } else {
-        echo "<script>
-            const notificacion = document.createElement('div');
-            notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
-            notificacion.innerHTML = `<div class='text-sm'>El grado o la sección no existen.</div>`;
-            document.body.appendChild(notificacion);
-            setTimeout(() => notificacion.remove(), 4000);
-        </script>";
     }
-
+}
 ?>

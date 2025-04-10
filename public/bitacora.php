@@ -44,108 +44,109 @@ include 'contador_sesion.php';
     ?>
 
     <!-- Contenido principal -->
-    <main class="container mx-auto px-2 md:px-20 py-8">
+    <main class="container h-screen mx-auto px-2 md:px-20 py-8">
       <!-- Encabezado y controles -->
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <h1 class="text-2xl font-bold text-black-800">Registro de Bitácora</h1>
-        <!-- Puedes agregar botones de acción aquí si son necesarios -->
+      <h1 class="text-2xl font-bold text-black-800">Registro de Bitácora</h1>
+      <!-- Puedes agregar botones de acción aquí si son necesarios -->
       </div>
 
       <!-- Tabla de Bitácora -->
-      <div class="bg-white rounded-xl shadow-md ">
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h3 class="text-xl font-semibold text-black-800">Historial de Acciones</h3>
-        </div>
-        <div class="overflow-x-auto">
-          <?php
-          $sql = "SELECT * FROM bitacora";
-          $stmt = $connect->prepare($sql);
-          $stmt->execute();
-          $result = $stmt->get_result();
-          
-          if ($result && mysqli_num_rows($result) > 0): ?>
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">Acción</th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">Fecha y Hora</th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">Usuario</th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">Detalles</th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <?php while ($row = $result->fetch_assoc()): ?>
-                    <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-black-500"><?= htmlspecialchars($row['accion']) ?></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-black-500"><?= htmlspecialchars($row['fecha_hora']) ?></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-black-500"><?= htmlspecialchars($row['usuario']) ?></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-black-500">
-                      <!-- Botón para abrir el modal -->
-                      <button 
-                      type="button" 
-                      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                      onclick="document.getElementById('modal-accion-<?= htmlspecialchars($row['id']) ?>').classList.remove('hidden')"
-                      >
-                      Ver detalles
-                      </button>
+      <div class="bg-white rounded-xl shadow-md">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-xl font-semibold text-black-800">Historial de Acciones</h3>
+      </div>
+      <!-- Agregado scroll responsive con max-height -->
+      <div class="overflow-auto max-h-96">
+        <?php
+        $sql = "SELECT * FROM bitacora ORDER BY fecha_hora DESC";
+        $stmt = $connect->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result && mysqli_num_rows($result) > 0): ?>
+          <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">Acción</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">Fecha y Hora</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">Usuario</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black-500 uppercase tracking-wider">Detalles</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <?php while ($row = $result->fetch_assoc()): ?>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-black-500"><?= htmlspecialchars($row['accion']) ?></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-black-500"><?= htmlspecialchars($row['fecha_hora']) ?></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-black-500"><?= htmlspecialchars($row['usuario']) ?></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-black-500">
+              <!-- Botón para abrir el modal -->
+              <button 
+                type="button" 
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                onclick="document.getElementById('modal-accion-<?= htmlspecialchars($row['id']) ?>').classList.remove('hidden')"
+              >
+                Ver detalles
+              </button>
 
-                      <!-- Modal -->
-                      <div id="modal-accion-<?= htmlspecialchars($row['id']) ?>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                      <div class="bg-white rounded-lg shadow-lg w-full max-w-md dark:bg-gray-800 mx-4">
-                        <div class="p-6">
-                        <h3 class="font-bold text-lg text-gray-800 dark:text-white mb-4">Detalles de la Acción</h3>
-                        <ul class="space-y-2 text-gray-700 dark:text-gray-300">
-                          <?php
-                          // Parseamos los datos dinámicamente
-                          $pares = explode(',', $row['accion']);
-                          $datos = [];
-                          foreach ($pares as $par) {
-                          if (strpos($par, '=') !== false) {
-                            list($clave, $valor) = explode('=', trim($par));
-                            $datos[trim($clave)] = trim($valor);
-                          }
-                          }
+              <!-- Modal -->
+              <div id="modal-accion-<?= htmlspecialchars($row['id']) ?>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                <div class="bg-white rounded-lg shadow-lg w-full max-w-md dark:bg-gray-800 mx-4">
+                <div class="p-6">
+                  <h3 class="font-bold text-lg text-gray-800 dark:text-white mb-4">Detalles de la Acción</h3>
+                  <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                  <?php
+                    // Parseamos los datos dinámicamente
+                    $pares = explode(',', $row['accion']);
+                    $datos = [];
+                    foreach ($pares as $par) {
+                      if (strpos($par, '=') !== false) {
+                        list($clave, $valor) = explode('=', trim($par));
+                        $datos[trim($clave)] = trim($valor);
+                      }
+                    }
 
-                          // Mostramos los datos en formato uniforme
-                          if (!empty($datos)): ?>
-                          <?php foreach ($datos as $clave => $valor): ?>
-                            <li><strong><?= htmlspecialchars($row['datos_accion']) ?></li>
-                          <?php endforeach; ?>
-                          <?php else: ?>
-                          <li>No hay datos disponibles para esta acción.</li>
-                          <?php endif; ?>
-                        </ul>
-                        </div>
-                        <!-- Botón para cerrar -->
-                        <div class="flex justify-end p-4 border-t border-gray-200 dark:border-gray-700">
-                        <button
-                          type="button"
-                          class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-                          onclick="document.getElementById('modal-accion-<?= htmlspecialchars($row['id']) ?>').classList.add('hidden')"
-                        >
-                          Cerrar
-                        </button>
-                        </div>
-                      </div>
-                      </div>
-                    </td>
-                    </tr>
-                <?php endwhile; ?>
-              </tbody>
-            </table>
-          <?php else: ?>
-            <!-- Mensaje cuando no hay registros -->
-            <div class="w-full bg-white p-8 text-center rounded-lg">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-black-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <h3 class="mt-4 text-lg font-medium text-black-900">No hay registros en la bitácora</h3>
-              <p class="mt-2 text-sm text-black-500">No se han registrado acciones en el sistema aún.</p>
-            </div>
-          <?php endif; 
-          $stmt->close();
-          ?>
-        </div>
+                    // Mostramos los datos en formato uniforme
+                    if (!empty($datos)): ?>
+                    <?php foreach ($datos as $clave => $valor): ?>
+                      <li><strong><?= htmlspecialchars($clave) ?></strong>: <?= htmlspecialchars($valor) ?></li>
+                    <?php endforeach; ?>
+                    <?php else: ?>
+                    <li>No hay datos disponibles para esta acción.</li>
+                    <?php endif; ?>
+                  </ul>
+                </div>
+                <!-- Botón para cerrar -->
+                <div class="flex justify-end p-4 border-t border-gray-200 dark:border-gray-700">
+                  <button
+                  type="button"
+                  class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                  onclick="document.getElementById('modal-accion-<?= htmlspecialchars($row['id']) ?>').classList.add('hidden')"
+                  >
+                  Cerrar
+                  </button>
+                </div>
+                </div>
+              </div>
+              </td>
+            </tr>
+            <?php endwhile; ?>
+          </tbody>
+          </table>
+        <?php else: ?>
+          <!-- Mensaje cuando no hay registros -->
+          <div class="w-full bg-white p-8 text-center rounded-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-black-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h3 class="mt-4 text-lg font-medium text-black-900">No hay registros en la bitácora</h3>
+          <p class="mt-2 text-sm text-black-500">No se han registrado acciones en el sistema aún.</p>
+          </div>
+        <?php endif; 
+        $stmt->close();
+        ?>
+      </div>
       </div>
     </main>
 
