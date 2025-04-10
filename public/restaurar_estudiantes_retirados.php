@@ -63,7 +63,7 @@ if (isset($_GET['eliminarid'])) {
 
         //aqui termina
 
-          //ingresar insert en bitacora al eliminar estudiante
+          /*/ingresar insert en bitacora al eliminar estudiante
             $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
             $datos_accion = "Informacion: nombre = $nombre, apellido = $apellido, cen = $cen, nacimiento = $nacimiento, sexo = $sexo, grado = $grado, seccion = $seccion, representante = $representanteNombre, Apellido del representante = $representanteApellido, cedula representante = $cedularepre, telefono = $telefono, correo = $correo";
 
@@ -71,7 +71,7 @@ if (isset($_GET['eliminarid'])) {
             $stmt->bind_param("sss", 'Se restauró un estudiante.', $datos_accion, $usuario);
             $stmt->execute();
 
-            //aqui termina
+            /*/
 
 
         // Verificar si se encuentra ingresado el representante

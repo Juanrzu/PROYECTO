@@ -13,17 +13,14 @@ if (isset($_GET['eliminarid'])) {
     $id = $_GET['eliminarid'];
 
     // Obtener información del estudiante y su representante
-    $sql = "SELECT trabajadores.*, rol.nombre as rol_nombre
-    FROM trabajadores
-    JOIN rol ON trabajadores.idrol = rol.id  
-    WHERE trabajadores.id = $id";
+    $sql = "SELECT * FROM trabajadores WHERE id = $id";
     $result = mysqli_query($connect, $sql);
     $row= mysqli_fetch_assoc($result);
         $nombre=$row['nombre'];
          $apellido=$row['apellido'];
          $telefono = $row['telefono'];
          $cedula=$row['cedula'];
-         $rol = $row['rol_nombre']; 
+         $rol = $row['rol']; 
 
 
          if(isset($_GET['eliminarid'])){
