@@ -73,7 +73,33 @@ if (!isset($usuario)) {
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-        <?php if ($result && mysqli_num_rows($result) > 0): ?>
+        
+        <?php $secc = strtoupper(trim($seccion));
+
+if ($secc === "A") {
+  $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
+representante.nombre as representante_nombre, representante.cedula as cedularepre, 
+representante.telefono as telefono, representante.correo as correo
+FROM estudiantes  
+JOIN seccion ON estudiantes.idseccion = seccion.id 
+JOIN grados ON estudiantes.idgrado = grados.id
+JOIN representante On estudiantes.idrepresentante = representante.id
+WHERE seccion.nombre = '$secc' and grados.nombre = $grado
+ORDER BY estudiantes.nombre ASC";
+
+} else {
+  $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
+representante.nombre as representante_nombre, representante.cedula as cedularepre, 
+representante.telefono as telefono, representante.correo as correo
+FROM estudiantes 
+JOIN seccion ON estudiantes.idseccion = seccion.id 
+JOIN grados ON estudiantes.idgrado = grados.id
+JOIN representante ON estudiantes.idrepresentante = representante.id
+WHERE seccion.nombre = '$secc' and grados.nombre = $grado
+ORDER BY estudiantes.nombre ASC";
+}
+$result = mysqli_query($connect, $sql);
+         if ($result && mysqli_num_rows($result) > 0): ?>
           <?php while ($row = mysqli_fetch_assoc($result)): ?>
             <tr class="even:bg-gray-50 dark:even:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700">
               <td class="px-4 py-2"><?= htmlspecialchars($row['nombre']) ?></td>
