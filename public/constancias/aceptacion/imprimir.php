@@ -80,7 +80,7 @@ $row=mysqli_fetch_assoc($result);
   </div>
 
   <div class="titulo" style="text-align: center;">
-  <h4>Constancia de Estudio </h4><br>
+  <h4>Constancia de Aceptacion </h4><br>
   </div>
 
   <div class="texto" 
