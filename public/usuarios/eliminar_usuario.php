@@ -39,6 +39,19 @@ session_start();
         $gmail = $row2['correo'];
     }
     if (password_verify($passAdmin, $contraseñaAdmin) && password_verify($passUsser, $contraseña)) {
+         //ingresar insert en bitacora al eliminar estudiante
+         $sql3 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+         $datos_accion = "Informacion: nombre = $nombre, apellido = $apellido, cedula = $cedula, telefono = $telefono,  usuario = $usuario, estado = $estado";
+         
+         $stmt3 = $connect->prepare($sql3);
+         $accion= "Se Elimino un usuario.";
+         $stmt3->bind_param("sss", $accion, $datos_accion, $usuarioSeccion);
+         $resultInsert2 = $stmt3->execute();
+           //aqui termina
+
+
+
+
         $deleteusuarioSql = "DELETE FROM usuario WHERE id = ?";
         $stmt3 = mysqli_prepare($connect, $deleteusuarioSql);
         mysqli_stmt_bind_param($stmt3, "i", $id);
