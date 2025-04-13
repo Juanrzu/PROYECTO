@@ -44,12 +44,13 @@ include '../contador_sesion.php';
 
 <body class="bg-ghost">
 
-    <div class="container-lg w-full h-full">
+    <div class="container-lg w-full flex flex-col">
 
 
-        <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 z-50">
+       
+        <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 bg-opacity-75">
             <div role="status">
-                <svg class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin fill-blue-500" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
                     <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
                 </svg>
@@ -64,82 +65,96 @@ include '../contador_sesion.php';
             include('../header.php');
         }
         ?>
-     <main class=" flex justify-center items-center xl:px-56 mt-8">
+
+
+     <main class="flex justify-center items-center xl:px-56 mt-8">
             <!-- Mostrar el mensaje de error aquí con echo -->
             
             <?php if (!empty($error)) : ?>
-            <p class="text-danger"><?php echo $error[0]; ?></p>
-        <?php endif; ?>
-        <form method="POST" class="w-80 rounded-xl p-4 py-8 shadow-lg bg-gray-100" id="formulario">
-                <div class="mb-2">
-                    <label>Nombre</label>
-                    <input type="text" class=" w-full mt-2 rounded-lg" placeholder="Nombre del trabajador" name="nombre" maxlength="25" id="nombre" autocomplete="off" value=<?php echo "$nombre"; ?> >
-                </div>
-                <div class="mb-2">
-                    <label>Apellido</label>
-                    <input type="text" class=" w-full mt-2 rounded-lg" placeholder="Apellido del trabajador" name="apellido" maxlength="25" id="apellido" autocomplete="off" value=<?php echo "$apellido"; ?> >
-                </div>
-                <div class="mb-2">
-                    <label>Cedula</label>
-                    <input type="number" class=" w-full mt-2 rounded-lg" placeholder="Cedula" name="cedula" id="cedula" autocomplete="off" maxlength="25" value=<?php echo "$cedula"; ?> >
-                </div>
-                <div class="mb-2">
-                    <label>Telefono</label>
-                    <div class="input-group has-validation">
-                            <select class="input-group-text" name="codigo" id="codigo" required>
-                                <option value=0268>0268</option>
-                                <option value=0414>0414</option>
-                                <option value=0424>0424</option>
-                                <option value=0416>0416</option>
-                                <option value=0426>0426</option>
-                                <option value=0412>0412</option>
-                            </select>
-                            <input type="text" class=" w-[63%] mt-2 rounded-lg" placeholder="Telefono" name="telefono" autocomplete="off" maxlength="7"  id="telefono" required value=<?php echo "$telefono"; ?> >
-                        </div>
-                </div>
-                <div class="mb-2">
-                    <label>Rol</label>
-                    <input type="text" class=" w-full mt-2 rounded-lg" placeholder="Rol" name="rol" id="rol" autocomplete="off" maxlength="25" value=<?php echo "$rol"; ?> >
-                </div>
+                <p class="text-red-500 mb-4"><?php echo $error[0]; ?></p>
+            <?php endif; ?>
             
-                <div class="mb-2">
-                    <button type="button" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 ghost bg-blue-500 shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" data-modal-target="default-modal" data-modal-toggle="default-modal">Finalizar</button>
+            <form method="post" class="w-full max-w-screen-sm rounded-md border border-gray-300 p-6 shadow-sm bg-white" id="formulario" novalidate>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        
+        <!-- Nombre -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+            <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="Nombre del trabajador" name="nombre" maxlength="25" id="nombre" autocomplete="off" value="<?php echo $nombre; ?>">
+        </div>
+        
+        <!-- Apellido -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
+            <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="Apellido del trabajador" name="apellido" maxlength="25" id="apellido" autocomplete="off" value="<?php echo $apellido; ?>">
+        </div>
+        
+        <!-- Cédula -->
+        <div class="col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Cedula</label>
+            <input type="number" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="Cedula" name="cedula" id="cedula" autocomplete="off" maxlength="25" value="<?php echo $cedula; ?>">
+        </div>
+        
+        <!-- Teléfono -->
+        <div class="col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Telefono</label>
+            <div class="flex">
+                <select class="px-4 py-3 rounded-l-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="codigo" id="codigo" required>
+                    <option value="0268">0268</option>
+                    <option value="0414">0414</option>
+                    <option value="0424">0424</option>
+                    <option value="0416">0416</option>
+                    <option value="0426">0426</option>
+                    <option value="0412">0412</option>
+                </select>
+                <input type="text" class="block w-full px-4 py-3 rounded-r-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="Telefono" name="telefono" autocomplete="off" maxlength="7" id="telefono" required value="<?php echo $telefono; ?>">
+            </div>
+        </div>
+        
+        <!-- Rol -->
+        <div class="col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Rol</label>
+            <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="Rol" name="rol" id="rol" autocomplete="off" maxlength="25" value="<?php echo $rol; ?>">
+        </div>
+        
+        <!-- Botones -->
+        <div class="col-span-2 mt-6 flex flex-col sm:flex-row gap-3 ">
+                    <button type="button" data-modal-target="default-modal" data-modal-toggle="default-modal" class="w-full px-4 py-3 rounded-md bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm">
+                        Finalizar
+                    </button>
+                    <button type="button" onclick="regresarPaginaAnterior()" class="w-full px-4 py-3 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 shadow-sm border border-gray-300">
+                        Regresar
+                    </button>
                 </div>
-                <div class="btn-back">
-                    <button type="button" onclick="regresarPaginaAnterior()" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 ghost bg-blue-500 shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Regresar a la página anterior</button>
-                </div>
+    </div>
 
+                <!-- Modal -->
                 <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
                     <div class="relative p-4 max-h-full">
-                        <!-- Modal content -->
-                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 mt-28">
-                            <!-- Modal header -->
-                            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                                    Sistema
-                                </h3>
-                                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
-                                    <svg class="w-4 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <div class="relative bg-white rounded-md shadow-md border border-gray-300">
+                            <div class="flex items-center justify-between p-4 border-b border-gray-300">
+                                <h3 class="text-lg font-semibold text-gray-700">Confirmación</h3>
+                                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center" data-modal-hide="default-modal">
+                                    <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                                     </svg>
-                                    <span class="sr-only">Close modal</span>
                                 </button>
                             </div>
-                            <!-- Modal body -->
-                            <div class="p-4 md:p-5 space-y-4">
-                                <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                    ¿Esta Seguro Que Quiere Registrar Un Usuario?
-                                </p>
+                            <div class="p-4 space-y-4">
+                                <p class="text-sm text-gray-600">¿Está seguro que quiere editar este alumno?</p>
                             </div>
-                            <!-- Modal footer -->
-                            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                                <button data-modal-hide="default-modal" type="submit" name="registrar" class=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">SI</button>
-                                <button data-modal-hide="default-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">no</button>
+                            <div class="flex items-center p-4 border-t border-gray-300">
+                                <button data-modal-hide="default-modal" type="submit" name="submit" id="btn" class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm">
+                                    Confirmar
+                                </button>
+                                <button data-modal-hide="default-modal" type="button" class="px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 shadow-sm border border-gray-300">
+                                    Cancelar
+                                </button>
                             </div>
                         </div>
                     </div>
- 
-                </form>
+                </div>
+</form>
        
     </main>
 

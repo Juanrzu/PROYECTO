@@ -8,49 +8,6 @@
     }
     include 'connect.php';
     include 'contador_sesion.php';
-    $id = $_GET['editarid'];
-
-    // Obtener datos del estudiante retirado
-    $sql = "SELECT * FROM retiro_estudiantes WHERE id = ?";
-    $stmt = $connect->prepare($sql);
-    
-    if (!$stmt) {
-        die("Error en preparación: " . $connect->error);
-    }
-    
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($row = $result->fetch_assoc()) {
-        $nombre = $row['nombre'];
-        $apellido = $row['apellido'];
-        $cen = $row['cen'];
-        $nacimiento = $row['nacimiento'];
-        $sexo = $row['sexo'];
-        $representante = $row['representante'];
-        $representante_apellido = $row['representante_apellido'];
-        $cedula = $row['cedula_repre'];
-        $telefono = $row['telefono'];
-        $correo = $row['correo'];
-        $grado = $row['grado'];
-        $seccion = $row['seccion'];
-    }
-    
-    $stmt->close();
-?>
-
-
-<?php
-    session_start();
-    error_reporting(0);
-    $usuario = $_SESSION['nombre_usuario'];
-    if ($usuario == null || $usuario == ''){
-          header('location:login/login.php');
-          die();
-    }
-    include 'connect.php';
-    include 'contador_sesion.php';
 
     $id=$_GET['editarid'];
     // preparar sentencia
@@ -115,7 +72,7 @@
     <title>Editar Estudiante Retirado</title>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-ghost">
     <div class="container-lg w-full flex flex-col">
 
         <!-- Loading Spinner -->
@@ -277,7 +234,8 @@
         <script src="http://localhost/dashboard/Proyecto/node_modules/flowbite/dist/flowbite.min.js"></script>
         <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
         <script>
-document.addEventListener("DOMContentLoaded", () => {
+
+
     const form = document.getElementById('formulario');
     const btn = document.getElementById('btn');
     const inputs = {
@@ -308,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
         representante: { min: 2, max: 25 },
         representanteApellido: { min: 2, max: 25 },
         cedula: { min: 6, max: 12 },
-        telefono: { min: 7, max: 7 },
+        telefono: { min: 7, max: 8 },
         correo: { min: 5, max: 50 }
     };
 
@@ -351,50 +309,49 @@ document.addEventListener("DOMContentLoaded", () => {
         input.classList.remove('border-red-500');
 
         if (!valor) {
-            return { valido: false, mensaje: mensaje || `El campo ${input.id} no puede estar vacío` };
+            return { valido: false, mensaje: mensaje || `El campo ${input.id} no puede estar vacíossssssssssss` };
         }
 
         if (regex && !regex.test(valor)) {
-            return { valido: false, mensaje: mensaje || `Formato inválido para ${input.id}` };
+            return { valido: false, mensaje: mensaje || `Formato inválido para ${input.id}ss` };
         }
 
         if (valor.length < minLength) {
-            return { valido: false, mensaje: mensaje || `${input.id} debe tener al menos ${minLength} caracteres` };
+            return { valido: false, mensaje: mensaje || `${input.id} debe tener al menos ${minLength} caracteressssss` };
         }
 
         if (valor.length > maxLength) {
-            return { valido: false, mensaje: mensaje || `${input.id} no puede exceder los ${maxLength} caracteres` };
+            return { valido: false, mensaje: mensaje || `${input.id} no puede exceder los ${maxLength} caracteresssss` };
         }
 
         return { valido: true };
     };
 
-    btn.addEventListener("click", (e) => {
-        Object.values(inputs).forEach(input => input.classList.remove('border-red-500'));
+    form.addEventListener("submit", (e) => {
+    // Limpiar errores previos
+    Object.values(inputs).forEach(input => input.classList.remove('border-red-500'));
+    
+    // Validaciones
+    const validaciones = [
+        { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, LIMITES.nombre.min, LIMITES.nombre.max, "Nombre inválido") },
+        { input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, LIMITES.apellido.min, LIMITES.apellido.max, "Apellido inválido") },
+        { input: inputs.cen, resultado: validarCampo(inputs.cen, regex.soloNumeros, LIMITES.cen.min, LIMITES.cen.max, "C.E.N inválido") },
+        { input: inputs.representante, resultado: validarCampo(inputs.representante, regex.soloLetras, LIMITES.representante.min, LIMITES.representante.max, "Nombre del representante inválido") },
+        { input: inputs.representanteApellido, resultado: validarCampo(inputs.representanteApellido, regex.soloLetras, LIMITES.representanteApellido.min, LIMITES.representanteApellido.max, "Apellido del representante inválido") },
+        { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, LIMITES.cedula.max, "Cédula inválida") },
+        { input: inputs.telefono, resultado: validarCampo(inputs.telefono, regex.soloNumeros, LIMITES.telefono.min, LIMITES.telefono.max, "Teléfono inválido") },
+        { input: inputs.correo, resultado: validarCampo(inputs.correo, regex.email, LIMITES.correo.min, LIMITES.correo.max, "Correo electrónico inválido") }
+    ];
 
-        const validaciones = [
-            { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, LIMITES.nombre.min, LIMITES.nombre.max, "Nombre inválido") },
-            { input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, LIMITES.apellido.min, LIMITES.apellido.max, "Apellido inválido") },
-            { input: inputs.cen, resultado: validarCampo(inputs.cen, regex.soloNumeros, LIMITES.cen.min, LIMITES.cen.max, "C.E.N inválido") },
-            { input: inputs.nacimiento, resultado: validarFechaNacimiento(inputs.nacimiento) },
-            { input: inputs.representante, resultado: validarCampo(inputs.representante, regex.soloLetras, LIMITES.representante.min, LIMITES.representante.max, "Nombre del representante inválido") },
-            { input: inputs.representanteApellido, resultado: validarCampo(inputs.representanteApellido, regex.soloLetras, LIMITES.representanteApellido.min, LIMITES.representanteApellido.max, "Apellido del representante inválido") },
-            { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, LIMITES.cedula.max, "Cédula inválida") },
-            { input: inputs.telefono, resultado: validarCampo(inputs.telefono, regex.soloNumeros, LIMITES.telefono.min, LIMITES.telefono.max, "Teléfono inválido") },
-            { input: inputs.correo, resultado: validarCampo(inputs.correo, regex.email, LIMITES.correo.min, LIMITES.correo.max, "Correo electrónico inválido") }
-        ];
-
-        for (const validacion of validaciones) {
-            if (!validacion.resultado.valido) {
-                e.preventDefault();
-                validacion.input.classList.add('border-red-500');
-                mostrarNotificacion(validacion.resultado.mensaje);
-                return;
-            }
-        }
-
-        form.submit();
-    });
+    // Verificar si hay errores
+    const errores = validaciones.filter(v => !v.resultado.valido);
+    
+    if (errores.length > 0) {
+        e.preventDefault(); // Detener el envío si hay errores
+        errores[0].input.classList.add('border-red-500');
+        mostrarNotificacion(errores[0].resultado.mensaje);
+    }
+    // Si no hay errores, el formulario se enviará automáticamente
 });
 </script>
     
@@ -429,7 +386,7 @@ if (isset($_POST['submit'])) {
         'representante' => ['min' => 2, 'max' => 25],
         'representante_apellido' => ['min' => 2, 'max' => 25],
         'cedula' => ['min' => 6, 'max' => 11],
-        'telefono' => ['min' => 7, 'max' => 12],
+        'telefono' => ['min' => 7, 'max' => 8],
         'correo' => ['min' => 5, 'max' => 50],
     ];
 
