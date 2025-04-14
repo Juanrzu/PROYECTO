@@ -78,13 +78,13 @@ include '../contador_sesion.php';
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         
         <!-- Nombre -->
-        <div>
+        <div class="col-span-1">
             <label class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
             <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="Nombre del trabajador" name="nombre" maxlength="25" id="nombre" autocomplete="off" value="<?php echo $nombre; ?>">
         </div>
         
         <!-- Apellido -->
-        <div>
+        <div class="col-span-1">
             <label class="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
             <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="Apellido del trabajador" name="apellido" maxlength="25" id="apellido" autocomplete="off" value="<?php echo $apellido; ?>">
         </div>
@@ -99,15 +99,7 @@ include '../contador_sesion.php';
         <div class="col-span-2">
             <label class="block text-sm font-medium text-gray-700 mb-2">Telefono</label>
             <div class="flex">
-                <select class="px-4 py-3 rounded-l-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="codigo" id="codigo" required>
-                    <option value="0268">0268</option>
-                    <option value="0414">0414</option>
-                    <option value="0424">0424</option>
-                    <option value="0416">0416</option>
-                    <option value="0426">0426</option>
-                    <option value="0412">0412</option>
-                </select>
-                <input type="text" class="block w-full px-4 py-3 rounded-r-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="Telefono" name="telefono" autocomplete="off" maxlength="7" id="telefono" required value="<?php echo $telefono; ?>">
+                <input type="text" class="block w-full px-4 py-3 rounded-r-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="Telefono" name="telefono" autocomplete="off" maxlength="11" id="telefono" required value="<?php echo $telefono; ?>">
             </div>
         </div>
         
@@ -166,30 +158,181 @@ include '../contador_sesion.php';
             </script>
     <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
     <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script> 
+    <script>
+            function regresarPaginaAnterior() {
+                window.history.back();
+            }
+        </script>
+        <script src="http://localhost/dashboard/Proyecto/node_modules/flowbite/dist/flowbite.min.js"></script>
+        <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
+        <script>
+
+
+    const form = document.getElementById('formulario');
+    const btn = document.getElementById('btn');
+    const inputs = {
+        nombre: document.getElementById('nombre'),
+        apellido: document.getElementById('apellido'),
+        cedula: document.getElementById('cedula'),
+        telefono: document.getElementById('telefono'),
+        rol: document.getElementById('rol')
+    };
+
+    const regex = {
+        soloLetras: /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/,
+        soloNumeros: /^\d+$/,
+    };
+
+    const LIMITES = {
+        nombre: { min: 2, max: 25 },
+        apellido: { min: 2, max: 25 },
+        telefono: { min: 7, max: 12 },
+        cedula: { min: 2, max: 25 }
+    };
+
+    const mostrarNotificacion = (mensaje, tipo = 'error') => {
+        const sanitizeHTML = (str) => {
+            const temp = document.createElement('div');
+            temp.textContent = str;
+            return temp.innerHTML;
+        };
+
+        const icono = tipo === 'error' ?
+            `<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
+            </svg>` :
+            `<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
+            </svg>`;
+
+        const color = tipo === 'error' ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
+
+        document.querySelectorAll('.notificacion').forEach(el => el.remove());
+
+        const notificacion = document.createElement('div');
+        notificacion.className = `notificacion fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ${color} border flex items-center`;
+        notificacion.innerHTML = `
+            <div class="flex-shrink-0 mr-3">${icono}</div>
+            <div class="text-sm">${sanitizeHTML(mensaje)}</div>
+        `;
+
+        document.body.appendChild(notificacion);
+
+        setTimeout(() => {
+            notificacion.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+            setTimeout(() => notificacion.remove(), 500);
+        }, 4000);
+    };
+
+    const validarCampo = (input, regex = null, minLength = 0, maxLength = Infinity, mensaje = null) => {
+        const valor = input.value.trim();
+        input.classList.remove('border-red-500');
+
+        if (!valor) {
+            return { valido: false, mensaje: mensaje || `El campo ${input.id} no puede estar vacíossssssssssss` };
+        }
+
+        if (regex && !regex.test(valor)) {
+            return { valido: false, mensaje: mensaje || `Formato inválido para ${input.id}ss` };
+        }
+
+        if (valor.length < minLength) {
+            return { valido: false, mensaje: mensaje || `${input.id} debe tener al menos ${minLength} caracteressssss` };
+        }
+
+        if (valor.length > maxLength) {
+            return { valido: false, mensaje: mensaje || `${input.id} no puede exceder los ${maxLength} caracteresssss` };
+        }
+
+        return { valido: true };
+    };
+
+    form.addEventListener("submit", (e) => {
+    // Limpiar errores previos
+    Object.values(inputs).forEach(input => input.classList.remove('border-red-500'));
+    
+    // Validaciones
+    const validaciones = [
+        { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, LIMITES.nombre.min, LIMITES.nombre.max, "Nombre inválido") },
+        { input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, LIMITES.apellido.min, LIMITES.apellido.max, "Apellido inválido") },
+        { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, LIMITES.cedula.max, "Cédula inválida") },
+        { input: inputs.telefono, resultado: validarCampo(inputs.telefono, regex.soloNumeros, LIMITES.telefono.min, LIMITES.telefono.max, "Teléfono inválido") }
+    ];
+
+    // Verificar si hay errores
+    const errores = validaciones.filter(v => !v.resultado.valido);
+    
+    if (errores.length > 0) {
+        e.preventDefault(); // Detener el envío si hay errores
+        errores[0].input.classList.add('border-red-500');
+        mostrarNotificacion(errores[0].resultado.mensaje);
+    }
+    // Si no hay errores, el formulario se enviará automáticamente
+});
+</script>
 </body>
 
 </html>
 
 <?php
 
-if (isset($_POST['registrar'])){
-        $nombre= $_POST['nombre'];
-        $apellido= $_POST['apellido'];
-        $cedula_nueva= $_POST['cedula'];
-        $telefono=$_POST['telefono'];
-        $codigo=$_POST['codigo'];
-        $codigo = ($codigo . $telefono);
-        $rol=$_POST['rol'];
-        $error=[];
+if (isset($_POST['submit'])){
 
-        if (empty($nombre) || empty($apellido) || empty($cedula) || empty($telefono) || empty($rol)) {
-            echo "<footer class='error'>
-            <div class='container_title btn btn-danger'>
-                <h5>Los datos no pueden estar vacios</h5>
-            </div>
-        
-            </footer>";
-              
+        // Recibir datos del formulario
+        $nombre = trim($_POST['nombre']);
+        $apellido = trim($_POST['apellido']);
+        $cedula = trim($_POST['cedula']);
+        $telefono = trim($_POST['telefono']);
+        $rol = trim($_POST['rol']);
+     
+    
+        // Configuración de límites y expresiones regulares
+        $LIMITES = [
+            'nombre' => ['min' => 2, 'max' => 25],
+            'apellido' => ['min' => 2, 'max' => 25],
+            'cedula' => ['min' => 6, 'max' => 12],
+            'telefono' => ['min' => 7, 'max' => 11],
+            'rol' => ['min' => 2, 'max' => 25]
+        ];
+    
+        $regex = [
+            'soloLetras' => '/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/',
+            'soloNumeros' => '/^\d+$/',
+        ];
+    
+        $errores = [];
+    
+        // Función para validar campos
+        function validarCampo($valor, $regex = null, $limites, $campo) {
+            if (empty($valor)) return "$campo no puede estar vacío.";
+            if ($regex && !preg_match($regex, $valor)) return "Formato inválido en $campo.";
+            if (strlen($valor) < $limites['min'] || strlen($valor) > $limites['max']) {
+                return "$campo debe tener entre {$limites['min']} y {$limites['max']} caracteres.";
+            }
+            return null;
+        }
+    
+        // Validar todos los campos
+        $errores[] = validarCampo($nombre, $regex['soloLetras'], $LIMITES['nombre'], 'Nombre');
+        $errores[] = validarCampo($apellido, $regex['soloLetras'], $LIMITES['apellido'], 'Apellido');
+        $errores[] = validarCampo($cedula, $regex['soloNumeros'], $LIMITES['cedula'], 'Cedula');
+        $errores[] = validarCampo($telefono, $regex['soloNumeros'], $LIMITES['telefono'], 'Teléfono');
+        $errores[] = validarCampo($rol, $regex['soloLetras'], $LIMITES['rol'], 'rol');
+    
+    
+        // Filtrar errores vacíos
+        $errores = array_filter($errores);
+    
+        if (!empty($errores)) {
+            foreach ($errores as $error) {
+                echo "<script>
+                    const notificacion = document.createElement('div');
+                    notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                    notificacion.innerHTML = `<span>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</span>`;
+                    document.body.appendChild(notificacion);
+                    setTimeout(() => notificacion.remove(), 4000);
+                </script>";
+            }
             exit();
         }
         
@@ -225,7 +368,7 @@ if (isset($_POST['registrar'])){
          //aqui termina
 
         $sql= "
-        update trabajadores set nombre='$nombre', apellido='$apellido', cedula='$cedula_nueva', telefono = '$codigo', rol = '$rol' where id=$id
+        update trabajadores set nombre='$nombre', apellido='$apellido', cedula='$cedula', telefono = '$telefono', rol = '$rol' where id=$id
         ";
 
         $result= mysqli_query($connect, $sql);
