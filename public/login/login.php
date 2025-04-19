@@ -24,8 +24,13 @@ require_once './../connect.php';
 	<body class="bg-login" id="body">
 
 	<div class="min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-xl shadow-2xl bg-[url('http://localhost/dashboard/Proyecto/src/wave-bg.png')] bg-no-repeat bg-cover bg-right-bottom overflow-hidden">
-        <!-- Carousel Section -->
+    <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-xl shadow-2xl 
+    bg-white 
+    sm:bg-[url('http://localhost/dashboard/Proyecto/src/wave-bg.png')] sm:bg-no-repeat sm:bg-cover sm:bg-right-bottom
+    md:bg-white
+    lg:bg-[url('http://localhost/dashboard/Proyecto/src/wave-bg.png')] lg:bg-no-repeat lg:bg-cover lg:bg-right-bottom
+    overflow-hidden">
+    <!-- Carousel Section -->
         <div class="hidden md:block md:w-1/2 p-8">
             <div id="default-carousel" class="h-full relative" data-carousel="slide">
                 <!-- Carousel wrapper -->
