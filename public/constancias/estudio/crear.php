@@ -9,6 +9,7 @@ if ($usuario === "admin" || $usuario === "Admin") {
     include('../../header_admin.php');
 } else {
     include('../../header.php');
+    include '../../contador_sesion.php';
 }
 
 // Obtenemos y saneamos los parámetros de la URL

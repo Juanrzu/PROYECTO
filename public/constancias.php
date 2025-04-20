@@ -4,7 +4,7 @@ session_start();
 error_reporting(error_level: 0);
 $usuario = $_SESSION['nombre_usuario'];
 if ($usuario == null || $usuario == '') {
-	header(header: 'location: ./../login/login.php');
+	header(header: 'location: login/login.php');
 	die();
 }
 include './../connect.php';

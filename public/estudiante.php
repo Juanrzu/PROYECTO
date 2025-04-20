@@ -4,7 +4,7 @@ session_start();
 $usuario = $_SESSION['nombre_usuario'];
 
 if (!isset($usuario)) {
-    header("location: login.php");
+    header('location: login/login.php');
 } else {
     include('connect.php');
     include 'contador_sesion.php';

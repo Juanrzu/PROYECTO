@@ -7,6 +7,7 @@ if (!isset($usuario)) {
   header("location: ../../login.php");
 } else {
   include('../../connect.php');
+  include '../../contador_sesion.php';
 }
 ?>
 
