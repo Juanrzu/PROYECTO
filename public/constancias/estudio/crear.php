@@ -1,12 +1,18 @@
 <?php
 session_start();
-include('../../connect.php');
 
 $usuario = $_SESSION['nombre_usuario'];
 
+if (!isset($usuario)) {
+  header( 'location: ../../login/login.php');
+} else {
+  include('../../connect.php');
+  include '../../contador_sesion.php';
+}
 // Incluimos el header según el usuario
 if ($usuario === "admin" || $usuario === "Admin") {
     include('../../header_admin.php');
+    include '../../contador_sesion.php';
 } else {
     include('../../header.php');
     include '../../contador_sesion.php';
