@@ -230,7 +230,7 @@ if ($usuario == "admin" || $usuario == "Admin") {
             </button>
           </div>
           <div class="p-4 space-y-4">
-            <p class="text-sm text-gray-600">¿Está seguro que quiere registrar este profesor?</p>
+            <p class="text-sm text-gray-600">¿Está seguro que quiere editar este estudiante?</p>
           </div>
           <div class="flex items-center p-4 border-t border-gray-300">
             <button data-modal-hide="default-modal" type="submit" name="submit" id="btn" 
