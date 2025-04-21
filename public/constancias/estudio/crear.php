@@ -1,8 +1,14 @@
 <?php
 session_start();
-include('../../connect.php');
 
 $usuario = $_SESSION['nombre_usuario'];
+
+if (!isset($usuario)) {
+  header( 'location: ../../login/login.php');
+} else {
+  include('../../connect.php');
+  include '../../contador_sesion.php';
+}
 
 // Incluimos el header según el usuario
 if ($usuario === "admin" || $usuario === "Admin") {
@@ -21,12 +27,7 @@ if (empty($grado) || empty($seccion)) {
 
 $secc = strtoupper($seccion);
 
-// Recordar: Aquí se debe haber incluido la conexión (por ejemplo, a través de header o previamente)
-// Si no, se debe hacer:
-// include('../../connect.php');
 
-// CONSTRUCCIÓN DE LA CONSULTA (se utiliza la misma consulta, pues las dos ramas eran idénticas)
-// IMPORTANTE: Se usan comillas simples en la comparación de grado, ya que es un string.
 $sql = "SELECT estudiantes.*, 
                seccion.nombre AS seccion_nombre, 
                grados.nombre AS grado_nombre, 
