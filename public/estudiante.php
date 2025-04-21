@@ -4,7 +4,7 @@ session_start();
 $usuario = $_SESSION['nombre_usuario'];
 
 if (!isset($usuario)) {
-    header('location: login/login.php');
+    header("location: login.php");
 } else {
     include('connect.php');
     include 'contador_sesion.php';
@@ -347,7 +347,6 @@ if (isset($_POST['submit'])) {
     $cedularepre = trim($_POST['cedularepre']);
     $telefono = trim($_POST['telefono']);
     $codigo = trim($_POST['codigo']);
-    $codigo = $codigo.$telefono; 
     $correo = trim($_POST['correo']);
     $grado = trim($_POST['grado']);
     $seccion = strtoupper(trim($_POST['seccion']));

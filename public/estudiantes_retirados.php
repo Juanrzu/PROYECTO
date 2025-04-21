@@ -107,15 +107,65 @@ include 'contador_sesion.php';
                                 <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                               </svg>
                             </a>
-                            <form method="POST" action="restaurar_estudiantes_retirados.php?eliminarid=' . $id . '" class="inline">
-                              <button type="submit" class="text-green-600 hover:text-green-900 p-2 rounded-full hover:bg-green-50 transition-colors duration-200" title="Restaurar">
+
+
+                            <button type="submit" data-modal-target="modal-restaurar'.$row['id'].'" data-modal-toggle="modal-restaurar'.$row['id'].'" title="Restaurar estudiante" class="text-green-600 hover:text-green-900 p-2 rounded-full hover:bg-green-50 transition-colors duration-200">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                   <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
                                 </svg>
                               </button>
-                            </form>
+
+
+
+
                           </td>
-                        </tr>';
+                        </tr>
+                        
+
+                        
+                            <form method="POST" action="" class="inline">
+
+                            </form>
+                        
+                        
+                        
+                        
+                        
+                        
+                  <!-- Modal Eliminar -->
+                    <div id="modal-restaurar'.$row['id'].'" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                        <div class="relative p-4 w-full max-w-md max-h-full">
+                            <div class="relative bg-white rounded-lg shadow">
+                                <div class="flex items-center justify-between p-4 border-b rounded-t">
+                                    <h3 class="text-lg font-semibold text-gray-900">Confirmar Eliminación</h3>
+                                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center" data-modal-hide="modal-restaurar'.$row['id'].'">
+                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <form method="POST" action="restaurar_estudiantes_retirados.php?eliminarid=' . $id . '" ">
+                                    <div class="p-4">
+                                        <p class="text-base text-gray-600">¿Está seguro que desea <span class="text-green-600">restaurar</span> al estudiante <span class="font-bold">'.htmlspecialchars($row['nombre']).' '.htmlspecialchars($row['apellido']).'<span>?</p>
+                                        <p class="mt-2 text-sm text-green-600">Volvera a el grado y seccion donde pertenecia.</p>
+                                    </div>
+                                    <div class="flex items-center p-4 border-t space-x-2">
+                                        <button type="submit" name="registrar" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                                            Sí, restaurar
+                                        </button>
+                                        <button type="button" data-modal-hide="modal-restaurar'.$row['id'].'" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                        
+                        
+                        
+                        
+                        ';
                 }
                 echo '</tbody>
           </table>

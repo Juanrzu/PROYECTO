@@ -3,7 +3,7 @@ session_start();
 $usuario = $_SESSION['nombre_usuario'];
 
 if (!isset($usuario)) {
-    header('location: login/login.php');
+    header("location: login.php");
     die();
 } else {
     include('connect.php');

@@ -4,10 +4,9 @@ $usuario = $_SESSION['nombre_usuario'];
 
 
 if (!isset($usuario)) {
-  header( 'location: ../../login/login.php');
+  header("location: ../../login.php");
 } else {
   include('../../connect.php');
-  include '../../contador_sesion.php';
 }
 ?>
 

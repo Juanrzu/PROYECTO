@@ -4,7 +4,7 @@
   $usuario = $_SESSION['nombre_usuario'];
 
   if (!isset($usuario)) {
-    header("location: login/login.php");
+    header("location: login.php");
   } else{
     include('connect.php');
     include 'contador_sesion.php';
@@ -76,23 +76,6 @@
         <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
                placeholder="Cédula" name="cedula" autocomplete="off" maxlength="30" id="cedula">
       </div>
-
-      <!-- Teléfono -->
-      <div class="sm:col-span-2">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
-        <div class="flex items-center gap-3">
-          <select class="px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="codigo" id="codigo" >
-            <option value="0268">0268</option>
-            <option value="0414">0414</option>
-            <option value="0424">0424</option>
-            <option value="0416">0416</option>
-            <option value="0426">0426</option>
-            <option value="0412">0412</option>
-          </select>
-          <input type="text" class="flex-1 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
-               placeholder="Teléfono" name="telefono" autocomplete="off" maxlength="7" id="telefono" >
-        </div>
-        </div>
 
       <!-- Grado y Sección en fila para pantallas medianas/grandes -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -185,8 +168,8 @@
 		};
 
     const LIMITES = {
-      nombre: { min: 1, max: 29 },
-      apellido: { min: 1, max: 29 },
+      nombre: { min: 1, max: 25 },
+      apellido: { min: 1, max: 25 },
       cedula: { min: 7, max: 8 },
     };
 
@@ -258,7 +241,7 @@
         { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, `Ingresa una Cedula valida.`) },
         { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, 1, LIMITES.nombre.max, `El nombre debe ser válido.`) },
 				{ input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, 1, LIMITES.apellido.max, `El apellido debe ser válido y tener un máximo de ${LIMITES.apellido} caracteres.`) },
-				{ input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula, LIMITES.cedula.max, `La cédula debe tener un máximo de 8 dígitos.`) },
+				{ input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula, LIMITES.cedula.max, `La cédula debe tener exactamente 8 dígitos.`) },
       
       ];
 
@@ -281,206 +264,159 @@
 </html>
 
 <?php
-
 if (isset($_POST['submit'])) {
-    $nombre = trim($_POST['nombre']);
-    $apellido = trim($_POST['apellido']);
-    $cedula = trim($_POST['cedula']);
-    $grado = trim($_POST['grado']);
-    $telefono = trim($_POST['telefono']);
-    $codigo = trim($_POST['codigo']);
-    $codigo = $codigo.$telefono; 
-    $seccion = strtoupper(trim($_POST['seccion']));
-    $usuario = $_SESSION['nombre_usuario'] ?? 'usuario_default'; // Usuario por defecto para bitácora
+  // Sanitización y obtención de datos
+  $nombre   = trim($_POST['nombre'] ?? '');
+  $apellido = trim($_POST['apellido'] ?? '');
+  $cedula   = trim($_POST['cedula'] ?? '');
+  $grado    = trim($_POST['grado'] ?? '');
+  $seccion  = strtoupper(trim($_POST['seccion'] ?? ''));
+  $usuario  = $_SESSION['nombre_usuario'] ?? 'usuario_default';
 
-    // Configuración de límites y expresiones regulares
-    $LIMITES = [
-        'nombre' => ['min' => 1, 'max' => 30],
-        'apellido' => ['min' => 1, 'max' => 30],
-        'cedula' => ['min' => 7, 'max' => 8],
-        'telefono' => ['min' => 7, 'max' => 8],
-        'grado' => ['min' => 1, 'max' => 20],
-        'seccion' => ['min' => 1, 'max' => 1]
-    ];
+  // Configuración de límites y expresiones regulares
+  $LIMITES = [
+    'nombre'   => ['min' => 1, 'max' => 25],
+    'apellido' => ['min' => 1, 'max' => 25],
+    'cedula'   => ['min' => 7, 'max' => 8],
+    'grado'    => ['min' => 1, 'max' => 2],
+    'seccion'  => ['min' => 1, 'max' => 1]
+  ];
+  $regex = [
+    'soloLetras'  => '/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/',
+    'soloNumeros' => '/^\d+$/'
+  ];
 
-    $regex = [
-        'soloLetras' => '/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/',
-        'soloNumeros' => '/^[0-9]+$/'
-    ];
+  // Función para validar campos
+  function validarCampo($valor, $regex = null, $limites = [], $campo = '') {
+    if (empty($valor)) return "$campo no puede estar vacío.";
+    if ($regex && !preg_match($regex, $valor)) return "Formato inválido en $campo.";
+    if (isset($limites['min']) && strlen($valor) < $limites['min']) return "$campo debe tener al menos {$limites['min']} caracteres.";
+    if (isset($limites['max']) && strlen($valor) > $limites['max']) return "$campo no puede exceder {$limites['max']} caracteres.";
+    return null;
+  }
 
-    $errores = [];
+  // Validaciones
+  $errores = [];
+  $errores[] = validarCampo($nombre,   $regex['soloLetras'],  $LIMITES['nombre'],   'Nombre');
+  $errores[] = validarCampo($apellido, $regex['soloLetras'],  $LIMITES['apellido'], 'Apellido');
+  $errores[] = validarCampo($cedula,   $regex['soloNumeros'], $LIMITES['cedula'],   'Cédula');
+  $errores[] = validarCampo($grado,    null,                  $LIMITES['grado'],    'Grado');
+  $errores[] = validarCampo($seccion,  $regex['soloLetras'],  $LIMITES['seccion'],  'Sección');
+  $errores = array_filter($errores);
 
-    // Función para validar campos
-    function validarCampo($valor, $regex = null, $limites, $campo) {
-        if (empty($valor)) return "$campo no puede estar vacío.";
-        if ($regex && !preg_match($regex, $valor)) return "Formato inválido en $campo.";
-        if (strlen($valor) < $limites['min'] || strlen($valor) > $limites['max']) {
-            return "$campo debe tener entre {$limites['min']} y {$limites['max']} caracteres.";
-        }
-        return null;
+  // Validación de sección
+  if (!in_array($seccion, ['A', 'B'])) {
+    $errores[] = "La sección debe ser 'A' o 'B'.";
+  }
+
+  // Mostrar errores si existen
+  if (!empty($errores)) {
+    foreach ($errores as $error) {
+      echo "<script>
+        const notificacion = document.createElement('div');
+        notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+        notificacion.innerHTML = `<div class='flex-shrink-0 mr-3 text-red-700'>
+          <svg fill='#f00505' width='24px' height='24px' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'>
+            <path d='M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z'></path>
+          </svg>
+        </div>
+        <div class='text-sm'>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</div>`;
+        document.body.appendChild(notificacion);
+        setTimeout(() => notificacion.remove(), 4000);
+      </script>";
     }
+    exit();
+  }
 
-    // Validar todos los campos
-    $errores[] = validarCampo($nombre, $regex['soloLetras'], $LIMITES['nombre'], 'Nombre');
-    $errores[] = validarCampo($apellido, $regex['soloLetras'], $LIMITES['apellido'], 'Apellido');
-    $errores[] = validarCampo($cedula, $regex['soloNumeros'], $LIMITES['cedula'], 'Cédula');
-    $errores[] = validarCampo($telefono, $regex['soloNumeros'], $LIMITES['telefono'], 'Teléfono');
-    $errores[] = validarCampo($grado, null, $LIMITES['grado'], 'Grado');
-    $errores[] = validarCampo($seccion, $regex['soloLetras'], $LIMITES['seccion'], 'Sección');
+  // Obtener idgrado
+  $sqlGrado = "SELECT id FROM grados WHERE nombre = ?";
+  $stmt = $connect->prepare($sqlGrado);
+  $stmt->bind_param("s", $grado);
+  $stmt->execute();
+  $resultGrado = $stmt->get_result();
+  $rowGrado = $resultGrado->fetch_assoc();
+  $idgrado = $rowGrado['id'] ?? null;
 
-    // Filtrar errores vacíos
-    $errores = array_filter($errores);
+  // Obtener idseccion
+  $sqlSeccion = "SELECT id FROM seccion WHERE nombre = ?";
+  $stmt = $connect->prepare($sqlSeccion);
+  $stmt->bind_param("s", $seccion);
+  $stmt->execute();
+  $resultSeccion = $stmt->get_result();
+  $rowSeccion = $resultSeccion->fetch_assoc();
+  $idseccion = $rowSeccion['id'] ?? null;
 
-    if (!empty($errores)) {
-        foreach ($errores as $error) {
-            echo "<script>
-                const notificacion = document.createElement('div');
-                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
-                notificacion.innerHTML = `
-                  <div class='flex-shrink-0 mr-3 text-red-700'>
-                    <svg fill='#f00505' width='24px' height='24px' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'>
-                      <path d='M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z'></path>
-                    </svg>
-                  </div>
-                  <div class='text-sm'>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</div>
-                `;
-                document.body.appendChild(notificacion);
-                setTimeout(() => notificacion.remove(), 4000);
-                </script>";
-          }
-        exit();
-    }
+  if (!$idgrado || !$idseccion) {
+    echo "<script>
+      const notificacion = document.createElement('div');
+      notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+      notificacion.innerHTML = `<span>Grado o sección inválidos.</span>`;
+      document.body.appendChild(notificacion);
+      setTimeout(() => notificacion.remove(), 4000);
+    </script>";
+    exit();
+  }
 
-    // Comprobar la sección
-    if (!in_array($seccion, ['A', 'B'])) {
-        echo "<script>
-                const notificacion = document.createElement('div');
-                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
-                notificacion.innerHTML = `<span>La sección debe ser 'A' o 'B'.</span>`;
-                document.body.appendChild(notificacion);
-                setTimeout(() => notificacion.remove(), 4000);
-              </script>";
-        exit();
-    }
+  // Verificar si la cédula ya existe
+  $sqlProfe = "SELECT 1 FROM profesor WHERE cedula = ?";
+  $stmt = $connect->prepare($sqlProfe);
+  $stmt->bind_param("s", $cedula);
+  $stmt->execute();
+  $stmt->store_result();
+  if ($stmt->num_rows > 0) {
+    echo "<script>
+      const notificacion = document.createElement('div');
+      notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+      notificacion.innerHTML = `<span>La cédula ya está registrada.</span>`;
+      document.body.appendChild(notificacion);
+      setTimeout(() => notificacion.remove(), 4000);
+    </script>";
+    exit();
+  }
 
-    // Consulta a la base de datos
-    $sqlgrado = "SELECT id FROM grados WHERE nombre = ?";
-    $stmt = $connect->prepare($sqlgrado);
-    $stmt->bind_param("s", $grado);
-    $stmt->execute();
-    $resultgrado = $stmt->get_result();
-    $rowgrado = $resultgrado->fetch_assoc();
-    $idgrado = $rowgrado['id'] ?? null;
-    
+  // Verificar cantidad de profesores por grado y sección
+  $sqlCount = "SELECT COUNT(*) AS total FROM profesor WHERE idgrado = ? AND idseccion = ?";
+  $stmt = $connect->prepare($sqlCount);
+  $stmt->bind_param("ii", $idgrado, $idseccion);
+  $stmt->execute();
+  $resultCount = $stmt->get_result();
+  $rowCount = $resultCount->fetch_assoc();
+  if (($rowCount['total'] ?? 0) >= 2) {
+    echo "<script>
+      const notificacion = document.createElement('div');
+      notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+      notificacion.innerHTML = `<span>Ya hay 2 profesores asignados a este grado y sección.</span>`;
+      document.body.appendChild(notificacion);
+      setTimeout(() => notificacion.remove(), 4000);
+    </script>";
+    exit();
+  }
 
-    $sqlseccion = "SELECT id FROM seccion WHERE nombre = ?";
-    $stmt = $connect->prepare($sqlseccion);
-    $stmt->bind_param("s", $seccion);
-    $stmt->execute();
-    $resultseccion = $stmt->get_result();
-    $rowseccion = $resultseccion->fetch_assoc();
-    $idseccion = $rowseccion['id'] ?? null;
+  // Registrar en bitácora
+  $sqlBitacora = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+  $stmt = $connect->prepare($sqlBitacora);
+  $accion = "Se Insertó un nuevo profesor.";
+  $datos_accion = "Informacion: nombre = $nombre, apellido = $apellido, cedula = $cedula, grado = $grado, seccion = $seccion";
+  $stmt->bind_param("sss", $accion, $datos_accion, $usuario);
+  $stmt->execute();
 
-    if (!$idgrado || !$idseccion) {
-        echo "<script>
-                const notificacion = document.createElement('div');
-                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
-                notificacion.innerHTML = `<span>Grado o sección inválidos.</span>`;
-                document.body.appendChild(notificacion);
-                setTimeout(() => notificacion.remove(), 4000);
-              </script>";
-        exit();
-    }
+  // Insertar profesor
+  $sqlInsert = "INSERT INTO profesor (nombre, apellido, cedula, idgrado, idseccion) VALUES (?, ?, ?, ?, ?)";
+  $stmt = $connect->prepare($sqlInsert);
+  $stmt->bind_param("sssii", $nombre, $apellido, $cedula, $idgrado, $idseccion);
+  $result = $stmt->execute();
 
-    // Comprobar si la cédula ya existe
-    $sqlprofe = "SELECT * FROM profesor WHERE cedula = ?";
-    $stmt = $connect->prepare($sqlprofe);
-    $stmt->bind_param("s", $cedula);
-    $stmt->execute();
-    $resultadoprofesor = $stmt->get_result();
-
-    if ($resultadoprofesor->num_rows > 0) {
-        echo "<script>
-                const notificacion = document.createElement('div');
-                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
-                notificacion.innerHTML = `<span>La cédula ya está registrada.</span>`;
-                document.body.appendChild(notificacion);
-                setTimeout(() => notificacion.remove(), 4000);
-              </script>";
-        exit();
-    }
-
-    // Comprobar si la cédula ya existe
-    $sqlprofe = "SELECT * FROM profesor WHERE telefono = ?";
-    $stmt = $connect->prepare($sqlprofe);
-    $stmt->bind_param("s", $codigo);
-    $stmt->execute();
-    $resultadoprofesor = $stmt->get_result();
-
-    if ($resultadoprofesor->num_rows > 0) {
-        echo "<script>
-                const notificacion = document.createElement('div');
-                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
-                notificacion.innerHTML = `<span>El telefono ya está registrado.</span>`;
-                document.body.appendChild(notificacion);
-                setTimeout(() => notificacion.remove(), 4000);
-              </script>";
-        exit();
-    }
-
-    // Comprobar el número de profesores asignados
-    $sql_count = "SELECT COUNT(*) AS total FROM profesor WHERE idgrado = ? AND idseccion = ?";
-    $stmt = $connect->prepare($sql_count);
-    $stmt->bind_param("ii", $idgrado, $idseccion);
-    $stmt->execute();
-    $result_count = $stmt->get_result();
-    $row_count = $result_count->fetch_assoc();
-    $total_profesores = $row_count['total'];
-
-    if ($total_profesores >= 2) {
-        echo "<script>
-                const notificacion = document.createElement('div');
-                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
-                notificacion.innerHTML = `<span>Ya hay 2 profesores asignados a este grado y sección.</span>`;
-                document.body.appendChild(notificacion);
-                setTimeout(() => notificacion.remove(), 4000);
-              </script>";
-        exit();
-    }
-
-
- //ingresar insert en bitacora
- $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
- $stmt2 = $connect->prepare($sql2);
- $accion = "Se Insertó un nuevo profesor.";
- $datos_accion = "Informacion: nombre = $nombre, apellido = $apellido, cedula = $cedula, grado = $grado, seccion = $seccion";
- $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
- $resultInsert2 = $stmt2->execute();
-//fin
-    // Insertar profesor en la base de datos
-    $sql_insert = "INSERT INTO trabajadores (nombre, apellido, cedula, telefono, rol) VALUES (?, ?, ?, ?, ?)";
-    $stmt = $connect->prepare($sql_insert);
-    $rol ="Profesor";
-    $stmt->bind_param("sssss", $nombre, $apellido, $cedula,$codigo, $rol);
-    $result2 = $stmt->execute();
-    
-    $sql = "INSERT INTO profesor (nombre, apellido, cedula, telefono, idgrado, idseccion) VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt = $connect->prepare($sql);
-    $stmt->bind_param("ssssii", $nombre, $apellido, $cedula,$codigo, $idgrado, $idseccion);
-    $result = $stmt->execute();
-
-
-    if ($result) {
-        echo "<script>
-                const notificacion = document.createElement('div');
-                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-green-100 text-green-700 border flex items-center';
-                notificacion.innerHTML = `<span>Profesor registrado correctamente.</span>`;
-                document.body.appendChild(notificacion);
-                setTimeout(() => notificacion.remove(), 4000);
-              </script>";
-        echo "<script> window.location='ver_grado.php?gradonombre=$grado&seccion=$seccion'</script>";
-    } else {
-        die(mysqli_error($connect));
-    }
+  if ($result) {
+    echo "<script>
+      const notificacion = document.createElement('div');
+      notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-green-100 text-green-700 border flex items-center';
+      notificacion.innerHTML = `<span>Profesor registrado correctamente.</span>`;
+      document.body.appendChild(notificacion);
+      setTimeout(() => notificacion.remove(), 4000);
+    </script>";
+    echo "<script>window.location='ver_grado.php?gradonombre=$grado&seccion=$seccion'</script>";
+  } else {
+    die(mysqli_error($connect));
+  }
 }
 ?>

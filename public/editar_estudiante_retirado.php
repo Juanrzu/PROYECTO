@@ -150,7 +150,7 @@
                     <!-- C.I Representante -->
                     <div class="sm:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-2">C.I Representante</label>
-                        <input type="number" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="Cédula del Representante" name="cedularepre" id="cedula" maxlength="12" autocomplete="off" value="<?php echo $cedula; ?>" required>
+                        <input type="number" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="Cédula del Representante" name="cedularepre" id="cedula" maxlength="8" autocomplete="off" value="<?php echo $cedula; ?>" required>
                     </div>
 
                     <!-- Teléfono -->
@@ -266,7 +266,7 @@
         representante: { min: 2, max: 25 },
         representanteApellido: { min: 2, max: 25 },
         cedula: { min: 6, max: 12 },
-        telefono: { min: 10, max: 11 },
+        telefono: { min: 7, max: 8 },
         correo: { min: 5, max: 50 }
     };
 
@@ -385,8 +385,8 @@ if (isset($_POST['submit'])) {
         'cen' => ['min' => 1, 'max' => 25],
         'representante' => ['min' => 2, 'max' => 25],
         'representante_apellido' => ['min' => 2, 'max' => 25],
-        'cedula' => ['min' => 6, 'max' => 11],
-        'telefono' => ['min' => 10, 'max' => 11],
+        'cedula' => ['min' => 7, 'max' => 8],
+        'telefono' => ['min' => 7, 'max' => 8],
         'correo' => ['min' => 5, 'max' => 50],
     ];
 

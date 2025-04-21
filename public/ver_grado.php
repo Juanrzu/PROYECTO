@@ -118,16 +118,60 @@ include 'contador_sesion.php';
                   <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
                   </svg>
                 </a>
-                <a href="eliminar_profesor.php?eliminarid='.$row['id'].'" class="text-red-600 hover:text-red-900 p-2 rounded-full hover:bg-red-50 transition-colors duration-200">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                  </svg>
-                </a>
+
+
+
+
+                 <button type="button" 
+                                class="text-red-600 hover:text-red-900 p-2 rounded-full hover:bg-red-50 transition-colors duration-200"
+                                data-modal-target="modal-eliminar-profesores-'.$row['id'].'" 
+                                data-modal-toggle="modal-eliminar-profesores-'.$row['id'].'"
+                                title="Eliminar estudiante">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+
                 </td>
-              </tr>';
+              </tr>
+                           
+              
+
+                        <!-- Modal Eliminar -->
+                    <div id="modal-eliminar-profesores-'.$row['id'].'" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                        <div class="relative p-4 w-full max-w-md max-h-full">
+                            <div class="relative bg-white rounded-lg shadow">
+                                <div class="flex items-center justify-between p-4 border-b rounded-t">
+                                    <h3 class="text-lg font-semibold text-gray-900">Confirmar Eliminación</h3>
+                                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center" data-modal-hide="modal-eliminar-profesores-'.$row['id'].'">
+                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <form method="POST" action="eliminar_profesor.php?eliminarid='.$row['id'].'" ">
+                                    <div class="p-4">
+                                        <p class="text-base text-gray-600">¿Está seguro que desea eliminar permanentemente a <span class="font-bold">'.htmlspecialchars($row['nombre']).' '.htmlspecialchars($row['apellido']).'<span>?</p>
+                                        <p class="mt-2 text-sm text-red-600">Esta acción no se puede deshacer.</p>
+                                    </div>
+                                    <div class="flex items-center p-4 border-t space-x-2">
+                                        <button type="submit" name="registrar" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                                            Sí, Eliminar
+                                        </button>
+                                        <button type="button" data-modal-hide="modal-eliminar-profesores-'.$row['id'].'" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+              ';
           }
           }
           ?>
+
+          
         </tbody>
         </table>
       </div>
@@ -231,7 +275,12 @@ include 'contador_sesion.php';
                         </button>
                     </div>
                     
-                    <!-- Modal Retirar -->
+        
+                </td>
+            </tr>
+            
+            
+            <!-- Modal Retirar -->
                     <div id="modal-retirar-'.$row['id'].'" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                         <div class="relative p-4 w-full max-w-md max-h-full">
                             <div class="relative bg-white rounded-lg shadow">
@@ -243,11 +292,11 @@ include 'contador_sesion.php';
                                         </svg>
                                     </button>
                                 </div>
-                                  <form method="POST" action="retirar_estudiante.php?eliminarid='.$row['id'].'">
-                                    <div class="p-4 space-y-4">
+                              <form method="POST" id="formulario-'.$row['id'].'" action="retirar_estudiante.php?eliminarid='.$row['id'].'">
+                                  <div class="p-4 space-y-4">
                                         <p class="text-base text-gray-600">Por favor indique el motivo del retiro:</p>
                                         <div class="mb-4">
-                                            <textarea name="motivo" id="motivo-retirar-'.$row['id'].'" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                            <textarea name="motivo" id="motivo-retirar-'.$row['id'].'" rows="3" class="w-full motivo px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                                         </div>
                                     </div>
                                     <div class="flex items-center p-4 border-t space-x-2">
@@ -275,9 +324,9 @@ include 'contador_sesion.php';
                                         </svg>
                                     </button>
                                 </div>
-                                <form method="POST" action="eliminar.php?eliminarid='.$row['id'].'">
+                                <form method="POST" action="eliminar.php?eliminarid='.$row['id'].'" ">
                                     <div class="p-4">
-                                        <p class="text-base text-gray-600">¿Está seguro que desea eliminar permanentemente a '.htmlspecialchars($row['nombre']).' '.htmlspecialchars($row['apellido']).'?</p>
+                                        <p class="text-base text-gray-600">¿Está seguro que desea eliminar permanentemente a <span class="font-bold">'.htmlspecialchars($row['nombre']).' '.htmlspecialchars($row['apellido']).'</span>?</p>
                                         <p class="mt-2 text-sm text-red-600">Esta acción no se puede deshacer.</p>
                                     </div>
                                     <div class="flex items-center p-4 border-t space-x-2">
@@ -291,9 +340,7 @@ include 'contador_sesion.php';
                                 </form>
                             </div>
                         </div>
-                    </div>
-                </td>
-            </tr>';
+                    </div>';
         }
     } else {
         echo '<tr>
@@ -330,32 +377,118 @@ include 'contador_sesion.php';
   <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        document.addEventListener("click", (e) => {
-            if (e.target && e.target.id === "btn") {
-                const motivoId = e.target.closest("form").querySelector("textarea").id;
-                const motivo = document.getElementById(motivoId);
+
+
+const form = document.getElementById('formulario');
+const btn = document.getElementById('btn');
+const inputs = {
+  motivo: document.querySelector('.motivo')
+};
+
+const regex = {
+    soloLetras: /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/
+};
+
+const LIMITES = {
+    motivo: { min: 5, max: 25 }
+};
+
+// Función para mostrar notificaciones
+const mostrarNotificacion = (mensaje, tipo = 'error') => {
+    const sanitizeHTML = (str) => {
+        const temp = document.createElement('div');
+        temp.textContent = str;
+        return temp.innerHTML;
+    };
+
+    const icono = tipo === 'error' ?
+        `<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
+        </svg>` :
+        `<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
+        </svg>`;
+
+    const color = tipo === 'error' ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
+
+    document.querySelectorAll('.notificacion').forEach(el => el.remove());
+
+    const notificacion = document.createElement('div');
+    notificacion.className = `notificacion fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ${color} border flex items-center`;
+    notificacion.innerHTML = `
+        <div class="flex-shrink-0 mr-3">${icono}</div>
+        <div class="text-sm">${sanitizeHTML(mensaje)}</div>
+    `;
+
+    document.body.appendChild(notificacion);
+
+    setTimeout(() => {
+        notificacion.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+        setTimeout(() => notificacion.remove(), 500);
+    }, 4000);
+};
+
+// Función para validar campos
+const validarCampo = (input, regex = null, minLength = 0, maxLength = Infinity, mensaje = null) => {
+    const valor = input.value.trim();
+    input.classList.remove('border-red-500');
+
+    if (!valor) {
+        return { valido: false, mensaje: mensaje || `El campo no puede estar vacío` };
+    }
+
+    if (regex && !regex.test(valor)) {
+        return { valido: false, mensaje: mensaje || `Formato inválido (solo letras)` };
+    }
+
+    if (valor.length < minLength) {
+        return { valido: false, mensaje: mensaje || `Debe tener al menos ${minLength} caracteres` };
+    }
+
+    if (valor.length > maxLength) {
+        return { valido: false, mensaje: mensaje || `No puede exceder los ${maxLength} caracteres` };
+    }
+
+    return { valido: true };
+};
+
+// Configuración de los eventos cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+    // Selecciona todos los formularios de retiro
+    const forms = document.querySelectorAll('form[id^="formulario-"]');
+    
+    forms.forEach(form => {
+        const motivoInput = form.querySelector('.motivo');
+        
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            
+            // Limpiar errores previos
+            motivoInput.classList.remove('border-red-500');
+            
+            // Validación
+            const validacion = validarCampo(
+                motivoInput, 
+                regex.soloLetras, 
+                LIMITES.motivo.min, 
+                LIMITES.motivo.max, 
+                "Por favor ingrese un motivo válido (solo letras, 5-25 caracteres)"
+            );
+            
+            if (!validacion.valido) {
+                motivoInput.classList.add('border-red-500');
+                mostrarNotificacion(validacion.mensaje);
+            } else {
+                mostrarNotificacion("Retiro del estudiante confirmado", "success");
                 
-                // Validar que el motivo no esté vacío y tenga al menos 10 caracteres
-                if (motivo.value.trim().length < 5) {
-                    e.preventDefault();
-                    mostrarNotificacion("El motivo debe tener al menos 5 caracteres.", "error");
-                    motivo.classList.add("border-red-500");
-                } else {
-                    motivo.classList.remove("border-red-500");
-                }
+                // Enviar el formulario después de 1 segundo
+                setTimeout(() => {
+                    form.submit();
+                }, 1000);
             }
         });
-
-        const mostrarNotificacion = (mensaje, tipo = "error") => {
-            const color = tipo === "error" ? "bg-red-100 border-red-400 text-red-700" : "bg-green-100 border-green-400 text-green-700";
-            const notificacion = document.createElement("div");
-            notificacion.className = `fixed bottom-4 z-50 right-4 px-4 py-3 rounded shadow-lg ${color} border flex items-center`;
-            notificacion.innerHTML = `<div class="text-sm">${mensaje}</div>`;
-            document.body.appendChild(notificacion);
-            setTimeout(() => notificacion.remove(), 4000);
-        };
     });
+});
 </script>
 </body>
 </html>

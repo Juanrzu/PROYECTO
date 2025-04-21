@@ -21,39 +21,39 @@
     </style>
 </head>
 <body>
-    <div>
-        <td class="bg-red-500 dark:bg-red-800 hover:bg-red-400"> 
-            <form method="POST" action="#">
-                <div id="modal-retirar" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto fixed top-0 right-0 left-0 bottom-0 justify-center items-center w-full z-50">
-                    <div class="modal">
-                        <div class="relative bg-white rounded-lg shadow mt-28">
-                            <div class="flex items-center justify-between p-4 border-b rounded-t">
-                                <h3 class="text-xl font-semibold text-gray-900">Aviso de Inactividad</h3>
-                                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 rounded-lg text-sm inline-flex justify-center items-center" id="closeModalBtn">
-                                    X
-                                </button>
-                            </div>
-                            <div class="p-4 md:p-5 space-y-4">
-                                <p class="text-base leading-relaxed text-gray-500">La sesión cerrará en los próximos 30 segundos si continúa la inactividad.</p>
-                            </div>
-                            <div class="flex items-center p-4 border-t border-gray-200 rounded-b">
-                                <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 rounded-lg text-sm px-5 py-2.5" id="closeModalBtn2">Aceptar</button>
-                            </div>
+<div>
+        <form method="POST" action="#">
+            <div id="modal-retirar" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto fixed top-0 right-0 left-0 bottom-0 flex justify-center items-center w-full z-50">
+                <div class="modal">
+                    <div class="relative bg-white rounded-lg shadow mt-10">
+                        <div class="flex items-center justify-between p-4 border-b rounded-t">
+                            <h3 class="text-xl font-semibold text-gray-900">Aviso de Inactividad</h3>
+                            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 rounded-lg text-sm inline-flex justify-center items-center" id="closeModalBtn" aria-label="Cerrar">
+                                &times;
+                            </button>
+                        </div>
+                        <div class="p-4 md:p-5 space-y-4">
+                            <p class="text-base leading-relaxed text-gray-500">
+                                La sesión cerrará en <span id="countdown">30</span> segundos si continúa la inactividad.
+                            </p>
+                        </div>
+                        <div class="flex items-center p-4 border-t border-gray-200 rounded-b">
+                            <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 rounded-lg text-sm px-5 py-2.5" id="closeModalBtn2">Aceptar</button>
                         </div>
                     </div>
                 </div>
-            </form>
-        </td>
+            </div>
+        </form>
     </div>
 
     <script>
         function cuenta_regresiva() {
-            let n =  180;
+            let n = 60;
             let contador = setInterval(cuenta, 1000);
             function cuenta() {
                 // Resetea el contador cuando el mouse se mueve
                 document.onmousemove = function () {
-                    n = 180;
+                    n = 60;
                 };
 
                 n--;
