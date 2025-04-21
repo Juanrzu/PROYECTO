@@ -370,25 +370,16 @@ if (isset($_POST['submit'])) {
             exit();
         }
 
-        // Verificar si ya hay 2 profesores asignados a este grado y sección
-        $sql_count = "SELECT COUNT(*) AS total FROM profesor WHERE idgrado = ? AND idseccion = ?";
+        $sql_count = "SELECT COUNT(*) AS total FROM profesor 
+        WHERE idgrado = ? AND idseccion = ? 
+        AND id != ?"; // Excluye el profesor actual
+
         $stmt_count = $connect->prepare($sql_count);
-        $stmt_count->bind_param("ii", $grado_id, $seccion_id);
+        $stmt_count->bind_param("iii", $grado_id, $seccion_id, $id); // Añade el tercer parámetro
         $stmt_count->execute();
         $result_count = $stmt_count->get_result();
         $row_count = $result_count->fetch_assoc();
         $total_profesores = $row_count['total'];
-
-        if ($total_profesores >= 2) {
-            echo "<script>
-                const notificacion = document.createElement('div');
-                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
-                notificacion.innerHTML = `<div class='text-sm'>Ya hay 2 profesores asignados a este grado y sección.</div>`;
-                document.body.appendChild(notificacion);
-                setTimeout(() => notificacion.remove(), 4000);
-            </script>";
-            exit();
-        }
 
         // Actualizar profesor
         $sql = "UPDATE profesor SET nombre = ?, apellido = ?, cedula = ?, idgrado = ?, idseccion = ? WHERE id = ?";
