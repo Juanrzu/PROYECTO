@@ -156,7 +156,7 @@
                     <!-- Teléfono -->
                     <div class="sm:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
-                        <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="Teléfono" name="telefono" autocomplete="off" maxlength="12" id="telefono" value="<?php echo $telefono; ?>" required>
+                        <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="Teléfono" name="telefono" autocomplete="off" maxlength="11" id="telefono" value="<?php echo $telefono; ?>" required>
                     </div>
 
                     <!-- Correo Electrónico -->
@@ -266,7 +266,7 @@
         representante: { min: 2, max: 25 },
         representanteApellido: { min: 2, max: 25 },
         cedula: { min: 6, max: 12 },
-        telefono: { min: 7, max: 8 },
+        telefono: { min: 10, max: 11 },
         correo: { min: 5, max: 50 }
     };
 

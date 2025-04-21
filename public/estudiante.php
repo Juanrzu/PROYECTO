@@ -114,16 +114,8 @@ if (!isset($usuario)) {
         <div class="sm:col-span-2">
         <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
         <div class="flex items-center gap-3">
-          <select class="px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="codigo" id="codigo" >
-            <option value="0268">0268</option>
-            <option value="0414">0414</option>
-            <option value="0424">0424</option>
-            <option value="0416">0416</option>
-            <option value="0426">0426</option>
-            <option value="0412">0412</option>
-          </select>
           <input type="text" class="flex-1 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
-               placeholder="Teléfono" name="telefono" autocomplete="off" maxlength="7" id="telefono" >
+               placeholder="Teléfono" name="telefono" autocomplete="off" maxlength="11" id="telefono" >
         </div>
         </div>
 
@@ -210,126 +202,124 @@ if (!isset($usuario)) {
 </body>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById('formulario');
-    const btn = document.getElementById('btn');
-    const inputs = {
-        nombre: document.getElementById('nombre'),
-        apellido: document.getElementById('apellido'),
-        cen: document.getElementById('cen'),
-        nacimiento: document.getElementById('nacimiento'),
-        sexo: document.querySelector('select[name="sexo"]'),
-        representante: document.getElementById('representante-nombre'),
-        representanteApellido: document.getElementById('representante-apellido'),
-        cedula: document.getElementById('cedula'),
-        telefono: document.getElementById('telefono'),
-        correo: document.getElementById('email'),
-        grado: document.querySelector('select[name="grado"]'),
-        seccion: document.querySelector('select[name="seccion"]')
+
+
+const form = document.getElementById('formulario');
+const btn = document.getElementById('btn');
+const inputs = {
+    nombre: document.getElementById('nombre'),
+    apellido: document.getElementById('apellido'),
+    cen: document.getElementById('cen'),
+    nacimiento: document.getElementById('nacimiento'),
+    sexo: document.querySelector('select[name="sexo"]'),
+    representante: document.getElementById('representante-nombre'),
+    representanteApellido: document.getElementById('representante-apellido'),
+    cedula: document.getElementById('cedula'),
+    telefono: document.getElementById('telefono'),
+    correo: document.getElementById('email'),
+    grado: document.querySelector('select[name="grado"]'),
+    seccion: document.querySelector('select[name="seccion"]')
+};
+
+const regex = {
+    soloLetras: /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/,
+    soloNumeros: /^\d+$/,
+    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+};
+
+const LIMITES = {
+    nombre: { min: 2, max: 25 },
+    apellido: { min: 2, max: 25 },
+    cen: { min: 1, max: 25 },
+    representante: { min: 2, max: 25 },
+    representanteApellido: { min: 2, max: 25 },
+    cedula: { min: 6, max: 12 },
+    telefono: { min: 10, max: 11 },
+    correo: { min: 5, max: 50 }
+};
+
+const mostrarNotificacion = (mensaje, tipo = 'error') => {
+    const sanitizeHTML = (str) => {
+        const temp = document.createElement('div');
+        temp.textContent = str;
+        return temp.innerHTML;
     };
 
-    const regex = {
-        soloLetras: /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/,
-        soloNumeros: /^\d+$/,
-        email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    };
+    const icono = tipo === 'error' ?
+        `<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
+        </svg>` :
+        `<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
+        </svg>`;
 
-    const LIMITES = {
-        nombre: { min: 2, max: 25 },
-        apellido: { min: 2, max: 25 },
-        cen: { min: 1, max: 25 },
-        representante: { min: 2, max: 25 },
-        representanteApellido: { min: 2, max: 25 },
-        cedula: { min: 6, max: 12 },
-        telefono: { min: 7, max: 7 },
-        correo: { min: 5, max: 50 }
-    };
+    const color = tipo === 'error' ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
 
-    const mostrarNotificacion = (mensaje, tipo = 'error') => {
-        const sanitizeHTML = (str) => {
-            const temp = document.createElement('div');
-            temp.textContent = str;
-            return temp.innerHTML;
-        };
+    document.querySelectorAll('.notificacion').forEach(el => el.remove());
 
-        const icono = tipo === 'error' ?
-            `<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
-            </svg>` :
-            `<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
-            </svg>`;
+    const notificacion = document.createElement('div');
+    notificacion.className = `notificacion fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ${color} border flex items-center`;
+    notificacion.innerHTML = `
+        <div class="flex-shrink-0 mr-3">${icono}</div>
+        <div class="text-sm">${sanitizeHTML(mensaje)}</div>
+    `;
 
-        const color = tipo === 'error' ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
+    document.body.appendChild(notificacion);
 
-        document.querySelectorAll('.notificacion').forEach(el => el.remove());
+    setTimeout(() => {
+        notificacion.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+        setTimeout(() => notificacion.remove(), 500);
+    }, 4000);
+};
 
-        const notificacion = document.createElement('div');
-        notificacion.className = `notificacion fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ${color} border flex items-center`;
-        notificacion.innerHTML = `
-            <div class="flex-shrink-0 mr-3">${icono}</div>
-            <div class="text-sm">${sanitizeHTML(mensaje)}</div>
-        `;
+const validarCampo = (input, regex = null, minLength = 0, maxLength = Infinity, mensaje = null) => {
+    const valor = input.value.trim();
+    input.classList.remove('border-red-500');
 
-        document.body.appendChild(notificacion);
+    if (!valor) {
+        return { valido: false, mensaje: mensaje || `El campo ${input.id} no puede estar vacíossssssssssss` };
+    }
 
-        setTimeout(() => {
-            notificacion.classList.add('opacity-0', 'transition-opacity', 'duration-500');
-            setTimeout(() => notificacion.remove(), 500);
-        }, 4000);
-    };
+    if (regex && !regex.test(valor)) {
+        return { valido: false, mensaje: mensaje || `Formato inválido para ${input.id}ss` };
+    }
 
-    const validarCampo = (input, regex = null, minLength = 0, maxLength = Infinity, mensaje = null) => {
-        const valor = input.value.trim();
-        input.classList.remove('border-red-500');
+    if (valor.length < minLength) {
+        return { valido: false, mensaje: mensaje || `${input.id} debe tener al menos ${minLength} caracteressssss` };
+    }
 
-        if (!valor) {
-            return { valido: false, mensaje: mensaje || `El campo ${input.id} no puede estar vacío` };
-        }
+    if (valor.length > maxLength) {
+        return { valido: false, mensaje: mensaje || `${input.id} no puede exceder los ${maxLength} caracteresssss` };
+    }
 
-        if (regex && !regex.test(valor)) {
-            return { valido: false, mensaje: mensaje || `Formato inválido para ${input.id}` };
-        }
+    return { valido: true };
+};
 
-        if (valor.length < minLength) {
-            return { valido: false, mensaje: mensaje || `${input.id} debe tener al menos ${minLength} caracteres` };
-        }
+form.addEventListener("submit", (e) => {
+// Limpiar errores previos
+Object.values(inputs).forEach(input => input.classList.remove('border-red-500'));
 
-        if (valor.length > maxLength) {
-            return { valido: false, mensaje: mensaje || `${input.id} no puede exceder los ${maxLength} caracteres` };
-        }
+// Validaciones
+const validaciones = [
+    { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, LIMITES.nombre.min, LIMITES.nombre.max, "Nombre inválido") },
+    { input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, LIMITES.apellido.min, LIMITES.apellido.max, "Apellido inválido") },
+    { input: inputs.cen, resultado: validarCampo(inputs.cen, regex.soloNumeros, LIMITES.cen.min, LIMITES.cen.max, "C.E.N inválido") },
+    { input: inputs.representante, resultado: validarCampo(inputs.representante, regex.soloLetras, LIMITES.representante.min, LIMITES.representante.max, "Nombre del representante inválido") },
+    { input: inputs.representanteApellido, resultado: validarCampo(inputs.representanteApellido, regex.soloLetras, LIMITES.representanteApellido.min, LIMITES.representanteApellido.max, "Apellido del representante inválido") },
+    { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, LIMITES.cedula.max, "Cédula inválida") },
+    { input: inputs.telefono, resultado: validarCampo(inputs.telefono, regex.soloNumeros, LIMITES.telefono.min, LIMITES.telefono.max, "Teléfono inválido") },
+    { input: inputs.correo, resultado: validarCampo(inputs.correo, regex.email, LIMITES.correo.min, LIMITES.correo.max, "Correo electrónico inválido") }
+];
 
-        return { valido: true };
-    };
+// Verificar si hay errores
+const errores = validaciones.filter(v => !v.resultado.valido);
 
-  
-
-    btn.addEventListener("click", (e) => {
-        Object.values(inputs).forEach(input => input.classList.remove('border-red-500'));
-
-        const validaciones = [
-            { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, LIMITES.nombre.min, LIMITES.nombre.max, "Nombre inválido") },
-            { input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, LIMITES.apellido.min, LIMITES.apellido.max, "Apellido inválido") },
-            { input: inputs.cen, resultado: validarCampo(inputs.cen, regex.soloNumeros, LIMITES.cen.min, LIMITES.cen.max, "C.E.N inválido") },
-            { input: inputs.nacimiento, resultado: validarFechaNacimiento(inputs.nacimiento) },
-            { input: inputs.representante, resultado: validarCampo(inputs.representante, regex.soloLetras, LIMITES.representante.min, LIMITES.representante.max, "Nombre del representante inválido") },
-            { input: inputs.representanteApellido, resultado: validarCampo(inputs.representanteApellido, regex.soloLetras, LIMITES.representanteApellido.min, LIMITES.representanteApellido.max, "Apellido del representante inválido") },
-            { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, LIMITES.cedula.max, "Cédula inválida") },
-            { input: inputs.telefono, resultado: validarCampo(inputs.telefono, regex.soloNumeros, LIMITES.telefono.min, LIMITES.telefono.max, "Teléfono inválido") },
-            { input: inputs.correo, resultado: validarCampo(inputs.correo, regex.email, LIMITES.correo.min, LIMITES.correo.max, "Correo electrónico inválido") }
-        ];
-
-        for (const validacion of validaciones) {
-            if (!validacion.resultado.valido) {
-                e.preventDefault();
-                validacion.input.classList.add('border-red-500');
-                mostrarNotificacion(validacion.resultado.mensaje);
-                return;
-            }
-        }
-
-        form.submit();
-    });
+if (errores.length > 0) {
+    e.preventDefault(); // Detener el envío si hay errores
+    errores[0].input.classList.add('border-red-500');
+    mostrarNotificacion(errores[0].resultado.mensaje);
+}
+// Si no hay errores, el formulario se enviará automáticamente
 });
 </script>
 </html>
@@ -360,7 +350,7 @@ if (isset($_POST['submit'])) {
         'representante' => ['min' => 2, 'max' => 25],
         'representante_apellido' => ['min' => 2, 'max' => 25],
         'cedularepre' => ['min' => 6, 'max' => 12],
-        'telefono' => ['min' => 7, 'max' => 8],
+        'telefono' => ['min' => 10, 'max' => 12],
         'correo' => ['min' => 5, 'max' => 50],
     ];
 
