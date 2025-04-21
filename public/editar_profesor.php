@@ -380,6 +380,17 @@ if (isset($_POST['submit'])) {
         $result_count = $stmt_count->get_result();
         $row_count = $result_count->fetch_assoc();
         $total_profesores = $row_count['total'];
+        if ($total_profesores >= 2) {
+            echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `<div class='text-sm'>Ya hay 2 profesores asignados a este grado y sección.</div>`;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+            </script>";
+            exit();
+        }
+
 
         // Actualizar profesor
         $sql = "UPDATE profesor SET nombre = ?, apellido = ?, cedula = ?, idgrado = ?, idseccion = ? WHERE id = ?";
