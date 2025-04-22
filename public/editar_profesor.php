@@ -28,6 +28,7 @@ if ($row = $result->fetch_assoc()) {
     $nombre = $row['nombre'];
     $apellido = $row['apellido'];
     $cedula = $row['cedula'];
+    $telefono = $row['telefono'];
     $grado = $row['grado_nombre'];
     $seccion = $row['seccion_nombre'];
     $volver = $grado;
@@ -37,6 +38,7 @@ if ($row = $result->fetch_assoc()) {
   $nombre_anterior = $nombre;
   $apellido_anterior = $apellido;
   $cedula_anterior = $cedula;
+  $telefono_anterior =  $telefono;
   $nacimiento_anterior = $nacimiento;
   $grado_anterior = $grado;
   $seccion_anterior = $seccion;
@@ -84,6 +86,15 @@ if ($row = $result->fetch_assoc()) {
                         <label class="block text-sm font-medium text-gray-700 mb-2">Cédula</label>
                         <input type="number" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
                                placeholder="Cédula" name="cedula" id="cedula" autocomplete="off" maxlength="25" value="<?php echo htmlspecialchars($cedula); ?>" >
+                    </div>
+
+
+                  
+
+                        <!-- Teléfono -->
+                        <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
+                        <input type="text" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="Teléfono" name="telefono" autocomplete="off" maxlength="11" id="telefono" value="<?php echo $telefono; ?>" required>
                     </div>
 
                     <!-- Grado -->
@@ -393,7 +404,7 @@ if (isset($_POST['submit'])) {
 
 
         // Actualizar profesor
-        $sql = "UPDATE profesor SET nombre = ?, apellido = ?, cedula = ?, idgrado = ?, idseccion = ? WHERE id = ?";
+        $sql = "UPDATE profesor SET nombre = ?, apellido = ?, cedula = ?, telefono = ?, idgrado = ?, idseccion = ? WHERE id = ?";
         $stmt = $connect->prepare($sql);
         $stmt->bind_param("sssiii", $nombre, $apellido, $cedula_nueva, $grado_id, $seccion_id, $id);
          //preparar datos para bitacora
@@ -407,8 +418,11 @@ if (isset($_POST['submit'])) {
                      $cambios[] = "Nombre anterior = $nombre_anterior, Nombre actualizado = $nombre";
                  }
                  if ($cedula_anterior != $cedula) {
-                     $cambios[] = "Cedula anterior = $cen_anterior, Cedula actualizado = $cedula";
-                 }           
+                     $cambios[] = "Cedula anterior = $cedula_anterior, Cedula actualizado = $cedula_nueva";
+                 }         
+                 if ($telefono_anterior != $telefono) {
+                    $cambios[] = "Telefono anterior = $telefono_anterior, Telefono actualizado = $telefono";
+                }    
                  if ($grado_anterior != $grado) {
                      $cambios[] = "Grado anterior = $grado_anterior, Grado actualizado = $grado";
                  }
