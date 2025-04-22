@@ -118,7 +118,7 @@ $intentos_fallidos = $row['intentos_fallidos'];
                     <!-- Correo Electrónico -->
                     <div class="sm:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Correo Electrónico</label>
-                        <input type="email" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="Correo" name="correo" id="email" maxlength="50" autocomplete="off" value="<?php echo $correo; ?>" required>
+                        <input type="email" class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" placeholder="Correo" name="correo" id="email" maxlength="25" autocomplete="off" value="<?php echo $correo; ?>" required>
                     </div>
 
             <!-- Estado -->
@@ -214,7 +214,7 @@ $intentos_fallidos = $row['intentos_fallidos'];
         apellido: { min: 2, max: 25 },
         cedula: { min: 7, max: 8 },
         telefono: { min: 10, max: 11 },
-        correo: { min: 5, max: 50 }
+        correo: { min: 5, max: 25 }
     };
 
     const mostrarNotificacion = (mensaje, tipo = 'error') => {
@@ -282,12 +282,12 @@ $intentos_fallidos = $row['intentos_fallidos'];
     
     // Validaciones
     const validaciones = [
-        { input: inputs.usuario, resultado: validarCampo(inputs.usuario, regex.soloLetras, LIMITES.usuario.min, LIMITES.usuario.max, "usuario inválido") },
-        { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, LIMITES.nombre.min, LIMITES.nombre.max, "Nombre inválido") },
-        { input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, LIMITES.apellido.min, LIMITES.apellido.max, "Apellido inválido") },
-        { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, LIMITES.cedula.max, "Cédula inválida") },
-        { input: inputs.telefono, resultado: validarCampo(inputs.telefono, regex.soloNumeros, LIMITES.telefono.min, LIMITES.telefono.max, "Teléfono inválido") },
-        { input: inputs.correo, resultado: validarCampo(inputs.correo, regex.email, LIMITES.correo.min, LIMITES.correo.max, "Correo electrónico inválido") }
+        { input: inputs.usuario, resultado: validarCampo(inputs.usuario, regex.soloLetras, LIMITES.usuario.min, LIMITES.usuario.max, "El usuario debe contener solo letras y tener entre 2 y 25 caracteres.") },
+        { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, LIMITES.nombre.min, LIMITES.nombre.max, "El nombre debe contener solo letras y tener entre 2 y 25 caracteres.") },
+        { input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, LIMITES.apellido.min, LIMITES.apellido.max, "El apellido debe contener solo letras y tener entre 2 y 25 caracteres.") },
+        { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, LIMITES.cedula.max, "La cédula debe contener solo números y tener entre 7 y 8 dígitos.") },
+        { input: inputs.telefono, resultado: validarCampo(inputs.telefono, regex.soloNumeros, LIMITES.telefono.min, LIMITES.telefono.max, "El teléfono debe contener solo números y tener entre 10 y 11 dígitos.") },
+        { input: inputs.correo, resultado: validarCampo(inputs.correo, regex.email, LIMITES.correo.min, LIMITES.correo.max, "El correo debe ser válido y tener entre 5 y 25 caracteres.") }
     ];
 
     // Verificar si hay errores

@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
         p2: 50,
         contraseña: {
             max: 30,
-            min: 16
+            min: 14
         }
     };
 
