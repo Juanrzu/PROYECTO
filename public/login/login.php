@@ -234,30 +234,7 @@ function validarCampos() {
     return errores;
 }
 
-// Función para actualizar el contador de caracteres
-function updateCounter(inputId, maxLength) {
-    const input = document.getElementById(inputId);
-    const currentLength = input.value.length;
-    
-    // Cambiar estilos si se acerca al límite
-    if (currentLength >= maxLength) {
-        input.classList.add('border-red-500', 'text-red-500');
-        input.classList.remove('border-gray-300', 'text-black');
-        notificaciones.mostrar(`${inputId} ha excedido el límite de caracteres (${maxLength})`);
-    } else {
-        input.classList.remove('border-red-500', 'text-red-500');
-        input.classList.add('border-gray-300', 'text-black');
-    }
-}
 
-
-// Inicializar contadores al cargar la página
-document.addEventListener('DOMContentLoaded', function() {
-    updateCounter('usuario', LIMITES.usuario);
-    updateCounter('contraseña', LIMITES.contraseña);
-    updateCounter('captcha', LIMITES.captcha);
-    
-});
 
 // Manejar envío del formulario
 form.addEventListener("submit", (e) => {

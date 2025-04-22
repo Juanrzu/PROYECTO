@@ -205,38 +205,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // Función para actualizar el contador de caracteres con mejor feedback visual
-    function updateCounter(inputElement, maxLength) {
-        const currentLength = inputElement.value.length;
-        const counterElement = document.getElementById(`${inputElement.id}-counter`);
-        
-        if (counterElement) {
-            counterElement.textContent = `${currentLength}/${maxLength}`;
-            
-            // Cambiar color según el porcentaje de uso
-            const percentage = (currentLength / maxLength) * 100;
-            if (percentage >= 90) {
-                counterElement.classList.add('text-red-500');
-                counterElement.classList.remove('text-yellow-500', 'text-gray-500');
-            } else if (percentage >= 70) {
-                counterElement.classList.add('text-yellow-500');
-                counterElement.classList.remove('text-red-500', 'text-gray-500');
-            } else {
-                counterElement.classList.add('text-gray-500');
-                counterElement.classList.remove('text-red-500', 'text-yellow-500');
-            }
-        }
-        
-        // Cambiar estilos del input si se acerca al límite
-        if (currentLength >= maxLength) {
-            inputElement.classList.add('border-red-500');
-            inputElement.classList.remove('border-gray-300');
-            notificaciones.mostrar(`${inputElement.id} ha excedido el límite de caracteres (${maxLength})`);
-        } else {
-            inputElement.classList.remove('border-red-500');
-            inputElement.classList.add('border-gray-300');
-        }
-    }
 
     // Validación de campos mejorada
     function validarCampos() {
@@ -294,13 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return errores;
     }
 
-    // Inicializar contadores
-    function inicializarContadores() {
-        updateCounter(usuario, LIMITES.usuario);
-        updateCounter(pregunta1, LIMITES.p1);
-        updateCounter(pregunta2, LIMITES.p2);
-        updateCounter(nuevaContraseña, LIMITES.contraseña.max);
-    }
+
 
     // Event listeners para actualización en tiempo real
     function configurarEventListeners() {

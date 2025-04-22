@@ -77,7 +77,7 @@ require_once '../contador_sesion.php';
         </div>
 
         <div class="mb-6 flex gap-4">
-            <button type="button" data-modal-target="default-modal" data-modal-toggle="default-modal" class="flex w-full justify-center px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">REGISTRAR</button>
+            <button type="button" data-modal-target="default-modal" data-modal-toggle="default-modal" class="flex w-full justify-center px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Actualizar</button>
             <button type="button" onclick="window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'" class="flex w-full justify-center px-4 py-3 text-sm font-medium text-white bg-blue-700 rounded-md shadow-sm hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">Regresar</button>
         </div>
 
@@ -97,7 +97,7 @@ require_once '../contador_sesion.php';
                     </div>
                     <!-- Modal body -->
                     <div class="p-5">
-                    <p class="text-base text-gray-500 dark:text-gray-400">¿Está seguro que quiere registrar un usuario?</p>
+                    <p class="text-base text-gray-500 dark:text-gray-400">¿Está seguro que quiere actualizar las preguntas</p>
                     </div>
                     <!-- Modal footer -->
                     <div class="flex items-center p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
