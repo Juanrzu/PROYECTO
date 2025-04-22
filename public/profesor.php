@@ -4,7 +4,7 @@
   $usuario = $_SESSION['nombre_usuario'];
 
   if (!isset($usuario)) {
-    header("location: login.php");
+    header('location: login/login.php');
   } else{
     include('connect.php');
     include 'contador_sesion.php';
@@ -77,6 +77,23 @@
                placeholder="Cédula" name="cedula" autocomplete="off" maxlength="30" id="cedula">
       </div>
 
+        <!-- Teléfono -->
+        <div class="sm:col-span-2">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
+        <div class="flex items-center gap-3">
+          <select class="px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="codigo" id="codigo" >
+            <option value="0268">0268</option>
+            <option value="0414">0414</option>
+            <option value="0424">0424</option>
+            <option value="0416">0416</option>
+            <option value="0426">0426</option>
+            <option value="0412">0412</option>
+          </select>
+          <input type="text" class="flex-1 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
+               placeholder="Teléfono" name="telefono" autocomplete="off" maxlength="7" id="telefono" >
+        </div>
+        </div> 
+      
       <!-- Grado y Sección en fila para pantallas medianas/grandes -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
@@ -241,7 +258,7 @@
         { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, `Ingresa una Cedula valida.`) },
         { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, 1, LIMITES.nombre.max, `El nombre debe ser válido.`) },
 				{ input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, 1, LIMITES.apellido.max, `El apellido debe ser válido y tener un máximo de ${LIMITES.apellido} caracteres.`) },
-				{ input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula, LIMITES.cedula.max, `La cédula debe tener exactamente 8 dígitos.`) },
+				{ input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula, LIMITES.cedula.max, `La cédula debe tener un máximo de 8 dígitos.`) },
       
       ];
 
@@ -270,6 +287,9 @@ if (isset($_POST['submit'])) {
   $apellido = trim($_POST['apellido'] ?? '');
   $cedula   = trim($_POST['cedula'] ?? '');
   $grado    = trim($_POST['grado'] ?? '');
+  $telefono = trim($_POST['telefono']);
+  $codigo = trim($_POST['codigo']);
+  $codigo = $codigo.$telefono; 
   $seccion  = strtoupper(trim($_POST['seccion'] ?? ''));
   $usuario  = $_SESSION['nombre_usuario'] ?? 'usuario_default';
 
@@ -278,6 +298,7 @@ if (isset($_POST['submit'])) {
     'nombre'   => ['min' => 1, 'max' => 25],
     'apellido' => ['min' => 1, 'max' => 25],
     'cedula'   => ['min' => 7, 'max' => 8],
+    'telefono' => ['min' => 7, 'max' => 8],
     'grado'    => ['min' => 1, 'max' => 2],
     'seccion'  => ['min' => 1, 'max' => 1]
   ];
@@ -300,6 +321,7 @@ if (isset($_POST['submit'])) {
   $errores[] = validarCampo($nombre,   $regex['soloLetras'],  $LIMITES['nombre'],   'Nombre');
   $errores[] = validarCampo($apellido, $regex['soloLetras'],  $LIMITES['apellido'], 'Apellido');
   $errores[] = validarCampo($cedula,   $regex['soloNumeros'], $LIMITES['cedula'],   'Cédula');
+  $errores[] = validarCampo($telefono, $regex['soloNumeros'], $LIMITES['telefono'], 'Teléfono');
   $errores[] = validarCampo($grado,    null,                  $LIMITES['grado'],    'Grado');
   $errores[] = validarCampo($seccion,  $regex['soloLetras'],  $LIMITES['seccion'],  'Sección');
   $errores = array_filter($errores);
@@ -358,7 +380,7 @@ if (isset($_POST['submit'])) {
   }
 
   // Verificar si la cédula ya existe
-  $sqlProfe = "SELECT 1 FROM profesor WHERE cedula = ?";
+  $sqlProfe = "SELECT * FROM profesor WHERE cedula = ?";
   $stmt = $connect->prepare($sqlProfe);
   $stmt->bind_param("s", $cedula);
   $stmt->execute();
@@ -372,6 +394,24 @@ if (isset($_POST['submit'])) {
       setTimeout(() => notificacion.remove(), 4000);
     </script>";
     exit();
+  }
+
+  // Comprobar si el telefono ya existe
+  $sqlprofe = "SELECT * FROM profesor WHERE telefono = ?";
+  $stmt = $connect->prepare($sqlprofe);
+  $stmt->bind_param("s", $codigo);
+  $stmt->execute();
+  $resultadoprofesor = $stmt->get_result();
+
+  if ($resultadoprofesor->num_rows > 0) {
+      echo "<script>
+              const notificacion = document.createElement('div');
+              notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+              notificacion.innerHTML = `<span>El telefono ya está registrado.</span>`;
+              document.body.appendChild(notificacion);
+              setTimeout(() => notificacion.remove(), 4000);
+            </script>";
+      exit();
   }
 
   // Verificar cantidad de profesores por grado y sección
@@ -401,9 +441,17 @@ if (isset($_POST['submit'])) {
   $stmt->execute();
 
   // Insertar profesor
-  $sqlInsert = "INSERT INTO profesor (nombre, apellido, cedula, idgrado, idseccion) VALUES (?, ?, ?, ?, ?)";
+  
+  $sql_insert = "INSERT INTO trabajadores (nombre, apellido, cedula, telefono, rol) VALUES (?, ?, ?, ?, ?)";
+  $stmt = $connect->prepare($sql_insert);
+  $rol ="Profesor";
+  $stmt->bind_param("sssss", $nombre, $apellido, $cedula,$codigo, $rol);
+  $result2 = $stmt->execute();
+
+
+  $sqlInsert = "INSERT INTO profesor (nombre, apellido, cedula, telefono, idgrado, idseccion) VALUES (?, ?, ?, ?, ?, ?)";
   $stmt = $connect->prepare($sqlInsert);
-  $stmt->bind_param("sssii", $nombre, $apellido, $cedula, $idgrado, $idseccion);
+  $stmt->bind_param("ssssii", $nombre, $apellido, $cedula, $idgrado, $idseccion);
   $result = $stmt->execute();
 
   if ($result) {

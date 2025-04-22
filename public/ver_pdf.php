@@ -1,15 +1,15 @@
 <?php
-ob_start(); // Iniciar buffer de salida
-session_start();
+  session_start();
+  error_reporting(0);
+  ob_start();
 
-$usuario = $_SESSION['nombre_usuario'];
-
-if (!isset($usuario)) {
-    header("location: login.php");
-    exit(); // Añadir exit después de header
-} else {
+  $usuario = $_SESSION['nombre_usuario'];
+  if (!isset($usuario)) {
+    header("location: login/login.php");
+  } else{
     include('connect.php');
-}
+  }
+  
 ?>
 
 <!DOCTYPE html>
@@ -41,42 +41,46 @@ if (!isset($usuario)) {
         <section class="mb-10">
             <h2 class="text-lg font-bold mb-3 bg-gray-100 px-3 py-2 rounded">Docentes del Grado <?php echo htmlspecialchars($_GET['gradonombre']); ?> Sección <?php echo htmlspecialchars(strtoupper(trim($_GET['seccion']))); ?></h2>
             
-            <table class="w-full border-collapse" style="page-break-inside: avoid;">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="text-left py-2 px-3 border border-gray-400 text-xs font-bold">Nombre</th>
-                        <th class="text-left py-2 px-3 border border-gray-400 text-xs font-bold">Apellido</th>
-                        <th class="text-left py-2 px-3 border border-gray-400 text-xs font-bold">Cédula</th>
-                        <th class="text-left py-2 px-3 border border-gray-400 text-xs font-bold">Grado</th>
-                        <th class="text-left py-2 px-3 border border-gray-400 text-xs font-bold">Sección</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php 
-                    $grado = $_GET['gradonombre'];
-                    $seccion = strtoupper(trim($_GET['seccion']));
-                    
-                    $sql = "SELECT profesor.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre 
-                            FROM profesor 
-                            JOIN seccion ON profesor.idseccion = seccion.id 
-                            JOIN grados ON profesor.idgrado = grados.id 
-                            WHERE seccion.nombre = ? AND grados.nombre = ?";
-                    
-                    $stmt = $connect->prepare($sql);
-                    $stmt->bind_param("ss", $seccion, $grado);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    
-                    if ($result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
-                            echo '
-                            <tr>
-                                <td class="py-2 px-3 border border-gray-300 text-xs">'.htmlspecialchars($row['nombre']).'</td>
-                                <td class="py-2 px-3 border border-gray-300 text-xs">'.htmlspecialchars($row['apellido']).'</td>
-                                <td class="py-2 px-3 border border-gray-300 text-xs">'.htmlspecialchars($row['cedula']).'</td>
-                                <td class="py-2 px-3 border border-gray-300 text-xs">'.htmlspecialchars($row['grado_nombre']).'</td>
-                                <td class="py-2 px-3 border border-gray-300 text-xs">'.htmlspecialchars($row['seccion_nombre']).'</td>
-                            </tr>';
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 border">
+                    <thead class="table-header">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apellido</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cédula</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grado</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sección</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <?php 
+                        $grado = $_GET['gradonombre'];
+                        $seccion = strtoupper(trim($_GET['seccion']));
+                        
+                        $sql = "SELECT profesor.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre 
+                                FROM profesor 
+                                JOIN seccion ON profesor.idseccion = seccion.id 
+                                JOIN grados ON profesor.idgrado = grados.id 
+                                WHERE seccion.nombre = ? AND grados.nombre = ?";
+                        
+                        $stmt = $connect->prepare($sql);
+                        $stmt->bind_param("si", $seccion, $grado);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                echo '
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">'.htmlspecialchars($row['nombre']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">'.htmlspecialchars($row['apellido']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">'.htmlspecialchars($row['cedula']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">'.htmlspecialchars($row['grado_nombre']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">'.htmlspecialchars($row['seccion_nombre']).'</td>
+                                </tr>';
+                            }
+                        } else {
+                            echo '<tr><td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">No hay docentes registrados</td></tr>';
                         }
                     } else {
                         echo '<tr><td colspan="5" class="py-2 px-3 border border-gray-300 text-xs text-center italic">No hay docentes registrados</td></tr>';
@@ -91,49 +95,58 @@ if (!isset($usuario)) {
         <section>
             <h2 class="text-lg font-bold mb-3 bg-gray-100 px-3 py-2 rounded">Estudiantes del Grado <?php echo htmlspecialchars($_GET['gradonombre']); ?> Sección <?php echo htmlspecialchars(strtoupper(trim($_GET['seccion']))); ?></h2>
             
-            <table class="w-full border-collapse" style="page-break-inside: avoid;">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="text-left py-2 px-2 border border-gray-400 text-xs font-bold">#</th>
-                        <th class="text-left py-2 px-2 border border-gray-400 text-xs font-bold">Nombres</th>
-                        <th class="text-left py-2 px-2 border border-gray-400 text-xs font-bold">Apellidos</th>
-                        <th class="text-left py-2 px-2 border border-gray-400 text-xs font-bold">C.E.N</th>
-                        <th class="text-left py-2 px-2 border border-gray-400 text-xs font-bold">Sexo</th>
-                        <th class="text-left py-2 px-2 border border-gray-400 text-xs font-bold">Representante</th>
-                        <th class="text-left py-2 px-2 border border-gray-400 text-xs font-bold">C.I</th>
-                        <th class="text-left py-2 px-2 border border-gray-400 text-xs font-bold">Teléfono</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
-                            representante.nombre as representante_nombre, representante.cedula as cedularepre, 
-                            representante.telefono as telefono, representante.correo as correo
-                            FROM estudiantes 
-                            JOIN seccion ON estudiantes.idseccion = seccion.id 
-                            JOIN grados ON estudiantes.idgrado = grados.id
-                            JOIN representante ON estudiantes.idrepresentante = representante.id
-                            WHERE seccion.nombre = ? AND grados.nombre = ?";
-                    
-                    $stmt = $connect->prepare($sql);
-                    $stmt->bind_param("ss", $seccion, $grado);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    $counter = 1;
-                    
-                    if ($result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
-                            echo '
-                            <tr>
-                                <td class="py-2 px-2 border border-gray-300 text-xs text-center">'.$counter++.'</td>
-                                <td class="py-2 px-2 border border-gray-300 text-xs">'.htmlspecialchars($row['nombre']).'</td>
-                                <td class="py-2 px-2 border border-gray-300 text-xs">'.htmlspecialchars($row['apellido']).'</td>
-                                <td class="py-2 px-2 border border-gray-300 text-xs">'.htmlspecialchars($row['cen']).'</td>
-                                <td class="py-2 px-2 border border-gray-300 text-xs">'.htmlspecialchars($row['sexo']).'</td>
-                                <td class="py-2 px-2 border border-gray-300 text-xs">'.htmlspecialchars($row['representante_nombre']).'</td>
-                                <td class="py-2 px-2 border border-gray-300 text-xs">'.htmlspecialchars($row['cedularepre']).'</td>
-                                <td class="py-2 px-2 border border-gray-300 text-xs">'.htmlspecialchars($row['telefono']).'</td>
-                            </tr>';
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 border">
+                    <thead class="table-header">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombres</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apellidos</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">C.E.N</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nacimiento</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sexo</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Representante</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">C.I Representante</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Correo</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grado</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sección</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <?php
+                        $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
+                                representante.nombre as representante_nombre, representante.cedula as cedularepre, 
+                                representante.telefono as telefono, representante.correo as correo
+                                FROM estudiantes 
+                                JOIN seccion ON estudiantes.idseccion = seccion.id 
+                                JOIN grados ON estudiantes.idgrado = grados.id
+                                JOIN representante ON estudiantes.idrepresentante = representante.id
+                                WHERE seccion.nombre = ? AND grados.nombre = ?";
+                        
+                        $stmt = $connect->prepare($sql);
+                        $stmt->bind_param("si", $seccion, $grado);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                echo '
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">'.htmlspecialchars($row['nombre']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">'.htmlspecialchars($row['apellido']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">'.htmlspecialchars($row['cen']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">'.htmlspecialchars($row['nacimiento']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">'.htmlspecialchars($row['sexo']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">'.htmlspecialchars($row['representante_nombre']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">'.htmlspecialchars($row['cedularepre']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">'.htmlspecialchars($row['telefono']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">'.htmlspecialchars($row['correo']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">'.htmlspecialchars($row['grado_nombre']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">'.htmlspecialchars($row['seccion_nombre']).'</td>
+                                </tr>';
+                            }
+                        } else {
+                            echo '<tr><td colspan="11" class="px-6 py-4 text-center text-sm text-gray-500">No hay estudiantes registrados</td></tr>';
                         }
                     } else {
                         echo '<tr><td colspan="8" class="py-2 px-2 border border-gray-300 text-xs text-center italic">No hay estudiantes registrados</td></tr>';
@@ -179,27 +192,20 @@ if (!isset($usuario)) {
     </footer>
 </body>
 </html>
-
 <?php
 $html = ob_get_clean();
 
-// Ruta relativa recomendada
-require_once __DIR__ . '/pdf/dompdf/autoload.inc.php';
-
+// Generar PDF usando Dompdf
+require_once 'D:\Programas\Xammp\htdocs\dashboard\proyecto\pdf\dompdf\autoload.inc.php';
 use Dompdf\Dompdf;
 
-try {
-    $dompdf = new Dompdf();
-    $options = $dompdf->getOptions();
-    $options->set(array('isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true));
-    $dompdf->setOptions($options);
-    
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper('letter', 'portrait');
-    $dompdf->render();
-    $dompdf->stream("Estudiantes.pdf", array("Attachment" => false));
-    
-} catch (Exception $e) {
-    echo "Error al generar PDF: " . $e->getMessage();
-}
+$dompdf = new Dompdf();
+$options = $dompdf->getOptions();
+$options->set(array('isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true));
+$dompdf->setOptions($options);
+
+$dompdf->loadHtml($html);
+$dompdf->setPaper('letter', 'portrait');
+$dompdf->render();
+$dompdf->stream("Constancia_Aceptacion.pdf", array("Attachment" => false));
 ?>

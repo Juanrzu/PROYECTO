@@ -386,7 +386,7 @@ if (isset($_POST['submit'])) {
         'representante' => ['min' => 2, 'max' => 25],
         'representante_apellido' => ['min' => 2, 'max' => 25],
         'cedula' => ['min' => 7, 'max' => 8],
-        'telefono' => ['min' => 7, 'max' => 8],
+        'telefono' => ['min' => 10, 'max' => 11],
         'correo' => ['min' => 5, 'max' => 50],
     ];
 

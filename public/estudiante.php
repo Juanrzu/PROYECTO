@@ -4,7 +4,7 @@ session_start();
 $usuario = $_SESSION['nombre_usuario'];
 
 if (!isset($usuario)) {
-    header("location: login.php");
+    header('location: login/login.php');
 } else {
     include('connect.php');
     include 'contador_sesion.php';
@@ -327,20 +327,21 @@ if (errores.length > 0) {
 <?php
 
 if (isset($_POST['submit'])) {
-    // Sanitizar y obtener datos del formulario
-    $nombre = trim($_POST['nombre'] ?? '');
-    $apellido = trim($_POST['apellido'] ?? '');
-    $cen = trim($_POST['cen'] ?? '');
-    $nacimiento = trim($_POST['nacimiento'] ?? '');
-    $sexo = strtoupper(trim($_POST['sexo'] ?? ''));
-    $representante = trim($_POST['representante'] ?? '');
-    $representante_apellido = trim($_POST['representante_apellido'] ?? '');
-    $cedularepre = trim($_POST['cedularepre'] ?? '');
-    $telefono = trim($_POST['telefono'] ?? '');
-    $correo = trim($_POST['correo'] ?? '');
-    $grado = trim($_POST['grado'] ?? '');
-    $seccion = strtoupper(trim($_POST['seccion'] ?? ''));
-    $usuario = $_SESSION['nombre_usuario'] ?? 'usuario_default';
+    $nombre = trim($_POST['nombre']);
+    $apellido = trim($_POST['apellido']);
+    $cen = trim($_POST['cen']);
+    $nacimiento = trim($_POST['nacimiento']);
+    $sexo = strtoupper(trim($_POST['sexo']));
+    $representante = trim($_POST['representante']);
+    $representante_apellido = trim($_POST['representante_apellido']);
+    $cedularepre = trim($_POST['cedularepre']);
+    $telefono = trim($_POST['telefono']);
+    $codigo = trim($_POST['codigo']);
+    $codigo = $codigo.$telefono;
+    $correo = trim($_POST['correo']);
+    $grado = trim($_POST['grado']);
+    $seccion = strtoupper(trim($_POST['seccion']));
+    $usuario = $_SESSION['nombre_usuario'] ?? 'usuario_default'; // Usuario por defecto para bitácora
 
     // Configuración de límites y expresiones regulares
     $LIMITES = [
