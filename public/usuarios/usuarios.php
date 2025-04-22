@@ -222,6 +222,10 @@ require_once '../contador_sesion.php';
 
     <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
     <script src="http://localhost/dashboard/Proyecto/node_modules/flowbite/dist/flowbite.min.js"></script>
+    <?php if (isset($_SESSION['error'])): ?>
+    <script>alert('<?php echo $_SESSION['error']; ?>')</script>
+    <?php unset($_SESSION['error']); ?>
+<?php endif; ?>
     </body>
 
 </html>
