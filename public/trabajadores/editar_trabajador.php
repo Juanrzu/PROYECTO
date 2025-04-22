@@ -259,6 +259,8 @@ include '../contador_sesion.php';
         { input: inputs.telefono, resultado: validarCampo(inputs.telefono, regex.soloNumeros, LIMITES.telefono.min, LIMITES.telefono.max, "Teléfono inválido") }
     ];
 
+    
+
     // Verificar si hay errores
     const errores = validaciones.filter(v => !v.resultado.valido);
     
@@ -320,6 +322,30 @@ if (isset($_POST['submit'])){
         $errores[] = validarCampo($rol, $regex['soloLetras'], $LIMITES['rol'], 'rol');
     
     
+
+        // Verificar si la nueva cédula ya existe en otro trabajador
+    $sql_verificar_profesor = "SELECT * FROM trabajadores WHERE cedula = ? AND id != ?";
+    $stmt_verificar = $connect->prepare($sql_verificar_profesor);
+    $stmt_verificar->bind_param("si", $cedula, $id);
+    $stmt_verificar->execute();
+    if ( $stmt_verificar->get_result()->num_rows > 0) {
+        $errores[] = "La cédula ya se encuentra registrado.";
+    }
+    $stmt_verificar->close();
+
+
+        // Verificar teléfono existente 
+    $sql_verificar_telefono = "SELECT * FROM trabajadores WHERE telefono = ? AND id != ?";
+    $stmt_telefono = $connect->prepare($sql_verificar_telefono);
+    $stmt_telefono->bind_param("si", $telefono, $id);
+    $stmt_telefono->execute();
+    if ($stmt_telefono->get_result()->num_rows > 0) {
+        $errores[] = "El teléfono ya se encuentra registrado.";
+    }
+    $stmt_telefono->close();
+
+
+
         // Filtrar errores vacíos
         $errores = array_filter($errores);
     
@@ -349,7 +375,7 @@ if (isset($_POST['submit'])){
             $cambios[] = "Cedula anterior = $cen_anterior, Cedula actualizado = $cedula";
         }           
         if ($telefono_anterior != $telefono) {
-            $cambios[] = "Telefono anterior = $telefono_anterior, Telefono actualizado = $codigo";
+            $cambios[] = "Telefono anterior = $telefono_anterior, Telefono actualizado = $telefono";
         }
         if ($rol_anterior != $rol) {
             $cambios[] = "Rol anterior = $rol_anterior, Rol actualizada = $rol";
