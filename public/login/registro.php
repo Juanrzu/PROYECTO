@@ -183,7 +183,7 @@ include '../contador_sesion.php';
         apellido: { min: 2, max: 25 },
         cedula: { min: 7, max: 8 },
         telefono: { min: 10, max: 11 },
-        email: { min: 5, max: 100 },
+        email: { min: 5, max: 25 },
         usuario: { min: 5, max: 30 },
         contraseña: { min: 14, max: 25 },
         pregunta: { min: 2, max: 100 }
@@ -279,14 +279,14 @@ include '../contador_sesion.php';
 
         // Validar todos los campos excepto la contraseña
         const validaciones = [
-            { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, LIMITES.nombre.min, LIMITES.nombre.max, "El nombre debe ser válido.") },
-            { input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, LIMITES.apellido.min, LIMITES.apellido.max, "El apellido debe ser válido.") },
-            { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, LIMITES.cedula.max, `La cédula debe tener entre ${LIMITES.cedula.min} y ${LIMITES.cedula.max} dígitos.`) },
-            { input: inputs.telefono, resultado: validarCampo(inputs.telefono, regex.soloNumeros, LIMITES.telefono.min, LIMITES.telefono.max, `El teléfono debe tener entre ${LIMITES.telefono.min} y ${LIMITES.telefono.max} dígitos.`) },
-            { input: inputs.email, resultado: validarCampo(inputs.email, regex.email, LIMITES.email.min, LIMITES.email.max, "El correo electrónico no es válido.") },
-            { input: inputs.usuario, resultado: validarCampo(inputs.usuario, null, LIMITES.usuario.min, LIMITES.usuario.max, `El usuario debe tener entre ${LIMITES.usuario.min} y ${LIMITES.usuario.max} caracteres.`) },
-            { input: inputs.pregunta1, resultado: validarCampo(inputs.pregunta1, regex.soloLetras, LIMITES.pregunta.min, LIMITES.pregunta.max, "La pregunta 1 debe ser válida.") },
-            { input: inputs.pregunta2, resultado: validarCampo(inputs.pregunta2, regex.soloLetras, LIMITES.pregunta.min, LIMITES.pregunta.max, "La pregunta 2 debe ser válida.") }
+            { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, LIMITES.nombre.min, LIMITES.nombre.max, "Por favor, introduce un nombre válido (solo letras).") },
+            { input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, LIMITES.apellido.min, LIMITES.apellido.max, "Por favor, introduce un apellido válido (solo letras).") },
+            { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, LIMITES.cedula.max, `La cédula debe contener entre ${LIMITES.cedula.min} y ${LIMITES.cedula.max} números.`) },
+            { input: inputs.telefono, resultado: validarCampo(inputs.telefono, regex.soloNumeros, LIMITES.telefono.min, LIMITES.telefono.max, `El teléfono debe contener ${LIMITES.telefono.max} números.`) },
+            { input: inputs.email, resultado: validarCampo(inputs.email, regex.email, LIMITES.email.min, LIMITES.email.max, `Por favor, introduce un correo electrónico válido. debe contener entre ${LIMITES.email.min} y ${LIMITES.email.max} números.`) },
+            { input: inputs.usuario, resultado: validarCampo(inputs.usuario, null, LIMITES.usuario.min, LIMITES.usuario.max, `El nombre de usuario debe tener entre ${LIMITES.usuario.min} y ${LIMITES.usuario.max} caracteres.`) },
+            { input: inputs.pregunta1, resultado: validarCampo(inputs.pregunta1, regex.soloLetras, LIMITES.pregunta.min, LIMITES.pregunta.max, "Por favor, introduce una respuesta válida para la pregunta de seguridad (solo letras).") },
+            { input: inputs.pregunta2, resultado: validarCampo(inputs.pregunta2, regex.soloLetras, LIMITES.pregunta.min, LIMITES.pregunta.max, "Por favor, introduce una respuesta válida para la pregunta de seguridad (solo letras).") }
         ];
 
         // Validar primero todos los campos excepto contraseña

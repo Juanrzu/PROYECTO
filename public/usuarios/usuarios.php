@@ -110,7 +110,7 @@ require_once '../contador_sesion.php';
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $id; ?></td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo $usuario; ?></td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo $estado == 'activo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'; ?>">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo ($estado == 'Activo') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'; ?>">
                     <?php echo $estado; ?>
                     </span>
                 </td>
