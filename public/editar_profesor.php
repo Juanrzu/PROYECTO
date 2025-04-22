@@ -251,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return { valido: true };
     };
 
-    btn.addEventListener("click", (e) => {
+    form.addEventListener("click", (e) => {
         Object.values(inputs).forEach(input => input.classList.remove('border-red-500'));
 
         const validaciones = [

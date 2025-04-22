@@ -76,12 +76,7 @@ include '../contador_sesion.php';
 				<div class="col-span-1 sm:col-span-2">
 				<label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono</label>
 				<div class="flex items-center gap-3 mt-2">
-					<select name="codigo" id="codigo" class="rounded-md border border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-					<option value="0268">0268</option>
-					<option value="0414">0414</option>
-					<!-- Más opciones -->
-					</select>
-					<input type="text" name="telefono" id="telefono" maxlength="7"
+					<input type="text" name="telefono" id="telefono" maxlength="11"
 					class="w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
 					placeholder="Teléfono">
 				</div>
@@ -160,8 +155,8 @@ include '../contador_sesion.php';
 	<script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
 	<script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
 
-	<script>
-document.addEventListener("DOMContentLoaded", () => {
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById('formulario');
     const btn = document.getElementById('registrar');
     const inputs = {
@@ -179,20 +174,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const regex = {
         soloLetras: /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/,
         soloNumeros: /^\d+$/,
-        email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        contraseña: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/ // Al menos 1 mayúscula, 1 minúscula y 1 número
     };
 
     const LIMITES = {
         nombre: { min: 2, max: 25 },
         apellido: { min: 2, max: 25 },
-        cedula: { min: 7, max: 9 },
-        telefono: { min: 7, max: 7 },
+        cedula: { min: 7, max: 8 },
+        telefono: { min: 10, max: 11 },
         email: { min: 5, max: 100 },
         usuario: { min: 5, max: 30 },
-        contraseña: { min: 14, max: 50 },
+        contraseña: { min: 14, max: 25 },
         pregunta: { min: 2, max: 100 }
     };
 
+    // Función para mostrar notificaciones (igual que antes)
     const mostrarNotificacion = (mensaje, tipo = 'error') => {
         const sanitizeHTML = (str) => {
             const temp = document.createElement('div');
@@ -227,6 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 4000);
     };
 
+    // Función de validación genérica
     const validarCampo = (input, regex = null, minLength = 0, maxLength = Infinity, mensaje = null) => {
         const valor = input.value.trim();
         input.classList.remove('border-red-500');
@@ -250,21 +248,48 @@ document.addEventListener("DOMContentLoaded", () => {
         return { valido: true };
     };
 
+    // Validación específica para contraseña
+    const validarContraseña = () => {
+        const input = inputs.contraseña;
+        const valor = input.value.trim();
+        input.classList.remove('border-red-500');
+
+        if (!valor) {
+            return { valido: false, mensaje: "La contraseña no puede estar vacía" };
+        }
+
+        if (valor.length < LIMITES.contraseña.min) {
+            return { valido: false, mensaje: `La contraseña debe tener al menos ${LIMITES.contraseña.min} caracteres` };
+        }
+
+        if (valor.length > LIMITES.contraseña.max) {
+            return { valido: false, mensaje: `La contraseña no puede exceder los ${LIMITES.contraseña.max} caracteres` };
+        }
+
+        if (!regex.contraseña.test(valor)) {
+            return { valido: false, mensaje: "La contraseña debe contener al menos una mayúscula, una minúscula y un número" };
+        }
+
+        return { valido: true };
+    };
+
+    // Evento de validación al hacer clic en el botón
     btn.addEventListener("click", (e) => {
         Object.values(inputs).forEach(input => input.classList.remove('border-red-500'));
 
+        // Validar todos los campos excepto la contraseña
         const validaciones = [
-            { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, LIMITES.nombre.min, LIMITES.nombre.max, `El nombre debe ser válido.`) },
-            { input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, LIMITES.apellido.min, LIMITES.apellido.max, `El apellido debe ser válido.`) },
-            { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, LIMITES.cedula.max, `La cédula debe tener entre ${LIMITES.cedula.min} y ${LIMITES.cedula.max} caracteres.`) },
-            { input: inputs.telefono, resultado: validarCampo(inputs.telefono, regex.soloNumeros, LIMITES.telefono.min, LIMITES.telefono.max, `El teléfono debe tener exactamente ${LIMITES.telefono.max} dígitos.`) },
-            { input: inputs.email, resultado: validarCampo(inputs.email, regex.email, LIMITES.email.min, LIMITES.email.max, `El correo electrónico no es válido.`) },
+            { input: inputs.nombre, resultado: validarCampo(inputs.nombre, regex.soloLetras, LIMITES.nombre.min, LIMITES.nombre.max, "El nombre debe ser válido.") },
+            { input: inputs.apellido, resultado: validarCampo(inputs.apellido, regex.soloLetras, LIMITES.apellido.min, LIMITES.apellido.max, "El apellido debe ser válido.") },
+            { input: inputs.cedula, resultado: validarCampo(inputs.cedula, regex.soloNumeros, LIMITES.cedula.min, LIMITES.cedula.max, `La cédula debe tener entre ${LIMITES.cedula.min} y ${LIMITES.cedula.max} dígitos.`) },
+            { input: inputs.telefono, resultado: validarCampo(inputs.telefono, regex.soloNumeros, LIMITES.telefono.min, LIMITES.telefono.max, `El teléfono debe tener entre ${LIMITES.telefono.min} y ${LIMITES.telefono.max} dígitos.`) },
+            { input: inputs.email, resultado: validarCampo(inputs.email, regex.email, LIMITES.email.min, LIMITES.email.max, "El correo electrónico no es válido.") },
             { input: inputs.usuario, resultado: validarCampo(inputs.usuario, null, LIMITES.usuario.min, LIMITES.usuario.max, `El usuario debe tener entre ${LIMITES.usuario.min} y ${LIMITES.usuario.max} caracteres.`) },
-            { input: inputs.contraseña, resultado: validarCampo(inputs.contraseña, null, LIMITES.contraseña.min, LIMITES.contraseña.max, `La contraseña debe tener al menos ${LIMITES.contraseña.min} caracteres.`) },
-            { input: inputs.pregunta1, resultado: validarCampo(inputs.pregunta1, regex.soloLetras, LIMITES.pregunta.min, LIMITES.pregunta.max, `La pregunta 1 debe ser válida.`) },
-            { input: inputs.pregunta2, resultado: validarCampo(inputs.pregunta2, regex.soloLetras, LIMITES.pregunta.min, LIMITES.pregunta.max, `La pregunta 2 debe ser válida.`) }
+            { input: inputs.pregunta1, resultado: validarCampo(inputs.pregunta1, regex.soloLetras, LIMITES.pregunta.min, LIMITES.pregunta.max, "La pregunta 1 debe ser válida.") },
+            { input: inputs.pregunta2, resultado: validarCampo(inputs.pregunta2, regex.soloLetras, LIMITES.pregunta.min, LIMITES.pregunta.max, "La pregunta 2 debe ser válida.") }
         ];
 
+        // Validar primero todos los campos excepto contraseña
         for (const validacion of validaciones) {
             if (!validacion.resultado.valido) {
                 e.preventDefault();
@@ -273,9 +298,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
         }
+
+        // Luego validar la contraseña por separado
+        const validacionContraseña = validarContraseña();
+        if (!validacionContraseña.valido) {
+            e.preventDefault();
+            inputs.contraseña.classList.add('border-red-500');
+            mostrarNotificacion(validacionContraseña.mensaje);
+            return;
+        }
+
+        // Si todo está bien, mostrar mensaje de éxito
+        mostrarNotificacion("Todos los campos son válidos. Formulario enviado correctamente.", "success");
+    });
+
+    // Validación en tiempo real para la contraseña (opcional)
+    inputs.contraseña.addEventListener('input', () => {
+        inputs.contraseña.classList.remove('border-red-500');
     });
 });
-	</script>
+  </script>
 </body>
 
 </html>
@@ -313,18 +355,19 @@ if (isset($_POST['registrar'])) {
     $LIMITES = [
         'nombre' => ['min' => 2, 'max' => 25],
         'apellido' => ['min' => 2, 'max' => 25],
-        'cedula' => ['min' => 7, 'max' => 9],
-        'telefono' => ['min' => 7, 'max' => 7],
-        'correo' => ['min' => 5, 'max' => 100],
+        'cedula' => ['min' => 7, 'max' => 8],
+        'telefono' => ['min' => 10, 'max' => 11],
+        'correo' => ['min' => 5, 'max' => 50],
         'usuario' => ['min' => 5, 'max' => 30],
-        'contraseña' => ['min' => 14, 'max' => 50],
+        'contraseña' => ['min' => 14, 'max' => 25],
         'pregunta' => ['min' => 2, 'max' => 100],
     ];
 
     $regex = [
         'soloLetras' => '/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/',
         'soloNumeros' => '/^\d+$/',
-        'email' => '/^[^\s@]+@[^\s@]+\.[^\s@]+$/'
+        'email' => '/^[^\s@]+@[^\s@]+\.[^\s@]+$/',
+        'contraseña' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/' // Al menos 1 mayúscula, 1 minúscula y 1 número
     ];
 
     $errores = [];
@@ -346,7 +389,7 @@ if (isset($_POST['registrar'])) {
     $errores[] = validarCampo($telefono, $regex['soloNumeros'], $LIMITES['telefono'], 'Teléfono');
     $errores[] = validarCampo($correo, $regex['email'], $LIMITES['correo'], 'Correo');
     $errores[] = validarCampo($usuario, null, $LIMITES['usuario'], 'Usuario');
-    $errores[] = validarCampo($contraseña, null, $LIMITES['contraseña'], 'Contraseña');
+    $errores[] = validarCampo($contraseña, $regex['contraseña'], $LIMITES['contraseña'], 'Contraseña');
     $errores[] = validarCampo($pregunta1, $regex['soloLetras'], $LIMITES['pregunta'], 'Pregunta 1');
     $errores[] = validarCampo($pregunta2, $regex['soloLetras'], $LIMITES['pregunta'], 'Pregunta 2');
 

@@ -233,7 +233,7 @@ const LIMITES = {
     cen: { min: 1, max: 25 },
     representante: { min: 2, max: 25 },
     representanteApellido: { min: 2, max: 25 },
-    cedula: { min: 6, max: 12 },
+    cedula: { min: 7, max: 8 },
     telefono: { min: 10, max: 11 },
     correo: { min: 5, max: 50 }
 };
@@ -364,16 +364,18 @@ if (isset($_POST['submit'])) {
     $errores = [];
 
     // Función para validar campos
-    function validarCampo($valor, $regex = null, $limites, $campo) {
+    function validarCampo($valor, $regex = null, $limites = [], $campo = '') {
         if (empty($valor)) return "$campo no puede estar vacío.";
         if ($regex && !preg_match($regex, $valor)) return "Formato inválido en $campo.";
-        if (strlen($valor) < $limites['min'] || strlen($valor) > $limites['max']) {
-            return "$campo debe tener entre {$limites['min']} y {$limites['max']} caracteres.";
+        if (!empty($limites)) {
+            if (strlen($valor) < $limites['min'] || strlen($valor) > $limites['max']) {
+                return "$campo debe tener entre {$limites['min']} y {$limites['max']} caracteres.";
+            }
         }
         return null;
     }
 
-    // Validar todos los campos
+    // Validar campos principales
     $errores[] = validarCampo($nombre, $regex['soloLetras'], $LIMITES['nombre'], 'Nombre');
     $errores[] = validarCampo($apellido, $regex['soloLetras'], $LIMITES['apellido'], 'Apellido');
     $errores[] = validarCampo($cen, $regex['soloNumeros'], $LIMITES['cen'], 'C.E.N');
@@ -383,8 +385,6 @@ if (isset($_POST['submit'])) {
     $errores[] = validarCampo($telefono, $regex['soloNumeros'], $LIMITES['telefono'], 'Teléfono');
     $errores[] = validarCampo($correo, $regex['email'], $LIMITES['correo'], 'Correo Electrónico');
 
-  
-
     // Validar grado y sección
     if (!in_array($grado, ['1', '2', '3', '4', '5', '6'])) {
         $errores[] = "El grado seleccionado no es válido.";
@@ -393,42 +393,41 @@ if (isset($_POST['submit'])) {
         $errores[] = "La sección debe ser 'A' o 'B'.";
     }
 
-    // Validaciones específicas de estudiante.php
+    // Validaciones específicas
     if ($cen === $cedularepre) {
         $errores[] = "La cédula del estudiante no puede ser igual a la del representante.";
     }
 
     // Verificar si el C.E.N ya está registrado
-    $sql_verificar_estudiante = "SELECT * FROM estudiantes WHERE cen = ?";
-    $stmt = $connect->prepare($sql_verificar_estudiante);
+    $sql = "SELECT 1 FROM estudiantes WHERE cen = ?";
+    $stmt = $connect->prepare($sql);
     $stmt->bind_param("s", $cen);
     $stmt->execute();
-    $resultado_estudiante = $stmt->get_result();
-    if ($resultado_estudiante->num_rows > 0) {
+    if ($stmt->get_result()->num_rows > 0) {
         $errores[] = "Ya existe un estudiante registrado con este C.E.N.";
     }
 
     // Verificar si el representante ya existe
-    $sql_verificar_representante = "SELECT id FROM representante WHERE cedula = ?";
-    $stmt = $connect->prepare($sql_verificar_representante);
+    $idRepre = null;
+    $sql = "SELECT id FROM representante WHERE cedula = ?";
+    $stmt = $connect->prepare($sql);
     $stmt->bind_param("s", $cedularepre);
     $stmt->execute();
-    $resultado_representante = $stmt->get_result();
-    if ($resultado_representante->num_rows > 0) {
-        $rowRepre = $resultado_representante->fetch_assoc();
-        $idRepre = $rowRepre['id'];
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $idRepre = $result->fetch_assoc()['id'];
     } else {
-        // Validar si el teléfono o correo ya están registrados
-        $sql_verificar_telefono = "SELECT * FROM representante WHERE telefono = ?";
-        $stmt = $connect->prepare($sql_verificar_telefono);
-        $stmt->bind_param("s", $codigo);
+        // Validar si el teléfono o correo ya están registrados con otro representante
+        $sql = "SELECT 1 FROM representante WHERE telefono = ?";
+        $stmt = $connect->prepare($sql);
+        $stmt->bind_param("s", $telefono);
         $stmt->execute();
         if ($stmt->get_result()->num_rows > 0) {
             $errores[] = "El teléfono ya está registrado con otro representante.";
         }
 
-        $sql_verificar_correo = "SELECT * FROM representante WHERE correo = ?";
-        $stmt = $connect->prepare($sql_verificar_correo);
+        $sql = "SELECT 1 FROM representante WHERE correo = ?";
+        $stmt = $connect->prepare($sql);
         $stmt->bind_param("s", $correo);
         $stmt->execute();
         if ($stmt->get_result()->num_rows > 0) {
@@ -436,9 +435,23 @@ if (isset($_POST['submit'])) {
         }
     }
 
+    // Validaciones adicionales de teléfono y cédula
+    if (!is_numeric($telefono)) {
+        $errores[] = "El teléfono debe ser ingresado solo con números.";
+    } elseif (strlen($telefono) > 12) {
+        $errores[] = "El número de teléfono es muy largo.";
+    } elseif (strlen($telefono) < 10) {
+        $errores[] = "El número de teléfono es muy corto.";
+    }
+
+    if (!is_numeric($cedularepre)) {
+        $errores[] = "La cédula del representante debe ser ingresada solo con números.";
+    }
+
     // Filtrar errores vacíos
     $errores = array_filter($errores);
 
+    // Mostrar errores si existen
     if (!empty($errores)) {
         foreach ($errores as $error) {
             echo "<script>
@@ -447,98 +460,62 @@ if (isset($_POST['submit'])) {
                 notificacion.innerHTML = `<span>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</span>`;
                 document.body.appendChild(notificacion);
                 setTimeout(() => notificacion.remove(), 4000);
-                </script>";
+            </script>";
         }
         exit();
     }
 
-    // Continuar con la lógica de inserción en la base de datos...
-     // El representante no existe, insertarlo y obtener su nuevo ID
-     $queryInsertRepre = "INSERT INTO representante (nombre, apellido, cedula, telefono, correo) VALUES (?, ?, ?, ?, ?)";
-     $stmt = $connect->prepare($queryInsertRepre);
-     $stmt->bind_param("sssss", $representante, $representante_apellido, $cedularepre, $codigo, $correo);
-     $resultInsertRepre = $stmt->execute();
-     
-     if (!$resultInsertRepre) {
-         die("Error al insertar el nuevo representante: " . mysqli_error($connect));
-     }
+    // Si el representante no existe, insertarlo
+    if (!$idRepre) {
+        $sql = "INSERT INTO representante (nombre, apellido, cedula, telefono, correo) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $connect->prepare($sql);
+        $stmt->bind_param("sssss", $representante, $representante_apellido, $cedularepre, $telefono, $correo);
+        if (!$stmt->execute()) {
+            die("Error al insertar el nuevo representante: " . $stmt->error);
+        }
+        $idRepre = $connect->insert_id;
+    }
 
-     $idRepre = mysqli_insert_id($connect);
- 
- if (!is_numeric($telefono)) {
-     $errores[] = "El teléfono debe ser ingresado con numeros";
+    // Obtener el ID del grado
+    $sql = "SELECT id FROM grados WHERE nombre = ?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("s", $grado);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if (!$result || !$row = $result->fetch_assoc()) {
+        die("Error al obtener el ID del grado.");
+    }
+    $idgrado = $row['id'];
 
- } elseif (strlen($codigo) > 12) {
-     $errores[] = "El número de teléfono es muy largo";
- } elseif (strlen($codigo) < 11) {
-     $errores[] = "El número de teléfono es muy corta";
- }
+    // Obtener el ID de la sección
+    $sql = "SELECT id FROM seccion WHERE nombre = ?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("s", $seccion);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if (!$result || !$row = $result->fetch_assoc()) {
+        die("Error al obtener el ID de la sección.");
+    }
+    $idseccion = $row['id'];
 
- if (!is_numeric($cedularepre)) {
-     $errores[] = "La cédula del representante debe ser ingresado con numeros";
+    // Insertar estudiante
+    $sql = "INSERT INTO estudiantes (nombre, apellido, cen, nacimiento, sexo, idgrado, idseccion, idrepresentante) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("sssssiii", $nombre, $apellido, $cen, $nacimiento, $sexo, $idgrado, $idseccion, $idRepre);
+    if (!$stmt->execute()) {
+        die("Error al insertar el estudiante: " . $stmt->error);
+    }
 
- } elseif (strlen($codigo) > 12) {
-     $errores[] = "El número de teléfono es muy largo";
- } elseif (strlen($codigo) < 11) {
-     $errores[] = "El número de teléfono es muy corta";
- }
+    // Insertar en bitácora
+    $sql = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+    $stmt = $connect->prepare($sql);
+    $accion = "Se Insertó un nuevo estudiante.";
+    $datos_accion = "Informacion: nombre = $nombre, apellido = $apellido, cen = $cen, nacimiento = $nacimiento, sexo = $sexo, grado = $grado, seccion = $seccion, representante = $representante, Apellido del representante = $representante_apellido, cedula representante = $cedularepre, telefono = $telefono, correo = $correo";
+    $stmt->bind_param("sss", $accion, $datos_accion, $usuario);
+    $stmt->execute();
 
-
- // Obtener el ID del grado
- $queryGrado = "SELECT id FROM grados WHERE nombre = ?";
- $stmt = $connect->prepare($queryGrado);
- $stmt->bind_param("s", $grado);
- $stmt->execute();
- $resultGrado = $stmt->get_result();
- if (!$resultGrado) {
-     die("Error al obtener el ID del grado: " . mysqli_error($connect));
- }
-
- $rowGrado = $resultGrado->fetch_assoc();
- $idgrado = $rowGrado['id'];
- 
-
- // Obtener el ID de la sección
- $querySeccion = "SELECT id FROM seccion WHERE nombre = ?";
- $stmt = $connect->prepare($querySeccion);
- $stmt->bind_param("s", $seccion);
- $stmt->execute();
- $resultSeccion = $stmt->get_result();
-
- if (!$resultSeccion) {
-     die("Error al obtener el ID de la sección: " . $stmt->error);
- }
-
- $rowSeccion = $resultSeccion->fetch_assoc();
- $idseccion = $rowSeccion['id'];
-
-
- // Inserción en la tabla de estudiantes
- $sql = "INSERT INTO estudiantes (nombre, apellido, cen, nacimiento, sexo, idgrado, idseccion, idrepresentante) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
- $stmt = $connect->prepare($sql);
- $stmt->bind_param("sssssiii", $nombre, $apellido, $cen, $nacimiento, $sexo, $idgrado, $idseccion, $idRepre);
- $resultInsert = $stmt->execute();
- 
-  
- //ingresar insert en bitacora
- $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
- $stmt2 = $connect->prepare($sql2);
- $accion = "Se Insertó un nuevo estudiante.";
- $datos_accion = "Informacion: nombre = $nombre, apellido = $apellido, cen = $cen, nacimiento = $nacimiento, sexo = $sexo, grado = $grado, seccion = $seccion, representante = $representante, Apellido del representante = $representante_apellido, cedula representante = $cedularepre, telefono = $codigo, correo = $correo";
- $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
- $resultInsert2 = $stmt2->execute();
- 
- //aqui termina
-
-
- if ($resultInsert) {
-     $volver = $grado; // Assign the appropriate value for $volver
-     $volver2 = $seccion; // Assign the appropriate value for $volver2
-     echo "<script> window.location='ver_grado.php?gradonombre=$volver&seccion=$volver2'</script>";
- } else {
-     die(mysqli_error($connect));
- }
-
+    // Redirigir a la vista de grado
+    echo "<script>window.location='ver_grado.php?gradonombre=$grado&seccion=$seccion'</script>";
+    exit();
 }
-
 ?>
