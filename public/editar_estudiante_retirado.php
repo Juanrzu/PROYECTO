@@ -309,7 +309,7 @@
         input.classList.remove('border-red-500');
 
         if (!valor) {
-            return { valido: false, mensaje: mensaje || `El campo ${input.id} no puede estar vacíossssssssssss` };
+            return { valido: false, mensaje: mensaje || `El campo ${input.id} no puede estar vacíos` };
         }
 
         if (regex && !regex.test(valor)) {
@@ -317,11 +317,11 @@
         }
 
         if (valor.length < minLength) {
-            return { valido: false, mensaje: mensaje || `${input.id} debe tener al menos ${minLength} caracteressssss` };
+            return { valido: false, mensaje: mensaje || `${input.id} debe tener al menos ${minLength} caracteres` };
         }
 
         if (valor.length > maxLength) {
-            return { valido: false, mensaje: mensaje || `${input.id} no puede exceder los ${maxLength} caracteresssss` };
+            return { valido: false, mensaje: mensaje || `${input.id} no puede exceder los ${maxLength} caracteres` };
         }
 
         return { valido: true };

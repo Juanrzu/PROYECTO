@@ -340,7 +340,113 @@ include 'contador_sesion.php';
                                 </form>
                             </div>
                         </div>
-                    </div>';
+                    </div>
+                    
+                    
+
+
+
+                    <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+                        const form = document.getElementById("formulario-'.$row['id'].'");
+                        const btn = document.getElementById("btn");
+                        const inputs = {
+                            motivo: document.getElementById("motivo-retirar-'.$row['id'].'"),
+                        };
+
+                        const regex = {
+                            soloLetras: /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/
+                        };
+
+                        const LIMITES = {
+                            motivo: { min: 2, max: 25 },
+                        };
+
+                        const mostrarNotificacion = (mensaje, tipo = "error") => {
+                            const sanitizeHTML = (str) => {
+                                const temp = document.createElement("div");
+                                temp.textContent = str;
+                                return temp.innerHTML;
+                            };
+
+                            const icono = tipo === "error" ?
+                                `<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
+                                </svg>` :
+                                `<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
+                                </svg>`;
+
+                            const color = tipo === "error" ? "bg-red-100 border-red-400 text-red-700" : "bg-green-100 border-green-400 text-green-700";
+
+                            document.querySelectorAll(".notificacion").forEach(el => el.remove());
+
+                            const notificacion = document.createElement("div");
+                            notificacion.className = `notificacion fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ${color} border flex items-center z-50`;
+                            notificacion.innerHTML = `
+                                <div class="flex-shrink-0 mr-3">${icono}</div>
+                                <div class="text-sm">${sanitizeHTML(mensaje)}</div>
+                            `;
+
+                            document.body.appendChild(notificacion);
+
+                            setTimeout(() => {
+                                notificacion.classList.add("opacity-0", "transition-opacity", "duration-500");
+                                setTimeout(() => notificacion.remove(), 500);
+                            }, 4000);
+                        };
+
+                        const validarCampo = (input, regex = null, minLength = 0, maxLength = Infinity, mensaje = null) => {
+                            const valor = input.value.trim();
+                            input.classList.remove("border-red-500");
+
+                            if (!valor) {
+                                return { valido: false, mensaje: mensaje || `El campo ${input.id} no puede estar vacío` };
+                            }
+
+                            if (regex && !regex.test(valor)) {
+                                return { valido: false, mensaje: mensaje || `Formato inválido para ${input.id}` };
+                            }
+
+                            if (valor.length < minLength) {
+                                return { valido: false, mensaje: mensaje || `${input.id} debe tener al menos ${minLength} caracteres` };
+                            }
+
+                            if (valor.length > maxLength) {
+                                return { valido: false, mensaje: mensaje || `${input.id} no puede exceder los ${maxLength} caracteres` };
+                            }
+
+                            return { valido: true };
+                        };
+
+                        form.addEventListener("submit", (e) => {
+                            // Limpiar errores previos
+                            Object.values(inputs).forEach(input => input.classList.remove("border-red-500"));
+
+                            // Validaciones
+                            const validaciones = [
+                                { input: inputs.motivo, resultado: validarCampo(inputs.motivo, regex.soloLetras, LIMITES.motivo.min, LIMITES.motivo.max, "Motivo inválido") }
+                            ];
+
+                            // Verificar si hay errores
+                            const errores = validaciones.filter(v => !v.resultado.valido);
+
+                            if (errores.length > 0) {
+                                e.preventDefault(); // Detener el envío si hay errores
+                                errores[0].input.classList.add("border-red-500");
+                                mostrarNotificacion(errores[0].resultado.mensaje);
+                            }
+                            // Si no hay errores, el formulario se enviará automáticamente
+                        });
+                    });
+                    </script>
+
+
+
+                    ';
+
+
+                    
         }
     } else {
         echo '<tr>
@@ -375,120 +481,5 @@ include 'contador_sesion.php';
   <!-- Scripts -->
   <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
   <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
-
-  <script>
-
-
-const form = document.getElementById('formulario');
-const btn = document.getElementById('btn');
-const inputs = {
-  motivo: document.querySelector('.motivo')
-};
-
-const regex = {
-    soloLetras: /^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/
-};
-
-const LIMITES = {
-    motivo: { min: 5, max: 25 }
-};
-
-// Función para mostrar notificaciones
-const mostrarNotificacion = (mensaje, tipo = 'error') => {
-    const sanitizeHTML = (str) => {
-        const temp = document.createElement('div');
-        temp.textContent = str;
-        return temp.innerHTML;
-    };
-
-    const icono = tipo === 'error' ?
-        `<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
-        </svg>` :
-        `<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
-        </svg>`;
-
-    const color = tipo === 'error' ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
-
-    document.querySelectorAll('.notificacion').forEach(el => el.remove());
-
-    const notificacion = document.createElement('div');
-    notificacion.className = `notificacion fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ${color} border flex items-center`;
-    notificacion.innerHTML = `
-        <div class="flex-shrink-0 mr-3">${icono}</div>
-        <div class="text-sm">${sanitizeHTML(mensaje)}</div>
-    `;
-
-    document.body.appendChild(notificacion);
-
-    setTimeout(() => {
-        notificacion.classList.add('opacity-0', 'transition-opacity', 'duration-500');
-        setTimeout(() => notificacion.remove(), 500);
-    }, 4000);
-};
-
-// Función para validar campos
-const validarCampo = (input, regex = null, minLength = 0, maxLength = Infinity, mensaje = null) => {
-    const valor = input.value.trim();
-    input.classList.remove('border-red-500');
-
-    if (!valor) {
-        return { valido: false, mensaje: mensaje || `El campo no puede estar vacío` };
-    }
-
-    if (regex && !regex.test(valor)) {
-        return { valido: false, mensaje: mensaje || `Formato inválido (solo letras)` };
-    }
-
-    if (valor.length < minLength) {
-        return { valido: false, mensaje: mensaje || `Debe tener al menos ${minLength} caracteres` };
-    }
-
-    if (valor.length > maxLength) {
-        return { valido: false, mensaje: mensaje || `No puede exceder los ${maxLength} caracteres` };
-    }
-
-    return { valido: true };
-};
-
-// Configuración de los eventos cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', function() {
-    // Selecciona todos los formularios de retiro
-    const forms = document.querySelectorAll('form[id^="formulario-"]');
-    
-    forms.forEach(form => {
-        const motivoInput = form.querySelector('.motivo');
-        
-        form.addEventListener("submit", (e) => {
-            e.preventDefault();
-            
-            // Limpiar errores previos
-            motivoInput.classList.remove('border-red-500');
-            
-            // Validación
-            const validacion = validarCampo(
-                motivoInput, 
-                regex.soloLetras, 
-                LIMITES.motivo.min, 
-                LIMITES.motivo.max, 
-                "Por favor ingrese un motivo válido (solo letras, 5-25 caracteres)"
-            );
-            
-            if (!validacion.valido) {
-                motivoInput.classList.add('border-red-500');
-                mostrarNotificacion(validacion.mensaje);
-            } else {
-                mostrarNotificacion("Retiro del estudiante confirmado", "success");
-                
-                // Enviar el formulario después de 1 segundo
-                setTimeout(() => {
-                    form.submit();
-                }, 1000);
-            }
-        });
-    });
-});
-</script>
 </body>
 </html>

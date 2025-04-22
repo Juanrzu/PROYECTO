@@ -127,7 +127,7 @@ require_once '../contador_sesion.php';
 
 
 
-<script>
+    <script>
     document.addEventListener("DOMContentLoaded", () => {
         const form = document.getElementById('formulario');
         const inputs = {
@@ -143,247 +143,216 @@ require_once '../contador_sesion.php';
         };
 
         const LIMITES = {
-            usuario: 20, // Ajustado al contexto del formulario
-            p1: 50,    // Ajustado al contexto del formulario
-            p2: 50,    // Ajustado al contexto del formulario
-            pregunta_nueva1: 50, // Ajustado al contexto del formulario
-            pregunta_nueva2: 50  // Ajustado al contexto del formulario
+            usuario: { min: 2, max: 25 },
+            p1: { min: 2, max: 25 },
+            p2: { min: 2, max: 25 },
+            pregunta_nueva1: { min: 2, max: 25 },
+            pregunta_nueva2: { min: 2, max: 25 }
         };
 
         const mostrarNotificacion = (mensaje, tipo = 'error') => {
-			const sanitizeHTML = (str) => {
-				const temp = document.createElement('div');
-				temp.textContent = str;
-				return temp.innerHTML;
-			};
+            const sanitizeHTML = (str) => {
+                const temp = document.createElement('div');
+                temp.textContent = str;
+                return temp.innerHTML;
+            };
 
-			const icono = tipo === 'error' ?
-				`<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-					<path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
-				</svg>` :
-				`<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-					<path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
-				</svg>`;
+            const icono = tipo === 'error' ?
+                `<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
+                </svg>` :
+                `<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
+                </svg>`;
 
-			const color = tipo === 'error' ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
+            const color = tipo === 'error' ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
 
-			document.querySelectorAll('.notificacion').forEach(el => el.remove());
+            document.querySelectorAll('.notificacion').forEach(el => el.remove());
 
-			const notificacion = document.createElement('div');
-			notificacion.className = `notificacion fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ${color} border flex items-center`;
-			notificacion.innerHTML = `
-				<div class="flex-shrink-0 mr-3">${icono}</div>
-				<div class="text-sm">${sanitizeHTML(mensaje)}</div>
-			`;
+            const notificacion = document.createElement('div');
+            notificacion.className = `notificacion fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ${color} border flex items-center`;
+            notificacion.innerHTML = `
+                <div class="flex-shrink-0 mr-3">${icono}</div>
+                <div class="text-sm">${sanitizeHTML(mensaje)}</div>
+            `;
 
-			document.body.appendChild(notificacion);
+            document.body.appendChild(notificacion);
 
-			setTimeout(() => {
-				notificacion.classList.add('opacity-0', 'transition-opacity', 'duration-500');
-				setTimeout(() => notificacion.remove(), 500);
-			}, 4000);
-		};
+            setTimeout(() => {
+                notificacion.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                setTimeout(() => notificacion.remove(), 500);
+            }, 4000);
+        };
 
-        const validarCampo = (input, regex = null, minLength = 0, maxLength = Infinity, mensajeVacio = null, mensajeInvalido = null, mensajeLongitud = null) => {
+        const validarCampo = (input, regex = null, minLength = 0, maxLength = Infinity, mensaje = null) => {
             const valor = input.value.trim();
             input.classList.remove('border-red-500');
 
             if (!valor) {
-                return { valido: false, mensaje: mensajeVacio || `El campo ${input.id} no puede estar vacío` };
+                return { valido: false, mensaje: mensaje || `El campo ${input.id} no puede estar vacío` };
             }
 
             if (regex && !regex.test(valor)) {
-                return { valido: false, mensaje: mensajeInvalido || `Formato inválido para ${input.id}` };
+                return { valido: false, mensaje: mensaje || `Formato inválido para ${input.id}` };
             }
 
-            if (valor.length < minLength || valor.length > maxLength) {
-                return { valido: false, mensaje: mensajeLongitud || `${input.id} debe tener entre ${minLength} y ${maxLength} caracteres` };
+            if (valor.length < minLength) {
+                return { valido: false, mensaje: mensaje || `${input.id} debe tener al menos ${minLength} caracteres` };
+            }
+
+            if (valor.length > maxLength) {
+                return { valido: false, mensaje: mensaje || `${input.id} no puede exceder los ${maxLength} caracteres` };
             }
 
             return { valido: true };
         };
 
-
         form.addEventListener("submit", (e) => {
-			e.preventDefault();
-
-			Object.values(inputs).forEach(input => input.classList.remove('border-red-500'));
-
-			const validaciones = [
-                { input: inputs.usuario, resultado: validarCampo(inputs.usuario, /^[A-Za-z0-9\s]+$/, 1, LIMITES.usuario.min, `El usuario debe ser válido.`) },
-                { input: inputs.usuario, resultado: validarCampo(inputs.usuario, /^[A-Za-z0-9\s]+$/, 1, LIMITES.usuario.max, `El usuario debe ser válido y tener un máximo de ${LIMITES.usuario} caracteres.`) },
-				{ input: inputs.p1, resultado: validarCampo(inputs.p1, regex.soloLetras, 1, LIMITES.p1.min, `La respuesta 1 debe ser válida.`) },
-                { input: inputs.p1, resultado: validarCampo(inputs.p1, regex.soloLetras, 1, LIMITES.p1.max, `La respuesta 1 debe ser válida y tener un máximo de ${LIMITES.p1} caracteres.`) },
-                { input: inputs.p2, resultado: validarCampo(inputs.p2, regex.soloLetras, 1, LIMITES.p2.min, `La respuesta 2 debe ser válida.`) },
-                { input: inputs.p2, resultado: validarCampo(inputs.p2, regex.soloLetras, 1, LIMITES.p2.max, `La respuesta 2 debe ser válida y tener un máximo de ${LIMITES.p2} caracteres.`) },
-                { input: inputs.pregunta_nueva1, resultado: validarCampo(inputs.pregunta_nueva1, regex.soloLetras, 1, LIMITES.pregunta_nueva1.min, `La nueva respuesta 1 debe ser válida`) },
-                { input: inputs.pregunta_nueva1, resultado: validarCampo(inputs.pregunta_nueva1, regex.soloLetras, 1, LIMITES.pregunta_nueva1.max, `La nueva respuesta 1 debe ser válida y tener un máximo de ${LIMITES.pregunta_nueva1} caracteres.`) },
-                { input: inputs.pregunta_nueva2, resultado: validarCampo(inputs.pregunta_nueva2, regex.soloLetras, 1, LIMITES.pregunta_nueva2.min, `La nueva respuesta 2 debe ser válida`) },
-                { input: inputs.pregunta_nueva2, resultado: validarCampo(inputs.pregunta_nueva2, regex.soloLetras, 1, LIMITES.pregunta_nueva2.max, `La nueva respuesta 2 debe ser válida y tener un máximo de ${LIMITES.pregunta_nueva2} caracteres.`) }
-			
+            // Limpiar errores previos
+            Object.values(inputs).forEach(input => input.classList.remove('border-red-500'));
+            
+            // Validaciones
+            const validaciones = [
+                { input: inputs.usuario, resultado: validarCampo(inputs.usuario, regex.soloLetras, LIMITES.usuario.min, LIMITES.usuario.max, "Usuario inválido") },
+                { input: inputs.p1, resultado: validarCampo(inputs.p1, regex.soloLetras, LIMITES.p1.min, LIMITES.p1.max, "Respuesta 1 inválida") },
+                { input: inputs.p2, resultado: validarCampo(inputs.p2, regex.soloLetras, LIMITES.p2.min, LIMITES.p2.max, "Respuesta 2 inválida") },
+                { input: inputs.pregunta_nueva1, resultado: validarCampo(inputs.pregunta_nueva1, regex.soloLetras, LIMITES.pregunta_nueva1.min, LIMITES.pregunta_nueva1.max, "Nueva respuesta 1 inválida") },
+                { input: inputs.pregunta_nueva2, resultado: validarCampo(inputs.pregunta_nueva2, regex.soloLetras, LIMITES.pregunta_nueva2.min, LIMITES.pregunta_nueva2.max, "Nueva respuesta 2 inválida") }
             ];
 
-			for (const validacion of validaciones) {
-				if (!validacion.resultado.valido) {
-					validacion.input.classList.add('border-red-500');
-					mostrarNotificacion(validacion.resultado.mensaje);
-					return;
-				}
-			}
-
-			mostrarNotificacion('Formulario enviado correctamente', 'success');
-			form.submit(); // Descomentar para enviar el formulario
-		});
+            // Verificar si hay errores
+            const errores = validaciones.filter(v => !v.resultado.valido);
+            
+            if (errores.length > 0) {
+                e.preventDefault();
+                errores[0].input.classList.add('border-red-500');
+                errores[0].input.focus();
+                mostrarNotificacion(errores[0].resultado.mensaje);
+            }
+        });
     });
+    </script>
 
-    // Función para actualizar el contador de caracteres
-    function updateCounter(inputId, maxLength) {
-        const input = document.getElementById(inputId);
-        const currentLength = input.value.length;
+    <?php
+    function mostrar_mensaje($mensaje, $tipo = 'error') {
+        $color_clase = ($tipo === 'error') ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
+        $icono_svg = '';
 
-        // Cambiar estilos si se acerca al límite
-        if (currentLength >= maxLength) {
-            input.classList.add('border-red-500', 'text-red-500');
-            input.classList.remove('border-gray-300', 'text-black');
-            mostrarNotificacion(`${inputId} ha excedido el límite de caracteres (${maxLength})`);
-        } else {
-            input.classList.remove('border-red-500', 'text-red-500');
-            input.classList.add('border-gray-300', 'text-black');
+        if ($tipo === 'error') {
+            $icono_svg = '<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
+                            </svg>';
+        } elseif ($tipo === 'success') {
+            $icono_svg = '<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
+                            </svg>';
         }
-    }
 
-</script>
-</body>
-</html>
-
-
-<?php
-
-function mostrar_mensaje($mensaje, $tipo = 'error') {
-    $color_clase = ($tipo === 'error') ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
-    $icono_svg = '';
-
-    if ($tipo === 'error') {
-        $icono_svg = '<svg fill="#f00505" width="24px" height="24px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z"></path>
-                        </svg>';
-    } elseif ($tipo === 'success') {
-        $icono_svg = '<svg fill="#4BB543" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z"/>
-                        </svg>';
-    }
-
-    echo '<script>
-        var msg = document.createElement("div");
-        msg.innerHTML = ` <div class="fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ' . $color_clase . ' border flex items-center">
-                            <div class="flex-shrink-0 mr-3">' . $icono_svg . '</div>
-                            <div class="text-sm">' . htmlspecialchars($mensaje) . '</div>
-                            </div>`;
-        document.body.appendChild(msg);
-        setTimeout(function() {
-            msg.remove();
-        }, 4000);
-    </script>';
-}
-
-// Verifica si se ha enviado el formulario
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    // Recibir datos del formulario
-    $usuario = $_POST['usuario'];
-    $pregunta1 = strtolower($_POST['pregunta1']);
-    $pregunta2 = strtolower($_POST['pregunta2']);
-    $pregunta_nueva1 = strtolower($_POST['pregunta_nueva1']);
-    $pregunta_nueva2 = strtolower($_POST['pregunta_nueva2']);
-
-    if (empty($usuario) || empty($pregunta1) || empty($pregunta2) || empty($pregunta_nueva1) || empty($pregunta_nueva2)) {
-        mostrar_mensaje("Todos los campos son obligatorios.");
-        exit;
-    }
-
-    if (!preg_match('/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]*$/', $usuario)) {
-        mostrar_mensaje("Ingrese un Usuario con caracteres válidos.");
-        exit;
-    }
-
-    if (!preg_match('/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]*$/', $pregunta1)) {
-        mostrar_mensaje("Ingrese una respuesta con caracteres válidos.");
-        exit;
-    }
-
-    if (!preg_match('/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]*$/', $pregunta2)) {
-        mostrar_mensaje("Ingrese una respuesta con caracteres válidos.");
-        exit;
-    }
-
-    if (!preg_match('/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]*$/', $pregunta_nueva1)) {
-        mostrar_mensaje("Ingrese una respuesta con caracteres válidos.");
-        exit;
-    }
-
-    if (!preg_match('/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]*$/', $pregunta_nueva2)) {
-        mostrar_mensaje("Ingrese una respuesta con caracteres válidos.");
-        exit;
-    }
-
-    // Preparar sentencia 1
-    // Consulta para verificar las respuestas de seguridad
-    $sql = "SELECT respuesta_seguridad1, respuesta_seguridad2 FROM usuario WHERE nombre_usuario = ?";
-    $stmt = $connect->prepare($sql);
-    $stmt->bind_param("s", $usuario);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $pregunta1_bd = $row['respuesta_seguridad1'];
-        $pregunta2_bd = $row['respuesta_seguridad2'];
-        $stmt->close();
-
-        // Verificar las respuestas de seguridad y actualizar la contraseña
-        if (password_verify($pregunta1, $pregunta1_bd) && password_verify($pregunta2, $pregunta2_bd)) {
-
-            // Preparar sentencia 2
-            // Las respuestas coinciden, actualiza la contraseña
-            $pregunta1_cifrada = password_hash($pregunta_nueva1, PASSWORD_ARGON2ID);
-            $pregunta2_cifrada = password_hash($pregunta_nueva2, PASSWORD_ARGON2ID);
+        echo '<script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var msg = document.createElement("div");
+                msg.className = "notificacion fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg ' . $color_clase . ' border flex items-center";
+                msg.innerHTML = `<div class="flex-shrink-0 mr-3">' . $icono_svg . '</div>
+                                <div class="text-sm">' . htmlspecialchars($mensaje) . '</div>`;
+                document.body.appendChild(msg);
                 
-            
-            //ingresar insert en bitacora al eliminar estudiante
-            $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
-            $datos_accion = "Por motivos de seguridad no podemos mostrar informacion";
-            
-            $stmt2 = $connect->prepare($sql2);
-            $accion= "Se Actualizaron las preguntas del usuario.";
-            $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
-            $resultInsert2 = $stmt2->execute();
-                //aqui termina
+                setTimeout(function() {
+                    msg.classList.add("opacity-0", "transition-opacity", "duration-500");
+                    setTimeout(function() { msg.remove(); }, 500);
+                }, 4000);
+            });
+        </script>';
+    }
 
+    // Verifica si se ha enviado el formulario
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Recibir y limpiar datos del formulario
+        $usuario = trim($_POST['usuario']);
+        $pregunta1 = strtolower(trim($_POST['p1']));
+        $pregunta2 = strtolower(trim($_POST['p2']));
+        $pregunta_nueva1 = strtolower(trim($_POST['pregunta_nueva1']));
+        $pregunta_nueva2 = strtolower(trim($_POST['pregunta_nueva2']));
 
-            $update_sql = "UPDATE usuario SET respuesta_seguridad1 = ?, respuesta_seguridad2 = ? WHERE nombre_usuario = ?";
-            $stmt = $connect->prepare($update_sql);
-            $stmt->bind_param("sss", $pregunta1_cifrada, $pregunta2_cifrada, $usuario);
+        // Validaciones básicas
+        if (empty($usuario) || empty($pregunta1) || empty($pregunta2) || empty($pregunta_nueva1) || empty($pregunta_nueva2)) {
+            mostrar_mensaje("Todos los campos son obligatorios.");
+            exit;
+        }
 
-            if ($stmt->execute()) {
-                mostrar_mensaje("Preguntas de seguridad actualizadas correctamente.", 'success');
-                if ($usuario === 'admin') {
-                    echo "<script> setTimeout(function(){ window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuario.php'; }, 2000);</script>";
+        if (!preg_match('/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/', $usuario)) {
+            mostrar_mensaje("Ingrese un Usuario con caracteres válidos.");
+            exit;
+        }
+
+        // Validar formato de respuestas
+        $errores_validacion = [];
+        if (!preg_match('/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/', $pregunta1)) {
+            $errores_validacion[] = "Respuesta 1 contiene caracteres inválidos";
+        }
+        if (!preg_match('/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/', $pregunta2)) {
+            $errores_validacion[] = "Respuesta 2 contiene caracteres inválidos";
+        }
+        if (!preg_match('/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/', $pregunta_nueva1)) {
+            $errores_validacion[] = "Nueva respuesta 1 contiene caracteres inválidos";
+        }
+        if (!preg_match('/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/', $pregunta_nueva2)) {
+            $errores_validacion[] = "Nueva respuesta 2 contiene caracteres inválidos";
+        }
+
+        if (!empty($errores_validacion)) {
+            mostrar_mensaje(implode("<br>", $errores_validacion));
+            exit;
+        }
+
+        // Consulta para verificar las respuestas de seguridad
+        $sql = "SELECT respuesta_seguridad1, respuesta_seguridad2 FROM usuario WHERE nombre_usuario = ?";
+        $stmt = $connect->prepare($sql);
+        $stmt->bind_param("s", $usuario);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $pregunta1_bd = $row['respuesta_seguridad1'];
+            $pregunta2_bd = $row['respuesta_seguridad2'];
+            $stmt->close();
+
+            // Verificar las respuestas de seguridad
+            if (password_verify($pregunta1, $pregunta1_bd) && password_verify($pregunta2, $pregunta2_bd)) {
+                // Cifrar nuevas respuestas
+                $pregunta1_cifrada = password_hash($pregunta_nueva1, PASSWORD_ARGON2ID);
+                $pregunta2_cifrada = password_hash($pregunta_nueva2, PASSWORD_ARGON2ID);
+                
+                // Registrar en bitácora
+                $sql2 = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
+                $datos_accion = "Actualización de preguntas de seguridad";
+                $stmt2 = $connect->prepare($sql2);
+                $accion = "Se Actualizaron las preguntas del usuario.";
+                $stmt2->bind_param("sss", $accion, $datos_accion, $usuario);
+                $stmt2->execute();
+                $stmt2->close();
+
+                // Actualizar preguntas en la base de datos
+                $update_sql = "UPDATE usuario SET respuesta_seguridad1 = ?, respuesta_seguridad2 = ? WHERE nombre_usuario = ?";
+                $stmt = $connect->prepare($update_sql);
+                $stmt->bind_param("sss", $pregunta1_cifrada, $pregunta2_cifrada, $usuario);
+
+                if ($stmt->execute()) {
+                    mostrar_mensaje("Preguntas de seguridad actualizadas correctamente.", 'success');
+                    $redirect = ($usuario === 'admin') ? 
+                        'http://localhost/dashboard/Proyecto/public/usuarios/usuario.php' : 
+                        'http://localhost/dashboard/Proyecto/public/display.php';
+                    echo "<script>setTimeout(() => window.location.href = '$redirect', 2000);</script>";
                     exit();
                 } else {
-                    echo "<script> setTimeout(function(){ window.location='http://localhost/dashboard/Proyecto/public/display.php'; }, 2000);</script>";
-                    exit();
+                    mostrar_mensaje("Error al actualizar las preguntas de seguridad: " . $stmt->error);
                 }
-
+                $stmt->close();
             } else {
-                mostrar_mensaje("Error al actualizar las preguntas de seguridad: " . $stmt->error);
+                mostrar_mensaje("Las respuestas de seguridad no coinciden.");
             }
-            $stmt->close();
         } else {
-            mostrar_mensaje("Las respuestas de seguridad no coinciden.");
+            mostrar_mensaje("El usuario no existe.");
         }
-    } else {
-        mostrar_mensaje("Ese Usuario no existe.");
     }
-}
-
-?>
+    ?>

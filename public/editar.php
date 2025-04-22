@@ -284,8 +284,9 @@ if ($usuario == "admin" || $usuario == "Admin") {
                 nombre: { min: 2, max: 30 },
                 apellido: { min: 2, max: 30 },
                 cen: { min: 1, max: 25 },
-                telefono: { min: 7, max: 15 },
+                telefono: { min: 10, max: 11 },
                 cedula: { min: 7, max: 8 },
+                cen: { min: 7, max: 15 },
                 correo: { max: 50 }
             };
 
