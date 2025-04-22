@@ -48,63 +48,89 @@ if (!isset($usuario)) {
       }
       ?>
 
-    <!-- Main Content -->
-    <main class="mb-8 xl:px-56 mt-8">
-      <div class="container-buttons flex justify-start items-stretch mx-5 mb-4">
-        <button class="p-4 rounded-md bg-blue-500 text-white shadow-lg hover:bg-blue-600 focus:outline focus:outline-blue-300">
-          <a href="http://localhost/dashboard/Proyecto/public/trabajadores/ag_trabajador.php">Agregar Trabajador</a>
-        </button>
-      </div>
-      <div class="overflow-x-auto shadow-md sm:rounded-lg m-10 xl:m-4 bg-white dark:bg-gray-800">
-        <table class="w-full text-sm text-left text-gray-800 dark:text-gray-200">
-          <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-700">
-            <tr>
-              <th scope="col" class="px-4 py-2 bg-gray-200 dark:bg-gray-800">ID</th>
-              <th scope="col" class="px-4 py-2">Nombre</th>
-              <th scope="col" class="px-4 py-2 bg-gray-200 dark:bg-gray-800">Apellido</th>
-              <th scope="col" class="px-4 py-2">Cédula</th>
-              <th scope="col" class="px-4 py-2 bg-gray-200 dark:bg-gray-800">Teléfono</th>
-              <th scope="col" class="px-4 py-2">Rol</th>
-              <th scope="col" class="px-4 py-2 bg-blue-500 text-white text-center">Acción</th>
+<main class="container h-screen mx-auto px-4 py-8">
+  <!-- Botón de acción -->
+  <div class="flex flex-wrap gap-4 mb-8">
+ <!-- Botón Volver -->
+                <a href="http://localhost/dashboard/Proyecto/public/constancias.php"
+                class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Volver
+            </a>
+
+            <a href="http://localhost/dashboard\PROYECTO\public\trabajadores\ag_trabajador.php" class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+      </svg>
+      Agregar Trabajador
+    </a>
+
+  </div>
+
+  <!-- Contenedor de la tabla -->
+  <div class="overflow-x-auto shadow-md sm:rounded-lg m-10 xl:m-4">
+    <?php
+    $sql = "SELECT * FROM trabajadores";
+    $result = mysqli_query($connect, $sql);
+    
+    if (mysqli_num_rows($result) > 0): ?>
+      <!-- Tabla (solo se muestra si hay registros) -->
+      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" class="px-6 py-3">ID</th>
+            <th scope="col" class="px-6 py-3">Nombre</th>
+            <th scope="col" class="px-6 py-3">Apellido</th>
+            <th scope="col" class="px-6 py-3">Cédula</th>
+            <th scope="col" class="px-6 py-3">Teléfono</th>
+            <th scope="col" class="px-6 py-3">Rol</th>
+            <th scope="col" class="px-6 py-3">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php while ($row = mysqli_fetch_assoc($result)): ?>
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50">
+              <td class="px-6 py-4"><?= htmlspecialchars($row['id']) ?></td>
+              <td class="px-6 py-4"><?= htmlspecialchars($row['nombre']) ?></td>
+              <td class="px-6 py-4"><?= htmlspecialchars($row['apellido']) ?></td>
+              <td class="px-6 py-4"><?= htmlspecialchars($row['cedula']) ?></td>
+              <td class="px-6 py-4"><?= htmlspecialchars($row['telefono']) ?></td>
+              <td class="px-6 py-4"><?= htmlspecialchars($row['rol']) ?></td>
+              <td class="px-6 py-4">
+              <a href="imprimir.php?id=<?= htmlspecialchars($row['id']) ?>" class="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white text-sm font-medium rounded-md">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                <path d="M12 16V10M12 10L9 12M12 10L15 12M23 15C23 12.79 21.21 11 19 11C18.98 11 18.95 11.0002 18.93 11.0006C18.44 7.608 15.53 5 12 5C9.2 5 6.79 6.64 5.67 9.01C3.06 9.18 1 11.35 1 14C1 16.76 3.24 19 6 19L19 19C21.21 19 23 17.21 23 15Z"
+                                                    stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                Imprimir
+              </a>
+              </td>
             </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-300 dark:divide-gray-600">
-            <?php
-            $sql = "SELECT * FROM trabajadores";
-            $result = mysqli_query($connect, $sql);
-            if ($result) {
-              while ($row = mysqli_fetch_assoc($result)) {
-                $id = $row['id'];
-                $nombre = $row['nombre'];
-                $apellido = $row['apellido'];
-                $cedula = $row['cedula'];
-                $telefono = $row['telefono'];
-                $rol = $row['rol'];
-                echo '<tr class="even:bg-gray-50 dark:even:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <td class="px-4 py-2 bg-gray-200 dark:bg-gray-800">' . $id . '</td>
-                        <td class="px-4 py-2">' . htmlspecialchars($nombre) . '</td>
-                        <td class="px-4 py-2 bg-gray-200 dark:bg-gray-800">' . htmlspecialchars($apellido) . '</td>
-                        <td class="px-4 py-2">' . htmlspecialchars($cedula) . '</td>
-                        <td class="px-4 py-2 bg-gray-200 dark:bg-gray-800">' . htmlspecialchars($telefono) . '</td>
-                        <td class="px-4 py-2">' . htmlspecialchars($rol) . '</td>
-                        <td class="px-4 py-2 text-center bg-blue-500 text-white rounded hover:bg-blue-600">
-                          <button>
-                            <a href="imprimir.php?id=' . $id . '">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 16V10M12 10L9 12M12 10L15 12M23 15C23 12.79 21.21 11 19 11C18.98 11 18.95 11.0002 18.93 11.0006C18.44 7.608 15.53 5 12 5C9.2 5 6.79 6.64 5.67 9.01C3.06 9.18 1 11.35 1 14C1 16.76 3.24 19 6 19L19 19C21.21 19 23 17.21 23 15Z"
-                                  stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                              </svg>
-                            </a>
-                          </button>
-                        </td>
-                      </tr>';
-              }
-            }
-            ?>
-          </tbody>
-        </table>
+
+
+
+        
+          <?php endwhile; ?>
+        </tbody>
+      </table>
+    <?php else: ?>
+      <div class="w-full bg-white p-8 text-center rounded-lg shadow">
+        <h3 class="text-lg font-medium text-gray-900">No hay registros disponibles</h3>
       </div>
-    </main>
+    <?php endif; ?>
+  </div>
+</main>
+
+
+
+
+
+
+
+
 
     <footer class="flex justify-between items-center w-full px-8 py-4 mt-[20%]">
         <p class="demin">Todos Los derechos reservados 2024</p>

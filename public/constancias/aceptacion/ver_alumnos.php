@@ -43,34 +43,37 @@ include '../../contador_sesion.php';
         ?>
 
 <main class=" flex justify-center items-center xl:px-56 mt-8">
-    <form method="post" class="w-80 rounded-xl p-4 py-8 shadow-lg bg-gray-100" >
-                <div class="mb-2">
-                      <label>Grado</label>
-                  <select class="form-control form-control w-full mt-2 rounded-lg" name="grado">
-                      <option value=1>1</option>
-                      <option value=2>2</option>
-                      <option value=3>3</option>
-                      <option value=4>4</option>
-                      <option value=5>5</option>
-                      <option value=6>6</option>
-                  </select>
+    <form method="post" class="w-80 rounded-xl p-4 py-8 shadow-lg bg-white" >
+                <div class="mb-4">
+                    <label for="grado" class="block text-gray-700 text-sm font-bold mb-2">Grado:</label>
+                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="grado" name="grado">
+                        <option value=1>1</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                        <option value=4>4</option>
+                        <option value=5>5</option>
+                        <option value=5>6</option>
+                    </select>
                 </div>
-                <div class="mb-2">
-                      <label>Seccion</label>
-                  <select class="form-control form-control w-full mt-2 rounded-lg" name="seccion">
-                      <option value="A">A</option>
-                      <option value="B">B</option>
-                  </select>
-                </div>
-                <div class="container-error container-sm text-danger mb-3"></div>
-                <div class="mb-2">
-                    <button type="submit" name="submit" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 ghost bg-blue-500 shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Finalizar</button>
-                </div>
-                <div class="btn-back">
-                    <button type="button" onclick="regresarPaginaAnterior()" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 ghost bg-blue-500 shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Regresar a la página anterior</button>
+                <div class="mb-4">
+                    <label for="seccion" class="block text-gray-700 text-sm font-bold mb-2">Sección:</label>
+                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="seccion" name="seccion">
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                    </select>
                 </div>
 
-                </form>
+                                    <!-- Botones -->
+    <div class="flex flex-col sm:flex-row gap-3 mt-4">
+        <button type="submit" name="submit"
+                class="w-full px-4 py-3 rounded-md bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition-colors duration-300">
+            Agregar
+        </button>
+        <a href="http://localhost/dashboard/Proyecto/public/constancias.php" class="w-full text-center px-4 py-3 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 shadow-sm border border-gray-300 transition-colors duration-300">
+           volver
+        </a>
+    </div>
+            </form>
 
         </main>
             

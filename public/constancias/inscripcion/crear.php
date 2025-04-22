@@ -55,7 +55,26 @@ if (!isset($usuario)) {
       ?>
 
 <main class="mb-8 xl:px-56 mt-8">
+
+
+<?php
+      
+      echo '<a href="http://localhost/dashboard/Proyecto/public/constancias/inscripcion/ver_alumnos.php" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Volver
+          </a>'
+      
+      ?>
+
   <div class="overflow-x-auto shadow-lg sm:rounded-lg m-10 xl:m-4 bg-white dark:bg-gray-900">
+
+
+  <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-xl font-semibold text-gray-800">Estudiantes</h3>
+      </div>
+
     <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
       <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-800 dark:text-gray-200">
         <tr>
