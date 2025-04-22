@@ -9,7 +9,7 @@ if (!isset($_SESSION['nombre_usuario']) || empty($_SESSION['nombre_usuario'])) {
     exit();
 }
 
-$usuario = $_SESSION['nombre_usuario'];
+$usuario = $_SESSION['nombre_usuario']; 
 
 // Incluir archivos necesarios
 require_once '../connect.php';
