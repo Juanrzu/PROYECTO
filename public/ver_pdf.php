@@ -1,15 +1,15 @@
 <?php
   session_start();
+  error_reporting(0);
+  ob_start();
 
   $usuario = $_SESSION['nombre_usuario'];
-
   if (!isset($usuario)) {
     header("location: login/login.php");
   } else{
     include('connect.php');
-    include 'contador_sesion.php';
   }
-
+  
 ?>
 
 
@@ -64,7 +64,7 @@
                                 WHERE seccion.nombre = ? AND grados.nombre = ?";
                         
                         $stmt = $connect->prepare($sql);
-                        $stmt->bind_param("ss", $seccion, $grado);
+                        $stmt->bind_param("si", $seccion, $grado);
                         $stmt->execute();
                         $result = $stmt->get_result();
                         
@@ -122,7 +122,7 @@
                                 WHERE seccion.nombre = ? AND grados.nombre = ?";
                         
                         $stmt = $connect->prepare($sql);
-                        $stmt->bind_param("ss", $seccion, $grado);
+                        $stmt->bind_param("si", $seccion, $grado);
                         $stmt->execute();
                         $result = $stmt->get_result();
                         
@@ -160,3 +160,20 @@
     </footer>
 </body>
 </html>
+<?php
+$html = ob_get_clean();
+
+// Generar PDF usando Dompdf
+require_once 'D:\Programas\Xammp\htdocs\dashboard\proyecto\pdf\dompdf\autoload.inc.php';
+use Dompdf\Dompdf;
+
+$dompdf = new Dompdf();
+$options = $dompdf->getOptions();
+$options->set(array('isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true));
+$dompdf->setOptions($options);
+
+$dompdf->loadHtml($html);
+$dompdf->setPaper('letter', 'portrait');
+$dompdf->render();
+$dompdf->stream("Constancia_Aceptacion.pdf", array("Attachment" => false));
+?>
