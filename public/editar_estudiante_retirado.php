@@ -377,7 +377,7 @@ if (isset($_POST['submit'])) {
     $correo = trim($_POST['correo']);
     $grado = trim($_POST['grado']);
     $seccion = strtoupper(trim($_POST['seccion']));
-
+    $errores = [];
     // Configuración de límites y expresiones regulares
     $LIMITES = [
         'nombre' => ['min' => 2, 'max' => 25],
@@ -395,6 +395,131 @@ if (isset($_POST['submit'])) {
         'soloNumeros' => '/^\d+$/',
         'email' => '/^[^\s@]+@[^\s@]+\.[^\s@]+$/'
     ];
+     // Validaciones específicas
+ if ($cen === $cedula) {
+    $errores[] = "La cédula del estudiante no puede ser igual a la del representante.";
+}
+
+// Verificar si el C.E.N ya está registrado
+$sql = "SELECT * FROM estudiantes WHERE cen = ? AND id !=? ";
+$stmt = $connect->prepare($sql);
+$stmt->bind_param("si", $cen,$id);
+$stmt->execute();
+if ($stmt->get_result()->num_rows > 0) {
+    $errores[] = "Ya existe un estudiante registrado con este C.E.N.";
+}
+// Verificar si el C.E.N ya está registrado con un profesor
+$sql = "SELECT 1 FROM profesor WHERE cedula = ?";
+$stmt = $connect->prepare($sql);
+$stmt->bind_param("s", $cen);
+$stmt->execute();
+if ($stmt->get_result()->num_rows > 0) {
+    $errores[] = "Ya existe un profesor registrado con este C.E.N.";
+}
+
+
+
+ // Verificar si la nueva cédula ya existe en otro profesor
+    $sql_verificar_profesor = "SELECT * FROM representante WHERE cedula = ? AND id != ?";
+    $stmt_verificar = $connect->prepare($sql_verificar_profesor);
+    $stmt_verificar->bind_param("si", $cedula, $idrepre);
+    $stmt_verificar->execute();
+
+    if ( $stmt_verificar->get_result()->num_rows > 0) {
+        $errores[] = "La cédula ingresada ya está registrada en otro representante.";
+    }
+    // Verificar si la nueva cédula ya existe en un estudiante
+    $sql_verificar_profesor = "SELECT * FROM estudiantes WHERE cen = ?";
+    $stmt_verificar = $connect->prepare($sql_verificar_profesor);
+    $stmt_verificar->bind_param("s", $cedula);
+    $stmt_verificar->execute();
+
+    if ( $stmt_verificar->get_result()->num_rows > 0) {
+        $errores[] = "La cédula del representante ya está registrada en un estudiante.";
+    }
+    // Validar si el teléfono o correo ya están registrados con otro representante
+    $sql = "SELECT 1 FROM representante WHERE telefono = ? AND id != ?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("si", $telefono, $idrepre);
+    $stmt->execute();
+    if ($stmt->get_result()->num_rows > 0) {
+        $errores[] = "El teléfono ya está registrado con otro representante.";
+    }
+
+    $sql = "SELECT 1 FROM representante WHERE correo = ? AND id != ?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("si", $correo, $idrepre);
+    $stmt->execute();
+    if ($stmt->get_result()->num_rows > 0) {
+        $errores[] = "El correo ya está registrado con otro representante.";
+    }
+
+
+
+// Validaciones adicionales de teléfono y cédula
+if (!is_numeric($telefono)) {
+    $errores[] = "El teléfono debe ser ingresado solo con números.";
+} elseif (strlen($telefono) > 12) {
+    $errores[] = "El número de teléfono es muy largo.";
+} elseif (strlen($telefono) < 10) {
+    $errores[] = "El número de teléfono es muy corto.";
+}
+
+if (!is_numeric($cedula)) {
+    $errores[] = "La cédula del representante debe ser ingresada solo con números.";
+}
+
+// Filtrar errores vacíos
+$errores = array_filter($errores);
+
+// Mostrar errores si existen
+if (!empty($errores)) {
+    foreach ($errores as $error) {
+        echo "<script>
+            const notificacion = document.createElement('div');
+            notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+            notificacion.innerHTML = `<span>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</span>`;
+            document.body.appendChild(notificacion);
+            setTimeout(() => notificacion.remove(), 4000);
+        </script>";
+    }
+    exit();
+}
+    $errores = [];
+   
+
+    // Validaciones
+    if (empty($nombre) || strlen($nombre) < 2 || strlen($nombre) > 30) {
+        $errores[] = "El nombre debe tener entre 2 y 30 caracteres.";
+    }
+
+    if (empty($apellido) || strlen($apellido) < 2 || strlen($apellido) > 30) {
+        $errores[] = "El apellido debe tener entre 2 y 30 caracteres.";
+    }
+
+    if (empty($cen) || !is_numeric($cen)) {
+        $errores[] = "El C.E.N debe ser un número válido.";
+    }
+
+    if (!empty($errores)) {
+        foreach ($errores as $error) {
+            echo "<script>
+                const notificacion = document.createElement('div');
+                notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+                notificacion.innerHTML = `
+                  <div class='flex-shrink-0 mr-3 text-red-700'>
+                    <svg fill='#f00505' width='24px' height='24px' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'>
+                      <path d='M0 16q0 3.264 1.28 6.208t3.392 5.12 5.12 3.424 6.208 1.248 6.208-1.248 5.12-3.424 3.392-5.12 1.28-6.208-1.28-6.208-3.392-5.12-5.088-3.392-6.24-1.28q-3.264 0-6.208 1.28t-5.12 3.392-3.392 5.12-1.28 6.208zM4 16q0-3.264 1.6-6.016t4.384-4.352 6.016-1.632 6.016 1.632 4.384 4.352 1.6 6.016-1.6 6.048-4.384 4.352-6.016 1.6-6.016-1.6-4.384-4.352-1.6-6.048zM9.76 20.256q0 0.832 0.576 1.408t1.44 0.608 1.408-0.608l2.816-2.816 2.816 2.816q0.576 0.608 1.408 0.608t1.44-0.608 0.576-1.408-0.576-1.408l-2.848-2.848 2.848-2.816q0.576-0.576 0.576-1.408t-0.576-1.408-1.44-0.608-1.408 0.608l-2.816 2.816-2.816-2.816q-0.576-0.608-1.408-0.608t-1.44 0.608-0.576 1.408 0.576 1.408l2.848 2.816-2.848 2.848q-0.576 0.576-0.576 1.408z'></path>
+                    </svg>
+                  </div>
+                  <div class='text-sm'>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</div>
+                `;
+                document.body.appendChild(notificacion);
+                setTimeout(() => notificacion.remove(), 4000);
+                </script>";
+        }
+        exit();
+    }
 
     $errores = [];
 
@@ -478,7 +603,7 @@ if (isset($_POST['submit'])) {
     if ($representante_apellido_anterior != $representante_apellido) {
         $cambios[] = "Apellido del representante anterior = $representante_apellido_anterior, Apellido del representante actualizado = $representante_apellido";
     }
-    if ($cedularepre_anterior != $cedularepre) {
+    if ($cedularepre_anterior != $cedula) {
         $cambios[] = "Cédula de representante anterior = $cedularepre_anterior, Cédula representante actualizado = $cedularepre";
     }
     if ($codigo_anterior != $codigo) {

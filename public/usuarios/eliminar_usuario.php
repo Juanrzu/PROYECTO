@@ -1,4 +1,6 @@
 <?php
+ob_start();
+
 include './../connect.php';
 session_start();
     if (isset($_GET['eliminarid'])) {
@@ -7,7 +9,7 @@ session_start();
     $id = $_GET['eliminarid'];
     $usuarioSeccion = $_SESSION['nombre_usuario'];
 
-    // Obtener información del estudiante y su representante
+   
     $sql = "SELECT * FROM usuario WHERE nombre_usuario = ?";
     $stmt = mysqli_prepare($connect, $sql);
     mysqli_stmt_bind_param($stmt, "s", $usuarioSeccion);
@@ -62,10 +64,11 @@ session_start();
     
         header("location: usuarios.php");
     }else {
-    echo '<script>
-    alert ("Datos incorrectos")
-    </script>;';
-    header("location: usuarios.php");
+        
+            $_SESSION['error'] = "Datos incorrectos";
+            header("Location: usuarios.php");
+            exit();
+  
 }
     }
       

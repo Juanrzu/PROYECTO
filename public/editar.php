@@ -51,6 +51,8 @@ if ($row = $result->fetch_assoc()) {
     $correo = $row['representante_correo'];
     $grado = $row['grado_nombre'];
     $seccion = $row['seccion_nombre'];
+    $volver = $grado;
+    $volver2 = $seccion;
 
 
 
@@ -370,7 +372,112 @@ if (isset($_POST['submit'])) {
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
     $idseccion = $row['id'];  
+    $errores = [];
+ // Validaciones específicas
+ if ($cen === $cedularepre) {
+    $errores[] = "La cédula del estudiante no puede ser igual a la del representante.";
+}
 
+// Verificar si el C.E.N ya está registrado
+$sql = "SELECT * FROM estudiantes WHERE cen = ? AND id !=? ";
+$stmt = $connect->prepare($sql);
+$stmt->bind_param("si", $cen,$id);
+$stmt->execute();
+if ($stmt->get_result()->num_rows > 0) {
+    $errores[] = "Ya existe un estudiante registrado con este C.E.N.";
+}
+// Verificar si el C.E.N ya está registrado con un profesor
+$sql = "SELECT 1 FROM profesor WHERE cedula = ?";
+$stmt = $connect->prepare($sql);
+$stmt->bind_param("s", $cen);
+$stmt->execute();
+if ($stmt->get_result()->num_rows > 0) {
+    $errores[] = "Ya existe un profesor registrado con este C.E.N.";
+}
+
+
+/* cambiar representante
+$sql_cambiar_repre = "SELECT * FROM representante WHERE cedula = ? AND telefono = ?";
+$stmt_cambiar = $connect->prepare($sql_cambiar_repre);
+$stmt_cambiar->bind_param("ss", $cedula,$telefono);
+$stmt_cambiar->execute();
+
+if ( $stmt_cambiar->get_result()->num_rows > 0) {
+    $idrepre = $row['id']; 
+    $representante = $row['id']; 
+    $representante_apellido = $row['id']; 
+    $cedula = $row['id']; 
+    $telefono = $row['id']; 
+    $telefono = $row['id']; 
+}else{/*/
+
+
+ // Verificar si la nueva cédula ya existe en otro profesor
+    $sql_verificar_profesor = "SELECT * FROM representante WHERE cedula = ? AND id != ?";
+    $stmt_verificar = $connect->prepare($sql_verificar_profesor);
+    $stmt_verificar->bind_param("si", $cedularepre, $idrepre);
+    $stmt_verificar->execute();
+
+    if ( $stmt_verificar->get_result()->num_rows > 0) {
+        $errores[] = "La cédula ingresada ya está registrada en otro representante.";
+    }
+    // Verificar si la nueva cédula ya existe en un estudiante
+    $sql_verificar_profesor = "SELECT * FROM estudiantes WHERE cen = ?";
+    $stmt_verificar = $connect->prepare($sql_verificar_profesor);
+    $stmt_verificar->bind_param("s", $cedularepre);
+    $stmt_verificar->execute();
+
+    if ( $stmt_verificar->get_result()->num_rows > 0) {
+        $errores[] = "La cédula del representante ya está registrada en un estudiante.";
+    }
+    // Validar si el teléfono o correo ya están registrados con otro representante
+    $sql = "SELECT 1 FROM representante WHERE telefono = ? AND id != ?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("si", $telefono, $idrepre);
+    $stmt->execute();
+    if ($stmt->get_result()->num_rows > 0) {
+        $errores[] = "El teléfono ya está registrado con otro representante.";
+    }
+
+    $sql = "SELECT 1 FROM representante WHERE correo = ? AND id != ?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("si", $correo, $idrepre);
+    $stmt->execute();
+    if ($stmt->get_result()->num_rows > 0) {
+        $errores[] = "El correo ya está registrado con otro representante.";
+    }
+
+
+
+// Validaciones adicionales de teléfono y cédula
+if (!is_numeric($telefono)) {
+    $errores[] = "El teléfono debe ser ingresado solo con números.";
+} elseif (strlen($telefono) > 12) {
+    $errores[] = "El número de teléfono es muy largo.";
+} elseif (strlen($telefono) < 10) {
+    $errores[] = "El número de teléfono es muy corto.";
+}
+
+if (!is_numeric($cedularepre)) {
+    $errores[] = "La cédula del representante debe ser ingresada solo con números.";
+}
+
+// Filtrar errores vacíos
+$errores = array_filter($errores);
+
+// Mostrar errores si existen
+if (!empty($errores)) {
+    foreach ($errores as $error) {
+        echo "<script>
+            const notificacion = document.createElement('div');
+            notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+            notificacion.innerHTML = `<span>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</span>`;
+            document.body.appendChild(notificacion);
+            setTimeout(() => notificacion.remove(), 4000);
+        </script>";
+    }
+    exit();
+}
     $errores = [];
    
 
@@ -417,8 +524,8 @@ if (isset($_POST['submit'])) {
         $cambios[] = "Nombre anterior = $nombre_anterior, Nombre actualizado = $nombre";
     }
     
-    if ($cedula_anterior != $cedula) {
-        $cambios[] = "Cedula anterior = $cedula_anterior, Cedula actualizado = $cedula";
+    if ($cedula_anterior != $cedularepre) {
+        $cambios[] = "Cedula anterior = $cedula_anterior, Cedula actualizado = $cedularepre";
     }   
     
     if ($representante_anterior != $representante) {
@@ -518,27 +625,20 @@ $stmt_representante->bind_param(
         echo "<script>
             const notificacion = document.createElement('div');
             notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-green-100 text-green-700 border flex items-center';
-            notificacion.innerHTML = `
-              <div class='flex-shrink-0 mr-3 text-green-700'>
-                <svg fill='#4BB543' width='24px' height='24px' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
-                  <path d='M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm4.71,7.71-5,5a1,1,0,0,1-1.42,0l-3-3a1,1,0,0,1,1.42-1.42L11,12.59l4.29-4.3a1,1,0,0,1,1.42,1.42Z'/>
-                </svg>
-              </div>
-              <div class='text-sm'>Estudiante actualizado correctamente.</div>
-            `;
+            notificacion.innerHTML = `<div class='text-sm'>Profesor actualizado correctamente.</div>`;
             document.body.appendChild(notificacion);
-
-            window.history.go(-2);
-            </script>";
+            setTimeout(() => notificacion.remove(), 4000);
+            window.location='ver_grado.php?gradonombre=$volver&seccion=$volver2';
+        </script>";
     } else {
         echo "<script>
             const notificacion = document.createElement('div');
             notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
-            notificacion.innerHTML = `<span>Error al actualizar el estudiante.</span>`;
+            notificacion.innerHTML = `<div class='text-sm'>Error al actualizar el profesor.</div>`;
             document.body.appendChild(notificacion);
             setTimeout(() => notificacion.remove(), 4000);
-            </script>";
+        </script>";
     }
-}
 
+}
 ?>

@@ -5,8 +5,13 @@ session_start();
 $usuario = $_SESSION['nombre_usuario'];
 
 
-if (isset($_GET['eliminarid'])) {
+if(isset($_POST['registrar'])) { // El botón de submit se llama 'registrar'
     $id = $_GET['eliminarid'];
+
+    // Obtener grado y sección enviados desde el modal
+    $grado = $_POST['grado'];
+    $seccion = $_POST['seccion'];
+    
     
     // Obtener información del estudiante y su representante
     $sql = "SELECT * FROM retiro_estudiantes WHERE id = ?";
@@ -28,8 +33,6 @@ if (isset($_GET['eliminarid'])) {
         $cedularepre=$row['cedula_repre'];
         $telefono=$row['telefono'];
         $correo=$row['correo'];
-        $grado=$row['grado'];
-        $seccion=$row['seccion'];
 
         // Obtener el ID del grado y seccion
             $queryGrado = "SELECT id FROM grados WHERE nombre = ?";
