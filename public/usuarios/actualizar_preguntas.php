@@ -5,14 +5,14 @@ error_reporting(0);
 
 // Verificar si el usuario está autenticado
 if (!isset($_SESSION['nombre_usuario']) || empty($_SESSION['nombre_usuario'])) {
-    header('Location: ./../login/login.php');
+    header('Location: ../login/login.php');
     exit();
 }
 
 $usuario = $_SESSION['nombre_usuario'];
 
 // Incluir archivos necesarios
-require_once './../connect.php';
+require_once '../connect.php';
 require_once '../contador_sesion.php';
 ?>
 
@@ -58,12 +58,12 @@ require_once '../contador_sesion.php';
 
         <div class="mb-6">
             <label for="p1" class="block text-sm font-medium text-gray-700">Pregunta de seguridad 1</label>
-            <input type="text" maxlength="50" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="pregunta1" id="p1" placeholder="¿Cuál es el nombre de su madre o padre?">
+            <input type="text" maxlength="50" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="p1" id="p1" placeholder="¿Cuál es el nombre de su madre o padre?">
         </div>
 
         <div class="mb-6">
             <label for="p2" class="block text-sm font-medium text-gray-700">Pregunta de seguridad 2</label>
-            <input type="text" maxlength="50" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="pregunta2" id="p2" placeholder="¿Cuál es su animal favorito?">
+            <input type="text" maxlength="50" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="p2" id="p2" placeholder="¿Cuál es su animal favorito?">
         </div>
 
         <div class="mb-6">
@@ -101,7 +101,7 @@ require_once '../contador_sesion.php';
                     </div>
                     <!-- Modal footer -->
                     <div class="flex items-center p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                    <button data-modal-hide="default-modal" type="submit" name="registrar" class="px-5 py-2 text-sm text-white bg-blue-700 rounded-lg focus:ring-4 focus:outline-none hover:bg-blue-800 focus:ring-blue-300">SI</button>
+                    <button data-modal-hide="default-modal" type="submit" name="submit" class="px-5 py-2 text-sm text-white bg-blue-700 rounded-lg focus:ring-4 focus:outline-none hover:bg-blue-800 focus:ring-blue-300">SI</button>
                     <button data-modal-hide="default-modal" type="button" class="px-5 py-2 ms-3 text-sm text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700">No</button>
                     </div>
                 </div>
