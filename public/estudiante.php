@@ -22,7 +22,7 @@ if (!isset($usuario)) {
     <title>estudiantes</title>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 ml-64">
   <div class="container-lg w-full flex flex-col px-8 py-4">
 
     <!-- Loading Spinner -->
@@ -114,16 +114,8 @@ if (!isset($usuario)) {
          <div class="sm:col-span-2">
         <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
         <div class="flex items-center gap-3">
-          <select class="px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="codigo" id="codigo" >
-            <option value="0268">0268</option>
-            <option value="0414">0414</option>
-            <option value="0424">0424</option>
-            <option value="0416">0416</option>
-            <option value="0426">0426</option>
-            <option value="0412">0412</option>
-          </select>
           <input type="text" class="flex-1 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
-               placeholder="Teléfono" name="telefono" autocomplete="off" maxlength="7" id="telefono" >
+               placeholder="Teléfono" name="telefono" autocomplete="off" maxlength="9" id="telefono" >
         </div>
         </div> 
 
@@ -242,7 +234,7 @@ const LIMITES = {
     representante: { min: 2, max: 25 },
     representanteApellido: { min: 2, max: 25 },
     cedula: { min: 7, max: 8 },
-    telefono: { min: 6, max: 7 },
+    telefono: { min: 5, max: 9 },
     correo: { min: 5, max: 50 }
 };
 
@@ -359,7 +351,7 @@ if (isset($_POST['submit'])) {
         'representante' => ['min' => 2, 'max' => 25],
         'representante_apellido' => ['min' => 2, 'max' => 25],
         'cedularepre' => ['min' => 6, 'max' => 12],
-        'codigo' => ['min' => 10, 'max' => 12],
+        'telefono' => ['min' => 10, 'max' => 12],
         'correo' => ['min' => 5, 'max' => 50],
     ];
 

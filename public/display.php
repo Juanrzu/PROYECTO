@@ -22,7 +22,7 @@ include 'contador_sesion.php';
   <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
 </head>
 
-<body>
+<body class="ml-64">
 
 
   <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 z-50">
@@ -50,7 +50,7 @@ include 'contador_sesion.php';
     }
     ?>
 
-<main class="container w-full px-28 my-8">
+<main class="container min-h-screen p-8 ">
   <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
     <h2 class="text-2xl font-bold text-gray-800">Gestión de Estudiantes</h2>
   </div>

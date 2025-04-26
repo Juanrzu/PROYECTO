@@ -72,7 +72,7 @@
     <title>Editar Estudiante Retirado</title>
 </head>
 
-<body class="bg-ghost">
+<body class="bg-ghost ml-64">
     <div class="container-lg w-full flex flex-col">
 
         <!-- Loading Spinner -->

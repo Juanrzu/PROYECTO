@@ -83,7 +83,7 @@ $stmt->close();
     <title>Editar Estudiante</title>
 </head>
 
-<body class="bg-ghost">
+<body class="bg-ghost ml-64">
 <div class="container-lg w-full flex flex-col">
 
 <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700">

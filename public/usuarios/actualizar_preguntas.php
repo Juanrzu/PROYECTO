@@ -27,7 +27,7 @@ require_once '../contador_sesion.php';
 
 </head>
 
-<body class="bg-ghost">
+<body class="bg-ghost ml-64">
 
 
         <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 z-50">

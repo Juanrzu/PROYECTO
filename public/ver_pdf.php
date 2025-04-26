@@ -36,7 +36,7 @@
         padding: 20px 0;
         text-align: center;
         border-bottom: 3px solid #e74c3c;
-        margin-bottom: 30px;
+        margin-bottom: 10px;
     }
 
     .header img {

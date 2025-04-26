@@ -25,7 +25,7 @@ require_once '../contador_sesion.php';
     <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
 </head>
 
-<body class="bg-ghost">
+<body class="bg-ghost ml-64">
 
     <div class="container-lg w-full h-full">
 

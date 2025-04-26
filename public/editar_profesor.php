@@ -62,7 +62,7 @@ if ($row = $result->fetch_assoc()) {
     <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
 </head>
 
-<body class="bg-ghost">
+<body class="bg-ghost ml-64">
     <div class="container-lg w-full flex flex-col">
         <main class="w-full flex justify-center items-center xl:px-56 mt-8">
             <form method="post" id="formulario" class="w-full max-w-screen-sm rounded-md border border-gray-300 p-6 shadow-sm bg-white">

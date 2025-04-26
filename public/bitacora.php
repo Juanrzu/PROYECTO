@@ -21,7 +21,7 @@ include 'contador_sesion.php';
   <title>Bitacora</title>
 </head>
 
-<body class="bg-ghost">
+<body class="bg-ghost ml-64">
   <div class="container-lg w-full flex flex-col">
     <!-- Pantalla de carga -->
     <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 z-50">

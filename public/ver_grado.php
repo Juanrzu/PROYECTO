@@ -20,7 +20,7 @@ include 'contador_sesion.php';
   <title>Estudiantes</title>
 </head>
 
-<body class="bg-gray-50">
+<body class="bg-gray-50 ml-64">
   <div class="min-h-screen flex flex-col">
 
   <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700">

@@ -22,7 +22,7 @@ include 'contador_sesion.php';
     <title>Inicio</title>
 
   </head>
-  <body class="bg-ghost flex flex-col min-h-full">
+  <body class="bg-ghost flex flex-col min-h-full ml-64">
     <!-- Loading Overlay mejorado -->
     <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 z-50">
       <div role="status">

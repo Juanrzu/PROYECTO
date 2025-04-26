@@ -26,7 +26,7 @@ include 'contador_sesion.php';
   <link rel="icon" href="/dashboard/Proyecto/src/img/favicon.ico" type="image/x-icon">
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 ml-64">
 <div class="container-lg w-full flex flex-col">
     <!-- Pantalla de carga -->
   <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 z-50">

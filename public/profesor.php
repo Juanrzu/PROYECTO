@@ -24,7 +24,7 @@
 
 </head>
 
-<body class="bg-ghost">
+<body class="bg-ghost ml-64">
   <div class="container-lg w-full flex flex-col">
 
     <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700">
@@ -80,15 +80,6 @@
         <!-- Teléfono -->
         <div class="sm:col-span-2">
         <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
-        <div class="flex items-center gap-3">
-          <select class="px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="codigo" id="codigo" >
-            <option value="0268">0268</option>
-            <option value="0414">0414</option>
-            <option value="0424">0424</option>
-            <option value="0416">0416</option>
-            <option value="0426">0426</option>
-            <option value="0412">0412</option>
-          </select>
           <input type="text" class="flex-1 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
                placeholder="Teléfono" name="telefono" autocomplete="off" maxlength="7" id="telefono" >
         </div>
@@ -451,7 +442,7 @@ if (isset($_POST['submit'])) {
 
   $sqlInsert = "INSERT INTO profesor (nombre, apellido, cedula, telefono, idgrado, idseccion) VALUES (?, ?, ?, ?, ?, ?)";
   $stmt = $connect->prepare($sqlInsert);
-  $stmt->bind_param("ssssii", $nombre, $apellido, $cedula, $idgrado, $idseccion);
+  $stmt->bind_param("ssssii", $nombre, $apellido, $cedula,$codigo ,$idgrado, $idseccion);
   $result = $stmt->execute();
 
   if ($result) {
