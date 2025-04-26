@@ -179,12 +179,95 @@ include 'contador_sesion.php';
       </div>
       </div>
 
+
+
+      <?php
+      
+      
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$perPage = 10; // Número de registros por página
+$offset = ($page - 1) * $perPage;
+
+
+    $sql = "SELECT SQL_CALC_FOUND_ROWS estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
+        representante.nombre as representante_nombre, representante.cedula as cedularepre, 
+        representante.telefono as telefono, representante.correo as correo
+        FROM estudiantes  
+        JOIN seccion ON estudiantes.idseccion = seccion.id 
+        JOIN grados ON estudiantes.idgrado = grados.id
+        JOIN representante ON estudiantes.idrepresentante = representante.id
+        WHERE (estudiantes.nombre LIKE ? 
+            OR estudiantes.apellido LIKE ? 
+            OR estudiantes.cen LIKE ? 
+            OR representante.cedula LIKE ? 
+            OR representante.telefono LIKE ? 
+            OR representante.correo LIKE ?)
+        AND seccion.nombre = ?
+        AND grados.nombre = ?
+        ORDER BY estudiantes.nombre ASC
+        LIMIT ? OFFSET ?";
+    
+    $stmt = $connect->prepare($sql);
+    $searchTerm = "%$search%";
+    $secc = strtoupper(trim($seccion));
+    $stmt->bind_param("sssssssiii", 
+        $searchTerm, 
+        $searchTerm, 
+        $searchTerm, 
+        $searchTerm, 
+        $searchTerm, 
+        $searchTerm,
+        $secc,
+        $grado,
+        $perPage, 
+        $offset
+    );
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    // Obtener total de registros
+    $totalResult = $connect->query("SELECT FOUND_ROWS()");
+    $totalRows = $totalResult->fetch_row()[0];
+    $totalPages = ceil($totalRows / $perPage);
+    
+      
+      ?>
+
+
+
+<!-- Buscador -->
+<div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <form method="GET" action="">
+            <input type="hidden" name="gradonombre" value="<?= htmlspecialchars($grado) ?>">
+            <input type="hidden" name="seccion" value="<?= htmlspecialchars($seccion) ?>">
+            <div class="flex items-center gap-4">
+                <h3 class="text-xl font-semibold text-gray-800 flex-grow">Gestión de Usuarios</h3>
+                <input 
+                    type="text" 
+                    name="search" 
+                    placeholder="Buscar usuarios..."
+                    value="<?= htmlspecialchars($search) ?>"
+                    class="w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                >
+                <button 
+                    type="submit"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                    Buscar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
       <!-- Tabla de Estudiantes con scroll responsivo -->
       <div class="bg-white rounded-xl shadow-md overflow-hidden">
       <div class="px-6 py-4 border-b border-gray-200">
         <h3 class="text-xl font-semibold text-gray-800">Estudiantes</h3>
       </div>
-      <div class="overflow-auto max-h-96">
+      <div class="overflow-auto h-full">
         <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
@@ -204,21 +287,6 @@ include 'contador_sesion.php';
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
     <?php
-    $sql = "SELECT estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
-            representante.nombre as representante_nombre, representante.cedula as cedularepre, 
-            representante.telefono as telefono, representante.correo as correo
-            FROM estudiantes  
-            JOIN seccion ON estudiantes.idseccion = seccion.id 
-            JOIN grados ON estudiantes.idgrado = grados.id
-            JOIN representante ON estudiantes.idrepresentante = representante.id
-            WHERE seccion.nombre = ? AND grados.nombre = ?
-            ORDER BY estudiantes.nombre ASC";
-    
-    $stmt = $connect->prepare($sql);
-    $stmt->bind_param("si", $secc, $grado);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             // Formatear fechas para mejor visualización
@@ -460,7 +528,48 @@ include 'contador_sesion.php';
     ?>
 </tbody>        
 </table>
-      </div>
+
+    <!-- Paginación -->
+    <div class="px-6 py-4 border-t border-gray-200">
+        <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-700">
+                Mostrando <?= ($offset + 1) ?> a <?= min($offset + $perPage, $totalRows) ?> de <?= $totalRows ?> resultados
+            </span>
+            <div class="flex gap-1">
+                <?php if($page > 1): ?>
+                    <a 
+                        href="?page=<?= $page - 1 ?>&search=<?= urlencode($search) ?>" 
+                        class="px-3 py-1 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                        Anterior
+                    </a>
+                <?php endif; ?>
+
+                <?php for($i = 1; $i <= $totalPages; $i++): ?>
+                    <a 
+                        href="?page=<?= $i ?>&search=<?= urlencode($search) ?>" 
+                        class="px-3 py-1 rounded-md <?= $i == $page ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' ?>"
+                    >
+                        <?= $i ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php if($page < $totalPages): ?>
+                    <a 
+                        href="?page=<?= $page + 1 ?>&search=<?= urlencode($search) ?>" 
+                        class="px-3 py-1 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                        Siguiente
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+$stmt->close();
+?>
       </div>
 
 
