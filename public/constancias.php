@@ -46,40 +46,109 @@ include 'contador_sesion.php';
     ?>
 
     <!-- Contenido Principal -->
-    <main class="flex-grow container mx-auto px-4 py-8">
-        <h1 class="sr-only">Panel de inicio</h1>
-        
+    <main class="container min-h-screen p-8 ">
+
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <h2 class="text-2xl font-bold text-gray-800">Generacion de constancias</h2>
+    </div>
+
+
         <div class="max-w-7xl mx-auto">
-            <h2 class="text-2xl font-bold text-gray-800 mb-8 text-center">Generar Constancias</h2>
-            
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                <a href="/dashboard/Proyecto/public/constancias/estudio/estudio.php" class="group block rounded-lg bg-blue-500 p-6 text-center shadow-md hover:bg-blue-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
-                    <svg class="mx-auto h-10 w-10 text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                    </svg>
-                    <span class="text-lg font-semibold text-white">Constancia de estudio</span>
-                </a>
-                
-                <a href="/dashboard/Proyecto/public/constancias/trabajadores/crear.php" class="group block rounded-lg bg-blue-500 p-6 text-center shadow-md hover:bg-blue-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
-                    <svg class="mx-auto h-10 w-10 text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                    </svg>
-                    <span class="text-lg font-semibold text-white">Constancia de trabajo</span>
-                </a>
-                
-                <a href="/dashboard/Proyecto/public/constancias/inscripcion/ver_alumnos.php" class="group block rounded-lg bg-blue-500 p-6 text-center shadow-md hover:bg-blue-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
-                    <svg class="mx-auto h-10 w-10 text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    <span class="text-lg font-semibold text-white">Constancia de inscripción</span>
-                </a>
-                
-                <a href="/dashboard/Proyecto/public/constancias/aceptacion/ver_alumnos.php" class="group block rounded-lg bg-blue-500 p-6 text-center shadow-md hover:bg-blue-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
-                    <svg class="mx-auto h-10 w-10 text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                    </svg>
-                    <span class="text-lg font-semibold text-white">Constancia de aceptación</span>
-                </a>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                <!-- Constancia de estudio -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-2xl hover:-translate-y-1 border border-gray-200">
+                    <div class="h-48 overflow-hidden flex items-center justify-center bg-blue-50">
+                        <!-- SVG icon for estudio -->
+                        <svg class="w-24 h-24 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 48 48">
+                            <rect x="8" y="12" width="32" height="24" rx="3" fill="#e0e7ff" stroke="#2563eb"/>
+                            <path d="M16 20h16M16 26h16M16 32h8" stroke="#2563eb" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-lg font-semibold text-gray-800">Constancia de estudio</h3>
+                        </div>
+                        <a href="/dashboard/Proyecto/public/constancias/estudio/estudio.php"
+                           class="w-full inline-flex justify-center items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors duration-300">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                            Generar constancia
+                        </a>
+                        <p class="text-sm text-gray-500 mt-2">Genera constancias para estudiantes activos.</p>
+                    </div>
+                </div>
+                <!-- Constancia de trabajo -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-2xl hover:-translate-y-1 border border-gray-200">
+                    <div class="h-48 overflow-hidden flex items-center justify-center bg-green-50">
+                        <!-- SVG icon for trabajo -->
+                        <svg class="w-24 h-24 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 48 48">
+                            <rect x="10" y="14" width="28" height="20" rx="3" fill="#dcfce7" stroke="#22c55e"/>
+                            <path d="M24 14v-4M18 10h12" stroke="#22c55e" stroke-linecap="round"/>
+                            <circle cx="24" cy="24" r="4" fill="#22c55e"/>
+                        </svg>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-lg font-semibold text-gray-800">Constancia de trabajo</h3>
+                        </div>
+                        <a href="/dashboard/Proyecto/public/constancias/trabajadores/crear.php"
+                           class="w-full inline-flex justify-center items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition-colors duration-300">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                            Generar constancia
+                        </a>
+                        <p class="text-sm text-gray-500 mt-2">Emite constancias para trabajadores y personal.</p>
+                    </div>
+                </div>
+                <!-- Constancia de inscripción -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-2xl hover:-translate-y-1 border border-gray-200">
+                    <div class="h-48 overflow-hidden flex items-center justify-center bg-yellow-50">
+                        <!-- SVG icon for inscripción -->
+                        <svg class="w-24 h-24 text-yellow-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 48 48">
+                            <rect x="8" y="12" width="32" height="24" rx="3" fill="#fef9c3" stroke="#eab308"/>
+                            <path d="M16 20h16M16 26h10" stroke="#eab308" stroke-linecap="round"/>
+                            <circle cx="34" cy="30" r="3" fill="#eab308"/>
+                        </svg>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-lg font-semibold text-gray-800">Constancia de inscripción</h3>
+                        </div>
+                        <a href="/dashboard/Proyecto/public/constancias/inscripcion/ver_alumnos.php"
+                           class="w-full inline-flex justify-center items-center px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-md transition-colors duration-300">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            Ver alumnos
+                        </a>
+                        <p class="text-sm text-gray-500 mt-2">Descarga constancias de inscripción de alumnos.</p>
+                    </div>
+                </div>
+                <!-- Constancia de aceptación -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-2xl hover:-translate-y-1 border border-gray-200">
+                    <div class="h-48 overflow-hidden flex items-center justify-center bg-purple-50">
+                        <!-- SVG icon for aceptación -->
+                        <svg class="w-24 h-24 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 48 48">
+                            <rect x="8" y="12" width="32" height="24" rx="3" fill="#f3e8ff" stroke="#a21caf"/>
+                            <path d="M18 26l6 6 10-10" stroke="#a21caf" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-lg font-semibold text-gray-800">Constancia de aceptación</h3>
+                        </div>
+                        <a href="/dashboard/Proyecto/public/constancias/aceptacion/ver_alumnos.php"
+                           class="w-full inline-flex justify-center items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md transition-colors duration-300">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                            </svg>
+                            Ver alumnos
+                        </a>
+                        <p class="text-sm text-gray-500 mt-2">Obtén constancias de aceptación para alumnos.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </main>

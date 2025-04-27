@@ -94,15 +94,17 @@ include 'contador_sesion.php';
     
     foreach ($grados as $grado) {
       foreach ($secciones as $seccion) {
+        // Cambia el color según la sección
+        $seccionColor = ($seccion === 'B') ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800';
         echo '
-        <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200">
+        <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-2xl hover:-translate-y-1 border border-gray-200">
           <div class="h-48 overflow-hidden">
             <img class="w-full h-full object-cover object-right-top" src="http://localhost/dashboard/Proyecto/src/'.$grado[1].'" alt="'.$grado[0].'">
           </div>
           <div class="p-4">
             <div class="flex justify-between items-center mb-3">
               <h3 class="text-lg font-semibold text-gray-800">'.$grado[0].'</h3>
-              <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Sección '.$seccion.'</span>
+              <span class="'.$seccionColor.' text-xs font-medium px-2.5 py-0.5 rounded">Sección '.$seccion.'</span>
             </div>
             <a href="ver_grado.php?gradonombre='.explode(' ', $grado[0])[0].'&&seccion='.$seccion.'" 
                class="w-full inline-flex justify-center items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors duration-300">
@@ -121,7 +123,6 @@ include 'contador_sesion.php';
   }
   ?>
 </main>
-   
 
 
     <!-- Botón de Ayuda -->

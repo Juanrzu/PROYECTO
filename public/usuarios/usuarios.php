@@ -24,7 +24,7 @@ require_once '../contador_sesion.php';
     <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
 </head>
 
-    <body class="bg-gray-50 ml-64">
+    <body class="ml-64">
     <!-- Loading Screen -->
     <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 z-50">
       <div role="status">
@@ -50,7 +50,7 @@ require_once '../contador_sesion.php';
     }
     ?>
 
-    <main class="container h-screen mx-auto px-4 py-8">
+    <main class="container min-h-screen p-8 ">
         <!-- Botones de acción -->
         <div class="flex flex-wrap gap-4 mb-8">
             <a href="../login/registro.php" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
@@ -136,29 +136,23 @@ $totalPages = ceil($totalRows / $perPage);
 <div class="bg-white rounded-xl shadow-md overflow-hidden">
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
-            <!-- Encabezados de tabla (igual que antes) -->
             <thead class="bg-gray-50">
                 <tr>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apellido</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cédula</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Correo</th>
-                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apellido</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cédula</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Correo</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                 </tr>
             </thead>
-            
-            <!-- Cuerpo de la tabla -->
             <tbody class="bg-white divide-y divide-gray-200">
                 <?php
-                // Verifica si la consulta devolvió resultados
                 if ($result->num_rows > 0) {
-                    // Recorre cada fila de resultados
                     while ($row = $result->fetch_assoc()) {
-                        // Extrae los datos de cada columna de la fila actual
                         $id = $row['id'];
                         $usuario_row = $row['nombre_usuario'];
                         $estado = $row['estado'];
@@ -168,14 +162,12 @@ $totalPages = ceil($totalRows / $perPage);
                         $telefono = $row['telefono'];
                         $gmail = $row['correo'];
                 ?>
-                <!-- Imprime una fila de la tabla con los datos del usuario -->
                 <tr class="hover:bg-gray-50">
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $id; ?></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo $usuario_row; ?></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <!-- Muestra el estado con un color diferente según si es Activo o no -->
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo ($estado == 'Activo') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'; ?>">
-                        <?php echo $estado; ?>
+                            <?php echo $estado; ?>
                         </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo $nombre; ?></td>
@@ -183,52 +175,57 @@ $totalPages = ceil($totalRows / $perPage);
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo $cedula; ?></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo $telefono; ?></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo $gmail; ?></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex justify-center space-x-2">
-                        <!-- Botón para editar usuario -->
-                        <a href="editar_usuario.php?editarid=<?php echo $id; ?>" class="text-blue-600 hover:text-blue-900 p-2 rounded-full hover:bg-blue-50 transition-colors duration-200">
-                            <!-- Icono SVG de editar -->
-                        </a>
-                        <?php if ($usuario_row != 'admin' && $usuario_row != 'Admin') { ?>
-                        <!-- Botón para eliminar usuario (no se muestra para el usuario admin) -->
-                        <button data-modal-target="modal-eliminar-<?php echo $id; ?>" data-modal-toggle="modal-eliminar-<?php echo $id; ?>" class="text-red-600 hover:text-red-900 p-2 rounded-full hover:bg-red-50 transition-colors duration-200">
-                            <!-- Icono SVG de eliminar -->
-                        </button>
-                        <?php } ?>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div class="flex justify-center space-x-2">
+                            <!-- Botón para editar usuario -->
+                            <a href="editar_usuario.php?editarid=<?php echo $id; ?>" class="text-blue-600 hover:text-blue-900 p-2 rounded-full hover:bg-blue-50 transition-colors duration-200" title="Editar">
+                                <!-- Icono SVG de editar -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                            </svg>
+                            </a>
+                            <?php if ($usuario_row != 'admin' && $usuario_row != 'Admin') { ?>
+                            <!-- Botón para eliminar usuario -->
+                            <button data-modal-target="modal-eliminar-<?php echo $id; ?>" data-modal-toggle="modal-eliminar-<?php echo $id; ?>" class="text-red-600 hover:text-red-900 p-2 rounded-full hover:bg-red-50 transition-colors duration-200" title="Eliminar">
+                                <!-- Icono SVG de eliminar -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                            </button>
+                            <?php } ?>
+                        </div>
                     </td>
                 </tr>
-                <!-- Modal para confirmar eliminación de usuario (solo si no es admin) -->
                 <?php if ($usuario_row != 'admin' && $usuario_row != 'Admin') { ?>
                 <div id="modal-eliminar-<?php echo $id; ?>" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                     <div class="relative p-4 w-full max-w-md max-h-full">
                         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Eliminar Usuario</h3>
-                            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="modal-eliminar-<?php echo $id; ?>">
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                            </svg>
-                            <span class="sr-only">Cerrar</span>
-                            </button>
-                        </div>
-                        <form method="POST" action="eliminar_usuario.php?eliminarid=<?php echo $id; ?>">
-                            <div class="p-4 md:p-5">
-                            <p class="text-gray-700 mb-4">Por favor, ingrese las contraseñas necesarias para continuar:</p>
-                            
-                            <div class="mb-4">
-                                <label for="passAdmin" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contraseña del Admin</label>
-                                <input type="password" name="passAdmin" id="passAdmin" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+                            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Eliminar Usuario</h3>
+                                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="modal-eliminar-<?php echo $id; ?>">
+                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                    </svg>
+                                    <span class="sr-only">Cerrar</span>
+                                </button>
                             </div>
-                            
-                            <div class="mb-4">
-                                <label for="passUsser" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contraseña del Usuario</label>
-                                <input type="password" name="passUsser" id="passUsser" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
-                            </div>
-                            </div>
-                            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                            <button type="submit" name="eliminar" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-800">Eliminar</button>
-                            <button type="button" data-modal-hide="modal-eliminar-<?php echo $id; ?>" class="ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">Cancelar</button>
-                            </div>
-                        </form>
+                            <form method="POST" action="eliminar_usuario.php?eliminarid=<?php echo $id; ?>">
+                                <div class="p-4 md:p-5">
+                                    <p class="text-gray-700 mb-4">Por favor, ingrese las contraseñas necesarias para continuar:</p>
+                                    <div class="mb-4">
+                                        <label for="passAdmin-<?php echo $id; ?>" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contraseña del Admin</label>
+                                        <input type="password" name="passAdmin" id="passAdmin-<?php echo $id; ?>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="passUsser-<?php echo $id; ?>" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contraseña del Usuario</label>
+                                        <input type="password" name="passUsser" id="passUsser-<?php echo $id; ?>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+                                    </div>
+                                </div>
+                                <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                                    <button type="submit" name="eliminar" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-800">Eliminar</button>
+                                    <button type="button" data-modal-hide="modal-eliminar-<?php echo $id; ?>" class="ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">Cancelar</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -236,7 +233,6 @@ $totalPages = ceil($totalRows / $perPage);
                 <?php
                     }
                 } else {
-                    // Si no hay usuarios, muestra un mensaje en la tabla
                     echo '<tr><td colspan="9" class="px-6 py-4 text-center text-gray-500">No se encontraron usuarios</td></tr>';
                 }
                 ?>

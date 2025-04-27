@@ -27,7 +27,7 @@ require_once '../contador_sesion.php';
 
 </head>
 
-<body class="bg-ghost ml-64">
+<body class="ml-64">
 
 
         <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 z-50">
@@ -47,10 +47,10 @@ require_once '../contador_sesion.php';
         }
         ?>
 
-        <main class=" flex justify-center items-center xl:px-56 mt-8">
+        <main class="container min-h-screen p-8 ">
 
 
-        <form method="POST" class="w-80 rounded-xl p-4 py-8 shadow-lg bg-gray-50" id="formulario">
+        <form method="POST" class="w-full max-w-screen-sm rounded-xl p-4 py-8 shadow-lg bg-gray-50 mx-auto" id="formulario">
         <div class="mb-6">
             <label for="usuario" class="block text-sm font-medium text-gray-700">Usuario</label>
             <input type="text" maxlength="21" class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" name="usuario" id="usuario" autocomplete="off" value="<?php echo "$usuario"; ?>">

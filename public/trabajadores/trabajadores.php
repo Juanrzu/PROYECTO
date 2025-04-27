@@ -61,12 +61,76 @@ require_once '../contador_sesion.php';
     </a>
   </div>
 
+
+
+
+  <!-- Buscador -->
+<div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <form method="GET" action="">
+            <div class="flex items-center gap-4">
+                <h3 class="text-xl font-semibold text-gray-800 flex-grow">Gestión de Usuarios</h3>
+                <input 
+                    type="text" 
+                    name="search" 
+                    placeholder="Buscar usuarios..."
+                    value="<?= htmlspecialchars($search) ?>"
+                    class="w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                >
+                <button 
+                    type="submit"
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                >
+                    Buscar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
   <!-- Contenedor de la tabla -->
   <div class="overflow-x-auto shadow-md sm:rounded-lg m-10 xl:m-4">
+
+
     <?php
-    $sql = "SELECT * FROM trabajadores";
-    $result = mysqli_query($connect, $sql);
-    
+
+
+// Configuración de paginación y búsqueda
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$perPage = 10; // Número de registros por página
+$offset = ($page - 1) * $perPage;
+
+// Construir consulta con búsqueda
+$sql = "SELECT SQL_CALC_FOUND_ROWS * FROM trabajadores
+  WHERE nombre LIKE ? 
+  OR apellido LIKE ? 
+  OR cedula LIKE ? 
+  OR telefono LIKE ? 
+  OR rol LIKE ? 
+  OR CAST(id AS CHAR) LIKE ?
+  ORDER BY nombre ASC 
+  LIMIT ? OFFSET ?";
+
+$stmt = $connect->prepare($sql);
+$searchTerm = "%$search%";
+$stmt->bind_param(
+    "ssssssii", 
+    $searchTerm, 
+    $searchTerm, 
+    $searchTerm, 
+    $searchTerm, 
+    $searchTerm, 
+    $searchTerm,
+    $perPage, 
+    $offset
+);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Obtener total de registros
+$totalResult = $connect->query("SELECT FOUND_ROWS()");
+$totalRows = $totalResult->fetch_row()[0];
+$totalPages = ceil($totalRows / $perPage);
     if (mysqli_num_rows($result) > 0): ?>
       <!-- Tabla (solo se muestra si hay registros) -->
       <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -149,18 +213,51 @@ require_once '../contador_sesion.php';
         <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <h3 class="mt-4 text-lg font-medium text-gray-900">No hay trabajadores registrados</h3>
-        <p class="mt-2 text-sm text-gray-500">Actualmente no hay ningún trabajador en el sistema.</p>
-        <div class="mt-6">
-          <a href="ag_trabajador.php" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow transition duration-200">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-            </svg>
-            Agregar Primer Trabajador
-          </a>
-        </div>
+        <h3 class="mt-4 text-lg font-medium text-gray-900">No Se ha encontrado trabajadores</h3>
       </div>
     <?php endif; ?>
+
+     <!-- Paginación -->
+     <div class="px-6 py-4 border-t border-gray-200">
+        <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-700">
+                Mostrando <?= ($offset + 1) ?> a <?= min($offset + $perPage, $totalRows) ?> de <?= $totalRows ?> resultados
+            </span>
+            <div class="flex gap-2">
+                <?php if($page > 1): ?>
+                    <a 
+                        href="?page=<?= $page - 1 ?>&search=<?= urlencode($search) ?>" 
+                        class="px-3 py-1 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                        Anterior
+                    </a>
+                <?php endif; ?>
+
+                <?php for($i = 1; $i <= $totalPages; $i++): ?>
+                    <a 
+                        href="?page=<?= $i ?>&search=<?= urlencode($search) ?>" 
+                        class="px-3 py-1 rounded-md <?= $i == $page ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' ?>"
+                    >
+                        <?= $i ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php if($page < $totalPages): ?>
+                    <a 
+                        href="?page=<?= $page + 1 ?>&search=<?= urlencode($search) ?>" 
+                        class="px-3 py-1 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                        Siguiente
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+$stmt->close();
+?>
   </div>
 </main>
     <!-- Footer -->

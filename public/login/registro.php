@@ -21,7 +21,7 @@ include '../contador_sesion.php';
 
 </head>
 
-<body class="bg-ghost ml-64">
+<body class="ml-64">
 	<div class="container-lg w-full h-full">
 
 		<div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 z-50">
@@ -42,7 +42,7 @@ include '../contador_sesion.php';
     }
     ?>
 
-		<main class="w-full flex justify-center items-center xl:px-56 mt-8">
+		<main class="container min-h-screen p-8 ">
 
 
 		<form method="POST" class="w-full max-w-screen-sm rounded-xl p-4 py-8 shadow-lg bg-gray-50 mx-auto" id="formulario">
