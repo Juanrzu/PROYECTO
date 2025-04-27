@@ -45,6 +45,10 @@ include '../contador_sesion.php';
 		<main class="container min-h-screen p-8 ">
 
 
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+        <h2 class="text-2xl font-bold text-gray-800">Registro Integral de Nuevos Usuarios</h2>
+  </div>
+
 		<form method="POST" class="w-full max-w-screen-sm rounded-xl p-4 py-8 shadow-lg bg-gray-50 mx-auto" id="formulario">
 			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 

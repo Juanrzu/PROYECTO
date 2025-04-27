@@ -51,6 +51,14 @@ require_once '../contador_sesion.php';
     ?>
 
     <main class="container min-h-screen p-8 ">
+
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+    <h2 class="text-3xl font-bold text-gray-800">Panel de Consulta Integral de Usuarios</h2>
+  </div>
+
+
+
+
         <!-- Botones de acción -->
         <div class="flex flex-wrap gap-4 mb-8">
             <a href="../login/registro.php" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">

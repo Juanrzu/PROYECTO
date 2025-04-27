@@ -46,7 +46,14 @@ include 'contador_sesion.php';
 
   <?php include($usuario === "admin" || $usuario === "Admin" ? './header_admin.php' : './header.php'); ?>
   
-  <main class="container h-screen mx-auto px-2 md:px-20 py-8">
+  <main class="container min-h-screen p-8 ">
+
+
+
+
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+<h2 class="text-2xl font-bold text-gray-800">Panel de Consulta Integral de Estudiantes retirados</h2>
+        </div>
 
     <!-- Buscador -->
 <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
@@ -57,13 +64,13 @@ include 'contador_sesion.php';
                 <input 
                     type="text" 
                     name="search" 
-                    placeholder="Buscar usuarios..."
+                    placeholder="Buscar Estudiantes retirados..."
                     value="<?= htmlspecialchars($search) ?>"
                     class="w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
                 <button 
                     type="submit"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                 >
                     Buscar
                 </button>
@@ -117,140 +124,113 @@ $totalResult = $connect->query("SELECT FOUND_ROWS()");
 $totalRows = $totalResult->fetch_row()[0];
 $totalPages = ceil($totalRows / $perPage);
 
-              if ($result->num_rows > 0) {
-                echo '<div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apellido</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">C.E.N</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nacimiento</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sexo</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Representante</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">C.I Rep.</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grado</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sección</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">motivo</th>
-                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">';
-                while ($row = $result->fetch_assoc()) {
-                  $id = $row['id'];
-                  $fecha = date('d/m/Y', strtotime($row['fecha_hora']));
-                  echo '<tr class="hover:bg-gray-50 transition-colors duration-150">
-                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">' . htmlspecialchars($row['nombre']) . '</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['apellido']) . '</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['cen']) . '</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['nacimiento']) . '</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['sexo']) . '</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['representante'] . ' ' . $row['representante_apellido']) . '</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['cedula_repre']) . '</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['telefono']) . '</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['grado']) . '</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['seccion']) . '</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . $fecha . '</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">' . htmlspecialchars($row['motivo']) . '</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex justify-center space-x-2">
-                            
-
-
-                            <button type="submit" data-modal-target="modal-restaurar'.$row['id'].'" data-modal-toggle="modal-restaurar'.$row['id'].'" title="Restaurar estudiante" class="text-green-600 hover:text-green-900 p-2 rounded-full hover:bg-green-50 transition-colors duration-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                  <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
-                                </svg>
-                              </button>
-
-
-
-
-                          </td>
-                        </tr>
-                        
-
-                        
-                            <form method="POST" action="" class="inline">
-
-                            </form>
-                        
-                        
-                        
-                        
-                        
-                        
-                 
-                    <!-- Modal Restaurar -->
-<div id="modal-restaurar'.$row['id'].'" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-    <div class="relative p-4 w-full max-w-md max-h-full">
-        <div class="relative bg-white rounded-lg shadow">
-            <div class="flex items-center justify-between p-4 border-b rounded-t">
-                <h3 class="text-lg font-semibold text-gray-900">Opciones de Restauración</h3>
-                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center" data-modal-hide="modal-restaurar'.$row['id'].'">
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                    </svg>
+                    if ($result->num_rows > 0) {
+      ?>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apellido</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">C.E.N</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nacimiento</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sexo</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Representante</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">C.I Rep.</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grado</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sección</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">motivo</th>
+              <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+      <?php
+          while ($row = $result->fetch_assoc()) {
+            $id = $row['id'];
+            $fecha = date('d/m/Y', strtotime($row['fecha_hora']));
+      ?>
+            <tr class="hover:bg-gray-50 transition-colors duration-150">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?= htmlspecialchars($row['nombre']) ?></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($row['apellido']) ?></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($row['cen']) ?></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($row['nacimiento']) ?></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($row['sexo']) ?></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($row['representante'] . ' ' . $row['representante_apellido']) ?></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($row['cedula_repre']) ?></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($row['telefono']) ?></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($row['grado']) ?></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($row['seccion']) ?></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= $fecha ?></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($row['motivo']) ?></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex justify-center space-x-2">
+                <button type="submit" data-modal-target="modal-restaurar<?= $row['id'] ?>" data-modal-toggle="modal-restaurar<?= $row['id'] ?>" title="Restaurar estudiante" class="text-green-600 hover:text-green-900 p-2 rounded-full hover:bg-green-50 transition-colors duration-200">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                  </svg>
                 </button>
-            </div>
-            <form method="POST" action="restaurar_estudiantes_retirados.php?eliminarid=' . $id . '">
-                <div class="p-4">
-                    <div class="mb-4">
-                        <p class="text-base text-gray-600 mb-4">Estudiante: <span class="font-bold">'.htmlspecialchars($row['nombre']).' '.htmlspecialchars($row['apellido']).'</span></p>
-                        
+              </td>
+            </tr>
+            <!-- Modal Restaurar -->
+            <div id="modal-restaurar<?= $row['id'] ?>" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+              <div class="relative p-4 w-full max-w-md max-h-full">
+                <div class="relative bg-white rounded-lg shadow">
+                  <div class="flex items-center justify-between p-4 border-b rounded-t">
+                    <h3 class="text-lg font-semibold text-gray-900">Opciones de Restauración</h3>
+                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center" data-modal-hide="modal-restaurar<?= $row['id'] ?>">
+                      <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <form method="POST" action="restaurar_estudiantes_retirados.php?eliminarid=<?= $id ?>">
+                    <div class="p-4">
+                      <div class="mb-4">
+                        <p class="text-base text-gray-600 mb-4">Estudiante: <span class="font-bold"><?= htmlspecialchars($row['nombre']) . ' ' . htmlspecialchars($row['apellido']) ?></span></p>
                         <div class="mb-4">
-                            <label for="grado" class="block text-gray-700 text-sm font-bold mb-2">Grado:</label>
-                            <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="grado" name="grado" required>
-                                <option value=1>1</option>
-                                <option value=2>2</option>
-                                <option value=3>3</option>
-                                <option value=4>4</option>
-                                <option value=5>5</option>
-                                <option value=6>6</option>
-                            </select>
+                          <label for="grado" class="block text-gray-700 text-sm font-bold mb-2">Grado:</label>
+                          <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="grado" name="grado" required>
+                            <option value=1>1</option>
+                            <option value=2>2</option>
+                            <option value=3>3</option>
+                            <option value=4>4</option>
+                            <option value=5>5</option>
+                            <option value=6>6</option>
+                          </select>
                         </div>
                         <div class="mb-4">
-                            <label for="seccion" class="block text-gray-700 text-sm font-bold mb-2">Sección:</label>
-                            <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="seccion" name="seccion" required>
-                                <option value="A">A</option>
-                                <option value="B">B</option>
-                            </select>
+                          <label for="seccion" class="block text-gray-700 text-sm font-bold mb-2">Sección:</label>
+                          <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="seccion" name="seccion" required>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                          </select>
                         </div>
+                      </div>
                     </div>
-                </div>
-                <div class="flex items-center p-4 border-t space-x-2">
-                    <button type="submit" name="registrar" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <div class="flex items-center p-4 border-t space-x-2">
+                      <button type="submit" name="registrar" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
                         Confirmar restauración
-                    </button>
-                    <button type="button" data-modal-hide="modal-restaurar'.$row['id'].'" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                      </button>
+                      <button type="button" data-modal-hide="modal-restaurar<?= $row['id'] ?>" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
                         Cancelar
-                    </button>
+                      </button>
+                    </div>
+                  </form>
                 </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-                        
-                              
-                        
-                        ';
-                }
-                echo '</tbody>
-          </table>
-        </div>';
-              } else {
-              echo '<div class="w-full bg-white p-8 text-center rounded-lg shadow">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <h3 class="mt-4 text-lg font-medium text-gray-900">No hay estudiantes retirados</h3>
+              </div>
             </div>
-          </div>';
+      <?php
+          }
+      ?>
+          </tbody>
+        </table>
+      </div>
+      <?php
             }
-            
-            ?>
+      ?>
+            </tbody>
+            </table>
           </tbody>
         </table>
       </div>

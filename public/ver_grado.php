@@ -6,6 +6,12 @@ if ($usuario == null || $usuario == '') {
   header('location:./login/login.php');
   die();
 }
+
+$grado = $_GET['gradonombre'];
+$seccion = $_GET['seccion'];
+
+
+
 include 'connect.php';
 include 'contador_sesion.php';
 ?>
@@ -21,7 +27,9 @@ include 'contador_sesion.php';
 </head>
 
 <body class="bg-gray-50 ml-64">
-  <div class="min-h-screen flex flex-col">
+
+
+    
 
   <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700">
       <div role="status">
@@ -42,14 +50,24 @@ include 'contador_sesion.php';
     }
     ?>
 
-    <main class="flex-grow container mx-auto px-2 md:px-20 py-8">
+    <main class="container min-h-screen p-8 ">
+
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <h2 class="text-2xl font-bold text-gray-800">
+            Panel Integral de Estudiantes - 
+            <span ><?= htmlspecialchars($grado) ?></span>
+            <span >Sección</span>
+            <span ><?= htmlspecialchars($seccion) ?></span>
+        </h2>
+        
+    </div>
+
+
+
+
       <!-- Botones de Acción -->
       <div class="flex flex-wrap gap-4 mb-8">
       <?php
-      $grado = $_GET['gradonombre'];
-      $seccion = $_GET['seccion'];
-      
-
       
       echo '<a href="http://localhost/dashboard/Proyecto/public/profesor.php" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,110 +92,114 @@ include 'contador_sesion.php';
       ?>
       </div>
 
-      <!-- Tabla de Profesores -->
-      <div class="bg-white rounded-xl shadow-md overflow-hidden mb-10">
-      <div class="px-6 py-4 border-b border-gray-200">
-        <h3 class="text-xl font-semibold text-gray-800">Profesores</h3>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apellido</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cédula</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grado</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sección</th>
-          <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <?php
-          $secc = strtoupper(trim($seccion));
-          $sql = "SELECT profesor.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre 
-              FROM profesor 
-              JOIN seccion ON profesor.idseccion = seccion.id 
-              JOIN grados ON profesor.idgrado = grados.id 
-              WHERE seccion.nombre = ? AND grados.nombre = ?
-              ORDER BY profesor.nombre ASC";
-          
-          $stmt = $connect->prepare($sql);
-          $stmt->bind_param("si", $secc, $grado);
-          $stmt->execute();
-          $result = $stmt->get_result();
-          
-          if ($result) {
-          while ($row = mysqli_fetch_assoc($result)) {
-            echo '<tr class="hover:bg-gray-50">
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">'.$row['nombre'].'</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">'.$row['apellido'].'</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">'.$row['cedula'].'</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">'.$row['grado_nombre'].'</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">'.$row['seccion_nombre'].'</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex justify-center space-x-2">
-                <a href="editar_profesor.php?editarid='.$row['id'].'" class="text-blue-600 hover:text-blue-900 p-2 rounded-full hover:bg-blue-50 transition-colors duration-200">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
-                  </svg>
-                </a>
 
 
 
+      <!-- Buscador Mejorado -->
+<div class="rounded-xl shadow-md overflow-hidden mb-6 bg-white ">
+    <div class="px-6 py-4  flex flex-col md:flex-row md:items-center gap-4">
+    
+            <input type="hidden" name="gradonombre" value="<?= htmlspecialchars($grado) ?>">
+            <input type="hidden" name="seccion" value="<?= htmlspecialchars($seccion) ?>">
+            <h3 class="text-xl font-semibold flex-grow">Profesores</h3>
+    </div>
+</div>
+    <!-- Tabla de Profesores -->
+    <div class="bg-white rounded-xl shadow-md overflow-hidden mb-10">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apellido</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cédula</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grado</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sección</th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <?php
+                    $secc = strtoupper(trim($seccion));
+                    $sql = "SELECT profesor.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre 
+                            FROM profesor 
+                            JOIN seccion ON profesor.idseccion = seccion.id 
+                            JOIN grados ON profesor.idgrado = grados.id 
+                            WHERE seccion.nombre = ? AND grados.nombre = ?
+                            ORDER BY profesor.nombre ASC";
+                    $stmt = $connect->prepare($sql);
+                    $stmt->bind_param("ss", $secc, $grado);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
 
-                 <button type="button" 
-                                class="text-red-600 hover:text-red-900 p-2 rounded-full hover:bg-red-50 transition-colors duration-200"
-                                data-modal-target="modal-eliminar-profesores-'.$row['id'].'" 
-                                data-modal-toggle="modal-eliminar-profesores-'.$row['id'].'"
-                                title="Eliminar estudiante">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                            </svg>
-                        </button>
-
-                </td>
-              </tr>
-                           
-              
-
-                        <!-- Modal Eliminar -->
-                    <div id="modal-eliminar-profesores-'.$row['id'].'" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                        <div class="relative p-4 w-full max-w-md max-h-full">
-                            <div class="relative bg-white rounded-lg shadow">
-                                <div class="flex items-center justify-between p-4 border-b rounded-t">
-                                    <h3 class="text-lg font-semibold text-gray-900">Confirmar Eliminación</h3>
-                                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center" data-modal-hide="modal-eliminar-profesores-'.$row['id'].'">
-                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                                        </svg>
-                                    </button>
+                    if ($result && $result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo '<tr class="hover:bg-gray-50 transition-colors duration-150">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['nombre']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['apellido']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['cedula']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['grado_nombre']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['seccion_nombre']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 flex justify-center space-x-2">
+                                        <a href="editar_profesor.php?editarid='.$row['id'].'" class="text-blue-600 hover:text-blue-900 p-2 rounded-full hover:bg-blue-50 transition-colors duration-200" title="Editar profesor">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                                            </svg>
+                                        </a>
+                                        <button type="button" 
+                                            class="text-red-600 hover:text-red-900 p-2 rounded-full hover:bg-red-50 transition-colors duration-200"
+                                            data-modal-target="modal-eliminar-profesor-'.$row['id'].'" 
+                                            data-modal-toggle="modal-eliminar-profesor-'.$row['id'].'"
+                                            title="Eliminar profesor">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Modal Eliminar Profesor -->
+                                <div id="modal-eliminar-profesor-'.$row['id'].'" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                    <div class="relative p-4 w-full max-w-md max-h-full">
+                                        <div class="relative bg-white rounded-lg shadow">
+                                            <div class="flex items-center justify-between p-4 border-b rounded-t">
+                                                <h3 class="text-lg font-semibold text-gray-900">Confirmar Eliminación</h3>
+                                                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center" data-modal-hide="modal-eliminar-profesor-'.$row['id'].'">
+                                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <form method="POST" action="eliminar_profesor.php?eliminarid='.$row['id'].'">
+                                                <div class="p-4">
+                                                    <p class="text-base text-gray-600">¿Está seguro que desea eliminar permanentemente a <span class="font-bold">'.htmlspecialchars($row['nombre']).' '.htmlspecialchars($row['apellido']).'</span>?</p>
+                                                    <p class="mt-2 text-sm text-red-600">Esta acción no se puede deshacer.</p>
+                                                </div>
+                                                <div class="flex items-center p-4 border-t space-x-2">
+                                                    <button type="submit" name="registrar" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                                                        Sí, Eliminar
+                                                    </button>
+                                                    <button type="button" data-modal-hide="modal-eliminar-profesor-'.$row['id'].'" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                                                        Cancelar
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-                                <form method="POST" action="eliminar_profesor.php?eliminarid='.$row['id'].'" ">
-                                    <div class="p-4">
-                                        <p class="text-base text-gray-600">¿Está seguro que desea eliminar permanentemente a <span class="font-bold">'.htmlspecialchars($row['nombre']).' '.htmlspecialchars($row['apellido']).'<span>?</p>
-                                        <p class="mt-2 text-sm text-red-600">Esta acción no se puede deshacer.</p>
-                                    </div>
-                                    <div class="flex items-center p-4 border-t space-x-2">
-                                        <button type="submit" name="registrar" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
-                                            Sí, Eliminar
-                                        </button>
-                                        <button type="button" data-modal-hide="modal-eliminar-profesores-'.$row['id'].'" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
-                                            Cancelar
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-              ';
-          }
-          }
-          ?>
-
-          
-        </tbody>
-        </table>
-      </div>
-      </div>
+                            ';
+                        }
+                    } else {
+                        echo '<tr>
+                            <td colspan="6" class="px-4 py-6 text-center text-sm text-gray-500">
+                                No se encontraron profesores registrados para este grado y sección.
+                            </td>
+                        </tr>';
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 
 
@@ -236,37 +258,55 @@ $offset = ($page - 1) * $perPage;
 
 
 
-<!-- Buscador -->
-<div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
-    <div class="px-6 py-4 border-b border-gray-200">
-        <form method="GET" action="">
+<!-- Buscador Mejorado -->
+<div class="rounded-xl shadow-md overflow-hidden mb-6 bg-white ">
+    <div class="px-6 py-4  flex flex-col md:flex-row md:items-center gap-4">
+        <form method="GET" action="" class="flex flex-col md:flex-row md:items-center w-full gap-4">
             <input type="hidden" name="gradonombre" value="<?= htmlspecialchars($grado) ?>">
             <input type="hidden" name="seccion" value="<?= htmlspecialchars($seccion) ?>">
-            <div class="flex items-center gap-4">
-                <h3 class="text-xl font-semibold text-gray-800 flex-grow">Gestión de Usuarios</h3>
+            <h3 class="text-xl font-semibold flex-grow">Estudiantes</h3>
+            <div class="flex flex-grow max-w-lg relative">
                 <input 
                     type="text" 
                     name="search" 
-                    placeholder="Buscar usuarios..."
+                    placeholder="Buscar por nombre, apellido, CEN, CI representante..."
                     value="<?= htmlspecialchars($search) ?>"
-                    class="w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    class="w-full px-4 py-2 rounded-l-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 text-gray-800 placeholder-gray-400 transition duration-150 ease-in-out shadow-sm"
+                    autocomplete="off"
                 >
                 <button 
                     type="submit"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    class="px-4 py-2 bg-green-600 text-white rounded-r-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+                    title="Buscar"
                 >
-                    Buscar
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8" stroke="currentColor" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-linecap="round"/>
+                    </svg>
+                    <span class="hidden md:inline">Buscar</span>
                 </button>
             </div>
+            <?php if (!empty($search)): ?>
+                <a href="?gradonombre=<?= urlencode($grado) ?>&seccion=<?= urlencode($seccion) ?>" 
+                   class="ml-2 px-3 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors text-sm flex items-center gap-1"
+                   title="Limpiar búsqueda">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Limpiar
+                </a>
+            <?php endif; ?>
         </form>
     </div>
+    <?php if (!empty($search)): ?>
+        <div class="px-6 py-2 bg-blue-100 text-blue-800 text-sm">
+            Resultados para: <span class="font-semibold"><?= htmlspecialchars($search) ?></span>
+        </div>
+    <?php endif; ?>
 </div>
 
       <!-- Tabla de Estudiantes con scroll responsivo -->
       <div class="bg-white rounded-xl shadow-md overflow-hidden">
-      <div class="px-6 py-4 border-b border-gray-200">
-        <h3 class="text-xl font-semibold text-gray-800">Estudiantes</h3>
-      </div>
       <div class="overflow-auto h-full">
         <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
@@ -619,7 +659,7 @@ $stmt->close();
         </div>
       </div>
     </footer>
-  </div>
+ 
 
   <!-- Scripts -->
   <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>

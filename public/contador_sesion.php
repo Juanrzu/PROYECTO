@@ -53,7 +53,7 @@
             function cuenta() {
                 // Resetea el contador cuando el mouse se mueve
                 document.onmousemove = function () {
-                    n = 1899999999999990;
+                    n = 9899999999999990;
                 };
 
                 n--;

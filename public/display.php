@@ -52,7 +52,7 @@ include 'contador_sesion.php';
 
 <main class="container min-h-screen p-8 ">
   <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-    <h2 class="text-2xl font-bold text-gray-800">Gestión de Estudiantes</h2>
+    <h2 class="text-3xl font-bold text-gray-800">Panel Integral de Gestión Estudiantil</h2>
   </div>
 
   <div class="flex flex-wrap gap-4 mb-8">

@@ -48,9 +48,10 @@ include 'contador_sesion.php';
     <!-- Contenido Principal -->
     <main class="container min-h-screen p-8 ">
 
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <h2 class="text-2xl font-bold text-gray-800">Generacion de constancias</h2>
-    </div>
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+        <h2 class="text-2xl font-bold text-gray-800">Emisión de Constancias</h2>
+        </div>
+
 
 
         <div class="max-w-7xl mx-auto">

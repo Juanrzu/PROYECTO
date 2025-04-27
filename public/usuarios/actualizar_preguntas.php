@@ -50,6 +50,14 @@ require_once '../contador_sesion.php';
         <main class="container min-h-screen p-8 ">
 
 
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+            <h2 class="text-2xl font-bold text-gray-800">Editor Avanzado de Preguntas</h2>
+        </div>
+
+
+
+
+
         <form method="POST" class="w-full max-w-screen-sm rounded-xl p-4 py-8 shadow-lg bg-gray-50 mx-auto" id="formulario">
         <div class="mb-6">
             <label for="usuario" class="block text-sm font-medium text-gray-700">Usuario</label>

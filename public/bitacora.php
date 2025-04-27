@@ -46,10 +46,9 @@ include 'contador_sesion.php';
     <!-- Contenido principal -->
     <main class="container min-h-screen p-8">
       <!-- Encabezado y controles -->
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-      <h2 class="text-2xl font-bold text-black-800">Registro de Bitácora</h2>
-      <!-- Puedes agregar botones de acción aquí si son necesarios -->
-      </div>
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+      <h2 class="text-2xl font-bold text-gray-800">Registro Histórico de Operaciones</h2>
+        </div>
 
       <!-- Tabla de Bitácora -->
       <div class="bg-white rounded-xl shadow-md">

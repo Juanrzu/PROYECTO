@@ -24,8 +24,7 @@ require_once '../contador_sesion.php';
   <title>Trabajadores</title>
 </head>
 
-<body class="bg-ghost ml-64">
-  <div class="container-lg w-full flex flex-col">
+<body class="ml-64">
     <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 z-50">
       <div role="status">
         <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600 z-50"
@@ -50,7 +49,15 @@ require_once '../contador_sesion.php';
     }
     ?>
 
-<main class="container h-screen mx-auto px-4 py-8">
+<main class="container min-h-screen p-8 ">
+
+
+
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+  <h2 class="text-2xl font-bold text-gray-800">Panel de Consulta Integral de Trabajadores</h2>
+</div>
+
+
   <!-- Botón de acción -->
   <div class="flex flex-wrap gap-4 mb-8">
     <a href="ag_trabajador.php" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
@@ -69,11 +76,11 @@ require_once '../contador_sesion.php';
     <div class="px-6 py-4 border-b border-gray-200">
         <form method="GET" action="">
             <div class="flex items-center gap-4">
-                <h3 class="text-xl font-semibold text-gray-800 flex-grow">Gestión de Usuarios</h3>
+                <h3 class="text-xl font-semibold text-gray-800 flex-grow">Trabajadores</h3>
                 <input 
                     type="text" 
                     name="search" 
-                    placeholder="Buscar usuarios..."
+                    placeholder="Buscar Trabajadores..."
                     value="<?= htmlspecialchars($search) ?>"
                     class="w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
@@ -87,8 +94,10 @@ require_once '../contador_sesion.php';
         </form>
     </div>
 </div>
+
+
   <!-- Contenedor de la tabla -->
-  <div class="overflow-x-auto shadow-md sm:rounded-lg m-10 xl:m-4">
+  <div class="overflow-x-auto shadow-md sm:rounded-lg">
 
 
     <?php
@@ -133,77 +142,82 @@ $totalRows = $totalResult->fetch_row()[0];
 $totalPages = ceil($totalRows / $perPage);
     if (mysqli_num_rows($result) > 0): ?>
       <!-- Tabla (solo se muestra si hay registros) -->
-      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
-            <th scope="col" class="px-6 py-3">ID</th>
-            <th scope="col" class="px-6 py-3">Nombre</th>
-            <th scope="col" class="px-6 py-3">Apellido</th>
-            <th scope="col" class="px-6 py-3">Cédula</th>
-            <th scope="col" class="px-6 py-3">Teléfono</th>
-            <th scope="col" class="px-6 py-3">Rol</th>
-            <th scope="col" class="px-6 py-3">Editar</th>
-            <th scope="col" class="px-6 py-3">Borrar</th>
+        <th scope="col" class="px-6 py-3">ID</th>
+        <th scope="col" class="px-6 py-3">Nombre</th>
+        <th scope="col" class="px-6 py-3">Apellido</th>
+        <th scope="col" class="px-6 py-3">Cédula</th>
+        <th scope="col" class="px-6 py-3">Teléfono</th>
+        <th scope="col" class="px-6 py-3">Rol</th>
+        <th scope="col" class="px-6 py-3">Editar</th>
+        <th scope="col" class="px-6 py-3">Borrar</th>
           </tr>
         </thead>
         <tbody>
           <?php while ($row = mysqli_fetch_assoc($result)): ?>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50">
-              <td class="px-6 py-4"><?= htmlspecialchars($row['id']) ?></td>
-              <td class="px-6 py-4"><?= htmlspecialchars($row['nombre']) ?></td>
-              <td class="px-6 py-4"><?= htmlspecialchars($row['apellido']) ?></td>
-              <td class="px-6 py-4"><?= htmlspecialchars($row['cedula']) ?></td>
-              <td class="px-6 py-4"><?= htmlspecialchars($row['telefono']) ?></td>
-              <td class="px-6 py-4"><?= htmlspecialchars($row['rol']) ?></td>
-              <td class="px-6 py-4">
-                <a href="editar_trabajador.php?editarid=<?= $row['id'] ?>" class="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-blue-50 transition-colors duration-200">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                  </svg>
-                </a>
-              </td>
-              <td class="px-6 py-4">
-                <!-- Botón Eliminar -->
-                <button type="button" 
-                  class="text-red-600 hover:text-red-900 p-2 rounded-full hover:bg-red-50 transition-colors duration-200"
-                  data-modal-target="modal-eliminar-<?= $row['id'] ?>" 
-                  data-modal-toggle="modal-eliminar-<?= $row['id'] ?>"
-                  title="Eliminar estudiante">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                  </svg>
-                </button>
-                <!-- Modal Eliminar -->
-                <div id="modal-eliminar-<?= $row['id'] ?>" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                  <div class="relative p-4 w-full max-w-md max-h-full">
-                    <div class="relative bg-white rounded-lg shadow">
-                      <div class="flex items-center justify-between p-4 border-b rounded-t">
-                        <h3 class="text-lg font-semibold text-gray-900">Confirmar Eliminación</h3>
-                        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center" data-modal-hide="modal-eliminar-<?= $row['id'] ?>" aria-label="Close">
-                          <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                          </svg>
-                        </button>
-                      </div>
-                      <form method="POST" action="eliminar_trabajador.php?eliminarid=<?= $row['id'] ?>">
-                        <div class="p-4">
-                          <p class="text-base text-gray-600">¿Está seguro que desea eliminar permanentemente a <span class="font-bold"><?= htmlspecialchars($row['nombre']) ?> <?= htmlspecialchars($row['apellido']) ?></span>?</p>
-                          <p class="mt-2 text-sm text-red-600">Esta acción no se puede deshacer.</p>
-                        </div>
-                        <div class="flex items-center p-4 border-t space-x-2">
-                          <button type="submit" name="registrar" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
-                            Sí, Eliminar
-                          </button>
-                          <button type="button" data-modal-hide="modal-eliminar-<?= $row['id'] ?>" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
-                            Cancelar
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
+        <tr class="bg-white border-b hover:bg-gray-50">
+          <td class="px-6 py-4"><?= htmlspecialchars($row['id']) ?></td>
+          <td class="px-6 py-4"><?= htmlspecialchars($row['nombre']) ?></td>
+          <td class="px-6 py-4"><?= htmlspecialchars($row['apellido']) ?></td>
+          <td class="px-6 py-4"><?= htmlspecialchars($row['cedula']) ?></td>
+          <td class="px-6 py-4"><?= htmlspecialchars($row['telefono']) ?></td>
+          <td class="px-6 py-4"><?= htmlspecialchars($row['rol']) ?></td>
+          <td class="px-6 py-4 text-center">
+            <a href="editar_trabajador.php?editarid=<?= urlencode($row['id']) ?>"
+               class="inline-flex items-center justify-center text-blue-600 hover:text-blue-900 p-2 rounded-full hover:bg-blue-50 p-2 rounded-full transition-colors duration-200"
+               title="Editar trabajador">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+              </svg>
+            </a>
+          </td>
+          <td class="px-6 py-4 text-center">
+            <!-- Botón Eliminar -->
+            <button type="button"
+              class="inline-flex items-center justify-center text-red-600 hover:text-red-900 hover:bg-red-50 p-2 rounded-full transition-colors duration-200"
+              data-modal-target="modal-eliminar-<?= $row['id'] ?>"
+              data-modal-toggle="modal-eliminar-<?= $row['id'] ?>"
+              title="Eliminar trabajador"
+              aria-label="Eliminar trabajador">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+            </button>
+          </td>
+        </tr>
+            <!-- Modal Eliminar -->
+            <div id="modal-eliminar-<?= $row['id'] ?>" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+          <div class="relative p-4 w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow">
+              <div class="flex items-center justify-between p-4 border-b rounded-t">
+            <h3 class="text-lg font-semibold text-gray-900">Confirmar Eliminación</h3>
+            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center" data-modal-hide="modal-eliminar-<?= $row['id'] ?>" aria-label="Close">
+              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+              </svg>
+            </button>
+              </div>
+              <form method="POST" action="eliminar_trabajador.php?eliminarid=<?= $row['id'] ?>">
+            <div class="p-4">
+              <p class="text-base text-gray-600">¿Está seguro que desea eliminar permanentemente a <span class="font-bold"><?= htmlspecialchars($row['nombre']) ?> <?= htmlspecialchars($row['apellido']) ?></span>?</p>
+              <p class="mt-2 text-sm text-red-600">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="flex items-center p-4 border-t space-x-2">
+              <button type="submit" name="registrar" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                Sí, Eliminar
+              </button>
+              <button type="button" data-modal-hide="modal-eliminar-<?= $row['id'] ?>" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                Cancelar
+              </button>
+            </div>
+              </form>
+            </div>
+          </div>
+            </div>
+          </td>
+        </tr>
           <?php endwhile; ?>
         </tbody>
       </table>
