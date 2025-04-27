@@ -21,7 +21,7 @@ include 'contador_sesion.php';
   <title>Bitacora</title>
 </head>
 
-<body class="bg-ghost ml-64">
+<body class="ml-64">
   <div class="container-lg w-full flex flex-col">
     <!-- Pantalla de carga -->
     <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700 z-50">
@@ -44,10 +44,10 @@ include 'contador_sesion.php';
     ?>
 
     <!-- Contenido principal -->
-    <main class="container h-screen mx-auto px-2 md:px-20 py-8">
+    <main class="container min-h-screen p-8">
       <!-- Encabezado y controles -->
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-      <h1 class="text-2xl font-bold text-black-800">Registro de Bitácora</h1>
+      <h2 class="text-2xl font-bold text-black-800">Registro de Bitácora</h2>
       <!-- Puedes agregar botones de acción aquí si son necesarios -->
       </div>
 
