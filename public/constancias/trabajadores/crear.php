@@ -22,8 +22,9 @@ if (!isset($usuario)) {
 
 </head>
 
-<body class="bg-ghost">
-    <div class="container-lg w-full flex flex-col">
+<body class="ml-64">
+
+    
 
       <div class="container-loading fixed flex items-center justify-center w-screen h-screen bg-gray-700">
         <div role="status">
@@ -48,7 +49,15 @@ if (!isset($usuario)) {
       }
       ?>
 
-<main class="container h-screen mx-auto px-4 py-8">
+<main class="container min-h-scsreen p-8 ">
+
+
+
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+  <h2 class="text-2xl font-bold text-gray-800">Panel de Generacion de Constancias de Trabajadores</h2>
+</div>
+
+
   <!-- Botón de acción -->
   <div class="flex flex-wrap gap-4 mb-8">
  <!-- Botón Volver -->
@@ -78,8 +87,8 @@ if (!isset($usuario)) {
     
     if (mysqli_num_rows($result) > 0): ?>
       <!-- Tabla (solo se muestra si hay registros) -->
-      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
+        <thead class="text-xs text-gray-900 uppercase bg-gray-100 dark:bg-gray-800 dark:text-gray-200">
           <tr>
             <th scope="col" class="px-6 py-3">ID</th>
             <th scope="col" class="px-6 py-3">Nombre</th>
@@ -100,13 +109,13 @@ if (!isset($usuario)) {
               <td class="px-6 py-4"><?= htmlspecialchars($row['telefono']) ?></td>
               <td class="px-6 py-4"><?= htmlspecialchars($row['rol']) ?></td>
               <td class="px-6 py-4">
-              <a href="imprimir.php?id=<?= htmlspecialchars($row['id']) ?>" class="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white text-sm font-medium rounded-md">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                <path d="M12 16V10M12 10L9 12M12 10L15 12M23 15C23 12.79 21.21 11 19 11C18.98 11 18.95 11.0002 18.93 11.0006C18.44 7.608 15.53 5 12 5C9.2 5 6.79 6.64 5.67 9.01C3.06 9.18 1 11.35 1 14C1 16.76 3.24 19 6 19L19 19C21.21 19 23 17.21 23 15Z"
-                                                    stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                Imprimir
-              </a>
+                <a href="imprimir.php?id=<?= htmlspecialchars($row['id']) ?>" class="inline-flex items-center px-3 py-2 text-sm  tooltip bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+                <svg class=" bg-blue-600 rounded-sm" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none">
+          <g id="File / Cloud_Upload">
+        <path id="Vector" d="M12 16V10M12 10L9 12M12 10L15 12M23 15C23 12.7909 21.2091 11 19 11C18.9764 11 18.9532 11.0002 18.9297 11.0006C18.4447 7.60802 15.5267 5 12 5C9.20335 5 6.79019 6.64004 5.66895 9.01082C3.06206 9.18144 1 11.3498 1 13.9999C1 16.7613 3.23858 19.0001 6 19.0001L19 19C21.2091 19 23 17.2091 23 15Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </g>
+        </svg>
+                </a>
               </td>
             </tr>
 
@@ -122,6 +131,33 @@ if (!isset($usuario)) {
       </div>
     <?php endif; ?>
   </div>
+
+
+
+
+
+
+
+   <!-- Botón de Ayuda -->
+   <button data-tooltip-target="tooltip-retiros" type="button" class="fixed right-6 bottom-14 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+    </button>
+
+    <div id="tooltip-retiros" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
+      <div class="flex items-center">
+        <span class="text-white">Haz clic en el icono para imprimir la constancia.</span>
+        <svg class="ml-2 bg-blue-600 p-2 rounded-sm" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none">
+          <g id="File / Cloud_Upload">
+        <path id="Vector" d="M12 16V10M12 10L9 12M12 10L15 12M23 15C23 12.7909 21.2091 11 19 11C18.9764 11 18.9532 11.0002 18.9297 11.0006C18.4447 7.60802 15.5267 5 12 5C9.20335 5 6.79019 6.64004 5.66895 9.01082C3.06206 9.18144 1 11.3498 1 13.9999C1 16.7613 3.23858 19.0001 6 19.0001L19 19C21.2091 19 23 17.2091 23 15Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </g>
+        </svg>
+      </div>
+      <div class="tooltip-arrow" data-popper-arrow></div>
+    </div>
 </main>
 
 
@@ -142,7 +178,7 @@ if (!isset($usuario)) {
           </svg>
         </a>
       </footer>
-  </div>
+
   <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
     <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
   
