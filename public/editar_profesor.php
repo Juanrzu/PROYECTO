@@ -88,9 +88,6 @@ if ($row = $result->fetch_assoc()) {
                                placeholder="Cédula" name="cedula" id="cedula" autocomplete="off" maxlength="25" value="<?php echo htmlspecialchars($cedula); ?>" >
                     </div>
 
-
-                  
-
                         <!-- Teléfono -->
                         <div class="sm:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
@@ -298,6 +295,7 @@ if (isset($_POST['submit'])) {
     $nombre = trim($_POST['nombre']);
     $apellido = trim($_POST['apellido']);
     $cedula_nueva = trim($_POST['cedula']);
+    $telefono  = trim($_POST['telefono']);
     $grado = trim($_POST['grado']);
     $seccion = strtoupper(trim($_POST['seccion']));
     $errores = [];
@@ -406,7 +404,7 @@ if (isset($_POST['submit'])) {
         // Actualizar profesor
         $sql = "UPDATE profesor SET nombre = ?, apellido = ?, cedula = ?, telefono = ?, idgrado = ?, idseccion = ? WHERE id = ?";
         $stmt = $connect->prepare($sql);
-        $stmt->bind_param("sssiii", $nombre, $apellido, $cedula_nueva, $grado_id, $seccion_id, $id);
+        $stmt->bind_param("ssissii", $nombre, $apellido, $cedula_nueva, $telefono, $grado_id, $seccion_id, $id);
          //preparar datos para bitacora
                  //agregar datos a la bitacora
                  $cambios = [];

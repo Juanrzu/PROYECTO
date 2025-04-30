@@ -76,15 +76,22 @@ include '../contador_sesion.php';
 					placeholder="Ingrese su cédula">
 				</div>
 
-				<!-- Teléfono -->
-				<div class="col-span-1 sm:col-span-2">
-				<label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono</label>
-				<div class="flex items-center gap-3 mt-2">
-					<input type="text" name="telefono" id="telefono" maxlength="11"
-					class="w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
-					placeholder="Teléfono">
-				</div>
-				</div>
+                <!-- Teléfono -->
+                        <div class="sm:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
+                <div class="flex items-center gap-3">
+                <select class="px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="codigo" id="codigo" >
+                    <option value="0268">0268</option>
+                    <option value="0414">0414</option>
+                    <option value="0424">0424</option>
+                    <option value="0416">0416</option>
+                    <option value="0426">0426</option>
+                    <option value="0412">0412</option>
+                </select>
+                <input type="text" class="flex-1 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
+                    placeholder="Teléfono" name="telefono" autocomplete="off" maxlength="7" id="telefono" >
+                </div>
+                </div>
 
 				<!-- Correo -->
 				<div class="col-span-1 sm:col-span-2">
@@ -108,6 +115,14 @@ include '../contador_sesion.php';
 				<input type="password" name="contraseña" id="contraseña" maxlength="50"
 					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
 					placeholder="Ingrese la contraseña">
+				</div>
+
+                <!-- Confirmar Contraseña -->
+				<div>
+				<label for="contraseñaConfir" class="block text-sm font-medium text-gray-700">Confirmar contraseña</label>
+				<input type="password" name="contraseñaConfir" id="contraseñaConfir" maxlength="50"
+					class="block w-full mt-2 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+					placeholder="Ingrese la contraseña nuevamente">
 				</div>
 
 				<!-- Pregunta 1 -->
@@ -171,6 +186,7 @@ include '../contador_sesion.php';
         email: document.getElementById('email'),
         usuario: document.getElementById('usuario'),
         contraseña: document.getElementById('contraseña'),
+        contraseñaConfir: document.getElementById('contraseñaConfir'),
         pregunta1: document.getElementById('p1'),
         pregunta2: document.getElementById('p2')
     };
@@ -186,7 +202,7 @@ include '../contador_sesion.php';
         nombre: { min: 2, max: 25 },
         apellido: { min: 2, max: 25 },
         cedula: { min: 7, max: 8 },
-        telefono: { min: 10, max: 11 },
+        telefono: { min: 6, max: 7 },
         email: { min: 5, max: 25 },
         usuario: { min: 5, max: 30 },
         contraseña: { min: 14, max: 25 },
@@ -277,6 +293,31 @@ include '../contador_sesion.php';
         return { valido: true };
     };
 
+      // Validación específica para contraseña
+      const validarContraseñaConfir = () => {
+        const input = inputs.contraseñaConfir;
+        const valor = input.value.trim();
+        input.classList.remove('border-red-500');
+
+        if (!valor) {
+            return { valido: false, mensaje: "La contraseña no puede estar vacía" };
+        }
+
+        if (valor.length < LIMITES.contraseñaConfir.min) {
+            return { valido: false, mensaje: `La contraseña debe tener al menos ${LIMITES.contraseñaConfir.min} caracteres` };
+        }
+
+        if (valor.length > LIMITES.contraseñaConfir.max) {
+            return { valido: false, mensaje: `La contraseña no puede exceder los ${LIMITES.contraseñaConfir.max} caracteres` };
+        }
+
+        if (!regex.contraseñaConfir.test(valor)) {
+            return { valido: false, mensaje: "La contraseña debe contener al menos una mayúscula, una minúscula y un número" };
+        }
+
+        return { valido: true };
+    };
+
     // Evento de validación al hacer clic en el botón
     btn.addEventListener("click", (e) => {
         Object.values(inputs).forEach(input => input.classList.remove('border-red-500'));
@@ -311,6 +352,16 @@ include '../contador_sesion.php';
             mostrarNotificacion(validacionContraseña.mensaje);
             return;
         }
+
+         // Luego validar la contraseña por separado
+         const validacionContraseñaConfir = validarContraseñaConfir();
+        if (!validacionContraseñaConfir.valido) {
+            e.preventDefault();
+            inputs.contraseñaConfir.classList.add('border-red-500');
+            mostrarNotificacion(validacionContraseñaConfir.mensaje);
+            return;
+        }
+
 
         // Si todo está bien, mostrar mensaje de éxito
         mostrarNotificacion("Todos los campos son válidos. Formulario enviado correctamente.", "success");
@@ -349,6 +400,7 @@ if (isset($_POST['registrar'])) {
     $correo = trim($_POST['correo']);
     $usuario = trim($_POST['usuario']);
     $contraseña = trim($_POST['contraseña']);
+    $contraseñaConfir = trim($_POST['contraseñaConfir']);
     $pregunta1 = strtolower(trim($_POST['pregunta1']));
     $pregunta2 = strtolower(trim($_POST['pregunta2']));
     $contraseña_cifrada = password_hash($contraseña, PASSWORD_ARGON2ID);
@@ -360,10 +412,11 @@ if (isset($_POST['registrar'])) {
         'nombre' => ['min' => 2, 'max' => 25],
         'apellido' => ['min' => 2, 'max' => 25],
         'cedula' => ['min' => 7, 'max' => 8],
-        'telefono' => ['min' => 10, 'max' => 11],
+        'telefono' => ['min' => 6, 'max' => 7],
         'correo' => ['min' => 5, 'max' => 50],
         'usuario' => ['min' => 5, 'max' => 30],
         'contraseña' => ['min' => 14, 'max' => 25],
+        'contraseñaConfir' => ['min' => 14, 'max' => 25],
         'pregunta' => ['min' => 2, 'max' => 100],
     ];
 
@@ -394,6 +447,7 @@ if (isset($_POST['registrar'])) {
     $errores[] = validarCampo($correo, $regex['email'], $LIMITES['correo'], 'Correo');
     $errores[] = validarCampo($usuario, null, $LIMITES['usuario'], 'Usuario');
     $errores[] = validarCampo($contraseña, $regex['contraseña'], $LIMITES['contraseña'], 'Contraseña');
+    $errores[] = validarCampo($contraseña, $regex['contraseña'], $LIMITES['contraseñaConfir'], 'contraseñaConfir');
     $errores[] = validarCampo($pregunta1, $regex['soloLetras'], $LIMITES['pregunta'], 'Pregunta 1');
     $errores[] = validarCampo($pregunta2, $regex['soloLetras'], $LIMITES['pregunta'], 'Pregunta 2');
 
@@ -413,11 +467,22 @@ if (isset($_POST['registrar'])) {
         }
         exit();
     }
+   
     if ($campo === 'nombre_usuario' && strtolower($valor) === 'admin') {
         echo "<script>
             const notificacion = document.createElement('div');
             notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
             notificacion.innerHTML = `<span>Ya se encuentra un usuario administrador ingresado</span>`;
+            document.body.appendChild(notificacion);
+            setTimeout(() => notificacion.remove(), 4000);
+        </script>";
+        exit();
+    }
+    if ($contraseña != $contraseñaConfir) {
+        echo "<script>
+            const notificacion = document.createElement('div');
+            notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+            notificacion.innerHTML = `<span>La contraseña debe ser la misma en ambos campos</span>`;
             document.body.appendChild(notificacion);
             setTimeout(() => notificacion.remove(), 4000);
         </script>";

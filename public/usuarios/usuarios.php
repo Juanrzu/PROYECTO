@@ -146,7 +146,6 @@ $totalPages = ceil($totalRows / $perPage);
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
@@ -160,8 +159,8 @@ $totalPages = ceil($totalRows / $perPage);
             <tbody class="bg-white divide-y divide-gray-200">
                 <?php
                 if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        $id = $row['id'];
+                    while ($row = $result->fetch_assoc()) {    
+                        $id= $row ['id'];                    
                         $usuario_row = $row['nombre_usuario'];
                         $estado = $row['estado'];
                         $nombre = $row['nombre'];
@@ -171,7 +170,6 @@ $totalPages = ceil($totalRows / $perPage);
                         $gmail = $row['correo'];
                 ?>
                 <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $id; ?></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo $usuario_row; ?></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo ($estado == 'Activo') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'; ?>">

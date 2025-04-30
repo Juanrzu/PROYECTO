@@ -110,14 +110,22 @@ if (!isset($usuario)) {
              placeholder="Cédula del Representante" name="cedularepre" id="cedula" maxlength="12" autocomplete="off" >
         </div>
 
-         <!-- Teléfono -->
-         <div class="sm:col-span-2">
+        <!-- Teléfono -->
+    <div class="sm:col-span-2">
         <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
         <div class="flex items-center gap-3">
+          <select class="px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="codigo" id="codigo" >
+            <option value="0268">0268</option>
+            <option value="0414">0414</option>
+            <option value="0424">0424</option>
+            <option value="0416">0416</option>
+            <option value="0426">0426</option>
+            <option value="0412">0412</option>
+          </select>
           <input type="text" class="flex-1 px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400" 
-               placeholder="Teléfono" name="telefono" autocomplete="off" maxlength="9" id="telefono" >
+               placeholder="Teléfono" name="telefono" autocomplete="off" maxlength="7" id="telefono" >
         </div>
-        </div> 
+        </div>
 
         <!-- Correo Electrónico -->
         <div class="sm:col-span-2">
@@ -351,7 +359,7 @@ if (isset($_POST['submit'])) {
         'representante' => ['min' => 2, 'max' => 25],
         'representante_apellido' => ['min' => 2, 'max' => 25],
         'cedularepre' => ['min' => 6, 'max' => 12],
-        'telefono' => ['min' => 10, 'max' => 12],
+        'telefono' => ['min' => 6, 'max' => 7],
         'correo' => ['min' => 5, 'max' => 50],
     ];
 
@@ -445,9 +453,9 @@ if (isset($_POST['submit'])) {
     // Validaciones adicionales de teléfono y cédula
     if (!is_numeric($telefono)) {
         $errores[] = "El teléfono debe ser ingresado solo con números.";
-    } elseif (strlen($telefono) > 12) {
+    } elseif (strlen($telefono) > 7) {
         $errores[] = "El número de teléfono es muy largo.";
-    } elseif (strlen($telefono) < 10) {
+    } elseif (strlen($telefono) < 6) {
         $errores[] = "El número de teléfono es muy corto.";
     }
 
@@ -476,7 +484,7 @@ if (isset($_POST['submit'])) {
     if (!$idRepre) {
         $sql = "INSERT INTO representante (nombre, apellido, cedula, telefono, correo) VALUES (?, ?, ?, ?, ?)";
         $stmt = $connect->prepare($sql);
-        $stmt->bind_param("sssss", $representante, $representante_apellido, $cedularepre, $telefono, $correo);
+        $stmt->bind_param("sssss", $representante, $representante_apellido, $cedularepre, $codigo, $correo);
         if (!$stmt->execute()) {
             die("Error al insertar el nuevo representante: " . $stmt->error);
         }
@@ -517,7 +525,7 @@ if (isset($_POST['submit'])) {
     $sql = "INSERT INTO bitacora (accion, datos_accion, usuario) VALUES (?, ?, ?)";
     $stmt = $connect->prepare($sql);
     $accion = "Se Insertó un nuevo estudiante.";
-    $datos_accion = "Informacion: nombre = $nombre, apellido = $apellido, cen = $cen, nacimiento = $nacimiento, sexo = $sexo, grado = $grado, seccion = $seccion, representante = $representante, Apellido del representante = $representante_apellido, cedula representante = $cedularepre, telefono = $telefono, correo = $correo";
+    $datos_accion = "Informacion: nombre = $nombre, apellido = $apellido, cen = $cen, nacimiento = $nacimiento, sexo = $sexo, grado = $grado, seccion = $seccion, representante = $representante, Apellido del representante = $representante_apellido, cedula representante = $cedularepre, telefono = $codigo, correo = $correo";
     $stmt->bind_param("sss", $accion, $datos_accion, $usuario);
     $stmt->execute();
 

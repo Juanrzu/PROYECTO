@@ -79,12 +79,6 @@ if (!isset($usuario)) {
                     <th scope="col" class="px-4 py-3">Nombres</th>
                     <th scope="col" class="px-4 py-3">Apellidos</th>
                     <th scope="col" class="px-4 py-3">C.E.N</th>
-                    <th scope="col" class="px-4 py-3">Nacimiento</th>
-                    <th scope="col" class="px-4 py-3">Sexo</th>
-                    <th scope="col" class="px-4 py-3">Representante</th>
-                    <th scope="col" class="px-4 py-3">C.I Representante</th>
-                    <th scope="col" class="px-4 py-3">Teléfono</th>
-                    <th scope="col" class="px-4 py-3">Correo Electrónico</th>
                     <th scope="col" class="px-4 py-3">Grado</th>
                     <th scope="col" class="px-4 py-3">Sección</th>
                     <th scope="col" class="px-4 py-3">Acciones</th>
@@ -110,12 +104,6 @@ if (!isset($usuario)) {
                             <td class="px-4 py-3">' . htmlspecialchars($row['nombre']) . '</td>
                             <td class="px-4 py-3">' . htmlspecialchars($row['apellido']) . '</td>
                             <td class="px-4 py-3">' . htmlspecialchars($row['cen']) . '</td>
-                            <td class="px-4 py-3">' . htmlspecialchars($row['nacimiento']) . '</td>
-                            <td class="px-4 py-3">' . htmlspecialchars($row['sexo']) . '</td>
-                            <td class="px-4 py-3">' . htmlspecialchars($row['representante_nombre']) . '</td>
-                            <td class="px-4 py-3">' . htmlspecialchars($row['cedularepre']) . '</td>
-                            <td class="px-4 py-3">' . htmlspecialchars($row['telefono']) . '</td>
-                            <td class="px-4 py-3">' . htmlspecialchars($row['correo']) . '</td>
                             <td class="px-4 py-3">' . htmlspecialchars($row['grado_nombre']) . '</td>
                             <td class="px-4 py-3">' . htmlspecialchars($row['seccion_nombre']) . '</td>
                             <td class="px-4 py-3 text-center">

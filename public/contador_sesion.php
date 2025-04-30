@@ -48,12 +48,12 @@
 
     <script>
         function cuenta_regresiva() {
-            let n = 60;
+            let n =  180;
             let contador = setInterval(cuenta, 1000);
             function cuenta() {
                 // Resetea el contador cuando el mouse se mueve
                 document.onmousemove = function () {
-                    n = 9899999999999990;
+                    n = 180;
                 };
 
                 n--;

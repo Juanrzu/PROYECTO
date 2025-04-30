@@ -78,12 +78,6 @@ if (!isset($usuario)) {
           <th scope="col" class="px-4 py-2">Nombres</th>
           <th scope="col" class="px-4 py-2">Apellidos</th>
           <th scope="col" class="px-4 py-2 bg-gray-200 dark:bg-gray-700">C.E.N</th>
-          <th scope="col" class="px-4 py-2">Nacimiento</th>
-          <th scope="col" class="px-4 py-2 bg-gray-200 dark:bg-gray-700">Sexo</th>
-          <th scope="col" class="px-4 py-2">Representante</th>
-          <th scope="col" class="px-4 py-2 bg-gray-200 dark:bg-gray-700">C.I Representante</th>
-          <th scope="col" class="px-4 py-2">Teléfono</th>
-          <th scope="col" class="px-4 py-2 bg-gray-200 dark:bg-gray-700">Correo Electrónico</th>
           <th scope="col" class="px-4 py-2">Grado</th>
           <th scope="col" class="px-4 py-2 bg-gray-200 dark:bg-gray-700">Sección</th>
           <th scope="col" class="px-4 py-2 bg-blue-500 text-white text-center">Acción</th>
@@ -122,12 +116,6 @@ $result = mysqli_query($connect, $sql);
               <td class="px-4 py-2"><?= htmlspecialchars($row['nombre']) ?></td>
               <td class="px-4 py-2"><?= htmlspecialchars($row['apellido']) ?></td>
               <td class="px-4 py-2"><?= htmlspecialchars($row['cen']) ?></td>
-              <td class="px-4 py-2"><?= htmlspecialchars($row['nacimiento']) ?></td>
-              <td class="px-4 py-2"><?= htmlspecialchars($row['sexo']) ?></td>
-              <td class="px-4 py-2"><?= htmlspecialchars($row['representante_nombre']) ?></td>
-              <td class="px-4 py-2"><?= htmlspecialchars($row['cedularepre']) ?></td>
-              <td class="px-4 py-2"><?= htmlspecialchars($row['telefono']) ?></td>
-              <td class="px-4 py-2"><?= htmlspecialchars($row['correo']) ?></td>
               <td class="px-4 py-2"><?= htmlspecialchars($row['grado_nombre']) ?></td>
               <td class="px-4 py-2"><?= htmlspecialchars($row['seccion_nombre']) ?></td>
               <td class="px-4 py-2 text-center">
