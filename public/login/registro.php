@@ -4,10 +4,10 @@ session_start();
 error_reporting(0);
 $usuarioSesion = $_SESSION['nombre_usuario'];
 if ($usuarioSesion == null || $usuarioSesion == '') {
-	header('location: ./../login/login.php');
+	header('location: login/login.php');
 	die();
 }
-include './../connect.php';
+include '../connect.php';
 include '../contador_sesion.php';
 ?>
 <!DOCTYPE html>

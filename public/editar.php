@@ -6,7 +6,7 @@ if (!isset($usuario)) {
     header('location: login/login.php');
     die();
 } else {
-    include('connect.php');
+    include 'connect.php';
     include 'contador_sesion.php';
 }
 

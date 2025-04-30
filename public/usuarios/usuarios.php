@@ -4,13 +4,13 @@ session_start();
 error_reporting(0);
 
 if (!isset($_SESSION['nombre_usuario']) || empty($_SESSION['nombre_usuario'])) {
-    header('Location: ./../login/login.php');
+    header('Location: ../login/login.php');
     exit();
 }
 
 $usuario = $_SESSION['nombre_usuario'];
 
-require_once './../connect.php';
+require_once '../connect.php';
 require_once '../contador_sesion.php';
 ?>
 
