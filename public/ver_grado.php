@@ -22,7 +22,7 @@ include 'contador_sesion.php';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
+  <link rel="stylesheet" href="../src/css/styles.css">
   <title>Estudiantes</title>
 </head>
 
@@ -69,14 +69,14 @@ include 'contador_sesion.php';
       <div class="flex flex-wrap gap-4 mb-8">
       <?php
       
-      echo '<a href="http://localhost/dashboard/Proyecto/public/profesor.php" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+      echo '<a href="profesor.php" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
           </svg>
           Agregar Profesor
           </a>';
       
-      echo '<a href="http://localhost/dashboard/Proyecto/public/estudiante.php" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+      echo '<a href="estudiante.php" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
           </svg>
@@ -695,7 +695,7 @@ $stmt->close();
  
 
   <!-- Scripts -->
-  <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
-  <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
+  <script src="../node_modules/flowbite/dist/flowbite.min.js"></script>
+  <script src="../src/js/script.js"></script>
 </body>
 </html>

@@ -19,7 +19,7 @@ include 'contador_sesion.php';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestion de estudiantes</title>
-  <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
+  <link rel="stylesheet" href="../src/css/styles.css">
 </head>
 
 <body class="ml-64">
