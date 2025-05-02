@@ -11,8 +11,25 @@ include './../../connect.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../../src/css/output.css">
     <link rel="stylesheet" href="../../../src/css/styles.css">
+
+    <style>
+        .bg-login{
+  width: 100%;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5),rgba(0, 0, 0, 0.5)),
+  url(../../../src/bg-login.jpg);
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+
+    .bg-wave {
+        background-image: url('../../../src/wave-bg.png');
+    }
+
+    </style>
     <title>Recuperar Contraseña</title>
 </head>
 
@@ -21,7 +38,7 @@ include './../../connect.php';
 <body class="bg-login" id="body">
 
     <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-xl shadow-2xl bg-[url('../../../src/wave-bg.png')] bg-no-repeat bg-cover bg-right-bottom overflow-hidden">
+        <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-xl shadow-2xl bg-wave bg-no-repeat bg-cover bg-right-bottom overflow-hidden">
             <!-- Carousel Section -->
             <div class="hidden md:block md:w-1/2  p-8">
                 <div id="default-carousel" class="h-full relative" data-carousel="slide">

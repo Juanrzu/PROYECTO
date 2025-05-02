@@ -21,14 +21,35 @@ require_once './../connect.php';
 		<title>Login</title>
 	</head>
 	<script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
+
+
+    <style>
+        .bg-login{
+  width: 100%;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5),rgba(0, 0, 0, 0.5)),
+  url(../../src/bg-login.jpg);
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+
+    .bg-wave {
+        background-image: url('../../src/wave-bg.png');
+    }
+
+    </style>
+
+
+
 	<body class="bg-login" id="body">
 
 	<div class="min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-xl shadow-2xl 
     bg-white 
-    sm:bg-[url('../../src/css/wave-bg.png')] sm:bg-no-repeat sm:bg-cover sm:bg-right-bottom
-    md:bg-white
-    lg:bg-[url('../../src/css/wave-bg.png')] lg:bg-no-repeat lg:bg-cover lg:bg-right-bottom
+    bg-wave sm:bg-right-bottom
+    md:bg-white lg:bg-no-repeat lg:bg-cover lg:bg-right-bottom
     overflow-hidden">
     <!-- Carousel Section -->
         <div class="hidden md:block md:w-1/2 p-8">
