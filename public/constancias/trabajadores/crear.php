@@ -17,7 +17,7 @@ if (!isset($usuario)) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
+  <link rel="stylesheet" href="../../../src/css/styles.css">
   <title>constancias</title>
 
 </head>
@@ -61,7 +61,7 @@ if (!isset($usuario)) {
   <!-- Botón de acción -->
   <div class="flex flex-wrap gap-4 mb-8">
  <!-- Botón Volver -->
-                <a href="http://localhost/dashboard/Proyecto/public/constancias.php"
+                <a href="../../../public/constancias.php"
                 class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -70,7 +70,7 @@ if (!isset($usuario)) {
                 Volver
             </a>
 
-            <a href="http://localhost/dashboard\PROYECTO\public\trabajadores\ag_trabajador.php" class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+            <a href="../../..\public\trabajadores\ag_trabajador.php" class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
       </svg>
@@ -297,8 +297,8 @@ $stmt->close();
         </a>
       </footer>
 
-  <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
-    <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
+      <script src="../../../src/js/script.js"></script>
+      <script src="../../../node_modules\flowbite\dist\flowbite.min.js"></script>
   
 </body>
 </html>

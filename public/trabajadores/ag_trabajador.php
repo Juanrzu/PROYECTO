@@ -11,7 +11,7 @@ if (empty($_SESSION['nombre_usuario'])) {
 $usuario = $_SESSION['nombre_usuario'];
 
 // Incluir archivos necesarios
-require_once '../../connect.php';
+require_once './../connect.php';
 require_once '../contador_sesion.php';
 ?>
 
@@ -22,7 +22,8 @@ require_once '../contador_sesion.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trabajadores</title>
-<link rel="stylesheet" href="../../src/css/styles.css"></head>
+<link rel="stylesheet" href="../../src/css/styles.css"> 
+</head>
 
 <body class="ml-64">
 
