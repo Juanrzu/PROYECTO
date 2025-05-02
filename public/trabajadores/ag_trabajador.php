@@ -4,14 +4,14 @@ error_reporting(0);
 
 // Verificar si el usuario está autenticado
 if (empty($_SESSION['nombre_usuario'])) {
-    header('Location: ./../login/login.php');
+    header('Location: ../../login/login.php');
     exit();
 }
 
 $usuario = $_SESSION['nombre_usuario'];
 
 // Incluir archivos necesarios
-require_once './../connect.php';
+require_once '../../connect.php';
 require_once '../contador_sesion.php';
 ?>
 
@@ -22,8 +22,7 @@ require_once '../contador_sesion.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trabajadores</title>
-    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
-</head>
+<link rel="stylesheet" href="../../src/css/styles.css"></head>
 
 <body class="ml-64">
 
@@ -226,8 +225,8 @@ require_once '../contador_sesion.php';
 });
         });
 </script>
-    <script src="http://localhost/dashboard/Proyecto/node_modules/flowbite/dist/flowbite.min.js"></script>
-    <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
+<script src="../../src/js/script.js"></script>
+<script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
 </body>
 
 </html>

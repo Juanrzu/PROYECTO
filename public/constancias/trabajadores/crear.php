@@ -81,11 +81,84 @@ if (!isset($usuario)) {
 
   <!-- Contenedor de la tabla -->
   <div class="overflow-x-auto shadow-md sm:rounded-lg m-10 xl:m-4">
+
+
+
+
+
     <?php
-    $sql = "SELECT * FROM trabajadores";
-    $result = mysqli_query($connect, $sql);
+
+
+
+
+// Configuración de paginación y búsqueda
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$perPage = 10; // Número de registros por página
+$offset = ($page - 1) * $perPage;
+
+// Construir consulta con búsqueda
+$sql = "SELECT SQL_CALC_FOUND_ROWS * FROM trabajadores
+  WHERE nombre LIKE ? 
+  OR apellido LIKE ? 
+  OR cedula LIKE ? 
+  OR telefono LIKE ? 
+  OR rol LIKE ? 
+  OR CAST(id AS CHAR) LIKE ?
+  ORDER BY nombre ASC 
+  LIMIT ? OFFSET ?";
+
+$stmt = $connect->prepare($sql);
+$searchTerm = "%$search%";
+$stmt->bind_param(
+    "ssssssii", 
+    $searchTerm, 
+    $searchTerm, 
+    $searchTerm, 
+    $searchTerm, 
+    $searchTerm, 
+    $searchTerm,
+    $perPage, 
+    $offset
+);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Obtener total de registros
+$totalResult = $connect->query("SELECT FOUND_ROWS()");
+$totalRows = $totalResult->fetch_row()[0];
+$totalPages = ceil($totalRows / $perPage);
+
+
+
+
+?><!-- Buscador -->
+<div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <form method="GET" action="">
+            <div class="flex items-center gap-4">
+                <h3 class="text-xl font-semibold text-gray-800 flex-grow">Trabajadores</h3>
+                <input 
+                    type="text" 
+                    name="search" 
+                    placeholder="Buscar Trabajadores..."
+                    value="<?= htmlspecialchars($search) ?>"
+                    class="w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                >
+                <button 
+                    type="submit"
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                >
+                    Buscar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<?php
     
-    if (mysqli_num_rows($result) > 0): ?>
+    if (mysqli_num_rows($result) > 0) { ?>
       <!-- Tabla (solo se muestra si hay registros) -->
       <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
         <thead class="text-xs text-gray-900 uppercase bg-gray-100 dark:bg-gray-800 dark:text-gray-200">
@@ -125,11 +198,56 @@ if (!isset($usuario)) {
           <?php endwhile; ?>
         </tbody>
       </table>
-    <?php else: ?>
+    <?php } else { ?>
       <div class="w-full bg-white p-8 text-center rounded-lg shadow">
         <h3 class="text-lg font-medium text-gray-900">No hay registros disponibles</h3>
       </div>
-    <?php endif; ?>
+    <?php } ?>
+
+
+
+     <!-- Paginación -->
+     <div class="px-6 py-4 border-t border-gray-200">
+        <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-700">
+                Mostrando <?= ($offset + 1) ?> a <?= min($offset + $perPage, $totalRows) ?> de <?= $totalRows ?> resultados
+            </span>
+            <div class="flex gap-2">
+                <?php if($page > 1): ?>
+                    <a 
+                        href="?page=<?= $page - 1 ?>&search=<?= urlencode($search) ?>" 
+                        class="px-3 py-1 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                        Anterior
+                    </a>
+                <?php endif; ?>
+
+                <?php for($i = 1; $i <= $totalPages; $i++): ?>
+                    <a 
+                        href="?page=<?= $i ?>&search=<?= urlencode($search) ?>" 
+                        class="px-3 py-1 rounded-md <?= $i == $page ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' ?>"
+                    >
+                        <?= $i ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php if($page < $totalPages): ?>
+                    <a 
+                        href="?page=<?= $page + 1 ?>&search=<?= urlencode($search) ?>" 
+                        class="px-3 py-1 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                        Siguiente
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+$stmt->close();
+?>
+  </div>
   </div>
 
 

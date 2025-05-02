@@ -20,8 +20,8 @@ require_once '../contador_sesion.php';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
-  <title>Trabajadores</title>
+<link rel="stylesheet" href="../../src/css/styles.css">  
+<title>Trabajadores</title>
 </head>
 
 <body class="ml-64">
@@ -140,6 +140,8 @@ $result = $stmt->get_result();
 $totalResult = $connect->query("SELECT FOUND_ROWS()");
 $totalRows = $totalResult->fetch_row()[0];
 $totalPages = ceil($totalRows / $perPage);
+
+
     if (mysqli_num_rows($result) > 0): ?>
       <!-- Tabla (solo se muestra si hay registros) -->
       <table class="min-w-full divide-y divide-gray-200">
@@ -286,8 +288,8 @@ $stmt->close();
         </div>
     </footer>
   </div>
-  <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
-  <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
+  <script src="../../src/js/script.js"></script>
+  <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
 </body>
 
 </html>

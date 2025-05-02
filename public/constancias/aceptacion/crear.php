@@ -60,7 +60,7 @@ if (!isset($usuario)) {
 
 <?php
       
-      echo '<a href="http://localhost/dashboard/Proyecto/public/constancias/aceptacion/ver_alumnos.php" class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+      echo '<a href="http://localhost/dashboard/Proyecto/public/constancias/aceptacion/ver_alumnos.php" class="mb-6 inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
@@ -72,7 +72,114 @@ if (!isset($usuario)) {
 
 
 
+
+<?php
+      
+      
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$perPage = 10; // Número de registros por página
+$offset = ($page - 1) * $perPage;
+
+
+    $sql = "SELECT SQL_CALC_FOUND_ROWS estudiantes.*, seccion.nombre as seccion_nombre, grados.nombre as grado_nombre, 
+        representante.nombre as representante_nombre, representante.cedula as cedularepre, 
+        representante.telefono as telefono, representante.correo as correo
+        FROM estudiantes  
+        JOIN seccion ON estudiantes.idseccion = seccion.id 
+        JOIN grados ON estudiantes.idgrado = grados.id
+        JOIN representante ON estudiantes.idrepresentante = representante.id
+        WHERE (estudiantes.nombre LIKE ? 
+            OR estudiantes.apellido LIKE ? 
+            OR estudiantes.cen LIKE ? 
+            OR representante.cedula LIKE ? 
+            OR representante.telefono LIKE ? 
+            OR representante.correo LIKE ?)
+        AND seccion.nombre = ?
+        AND grados.nombre = ?
+        ORDER BY estudiantes.nombre ASC
+        LIMIT ? OFFSET ?";
+    
+    $stmt = $connect->prepare($sql);
+    $searchTerm = "%$search%";
+    $secc = strtoupper(trim($seccion));
+    $stmt->bind_param("sssssssiii", 
+        $searchTerm, 
+        $searchTerm, 
+        $searchTerm, 
+        $searchTerm, 
+        $searchTerm, 
+        $searchTerm,
+        $secc,
+        $grado,
+        $perPage, 
+        $offset
+    );
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    // Obtener total de registros
+    $totalResult = $connect->query("SELECT FOUND_ROWS()");
+    $totalRows = $totalResult->fetch_row()[0];
+    $totalPages = ceil($totalRows / $perPage);
+    
+      
+      ?>
+
+
+
+<!-- Buscador Mejorado -->
+<div class="rounded-xl shadow-md overflow-hidden mb-6 bg-white ">
+    <div class="px-6 py-4  flex flex-col md:flex-row md:items-center gap-4">
+        <form method="GET" action="" class="flex flex-col md:flex-row md:items-center w-full gap-4">
+            <input type="hidden" name="gradonombre" value="<?= htmlspecialchars($grado) ?>">
+            <input type="hidden" name="seccion" value="<?= htmlspecialchars($seccion) ?>">
+            <h3 class="text-xl font-semibold flex-grow">Estudiantes</h3>
+            <div class="flex flex-grow max-w-lg relative">
+                <input 
+                    type="text" 
+                    name="search" 
+                    placeholder="Buscar por nombre, apellido, CEN, CI representante..."
+                    value="<?= htmlspecialchars($search) ?>"
+                    class="w-full px-4 py-2 rounded-l-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 text-gray-800 placeholder-gray-400 transition duration-150 ease-in-out shadow-sm"
+                    autocomplete="off"
+                >
+                <button 
+                    type="submit"
+                    class="px-4 py-2 bg-green-600 text-white rounded-r-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+                    title="Buscar"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8" stroke="currentColor" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-linecap="round"/>
+                    </svg>
+                    <span class="hidden md:inline">Buscar</span>
+                </button>
+            </div>
+            <?php if (!empty($search)): ?>
+                <a href="?gradonombre=<?= urlencode($grado) ?>&seccion=<?= urlencode($seccion) ?>" 
+                   class="ml-2 px-3 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors text-sm flex items-center gap-1"
+                   title="Limpiar búsqueda">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Limpiar
+                </a>
+            <?php endif; ?>
+        </form>
+    </div>
+    <?php if (!empty($search)): ?>
+        <div class="px-6 py-2 bg-blue-100 text-blue-800 text-sm">
+            Resultados para: <span class="font-semibold"><?= htmlspecialchars($search) ?></span>
+        </div>
+    <?php endif; ?>
+</div>
+
+
     <div class="overflow-x-auto shadow-md sm:rounded-lg m-10 xl:m-4">
+
+
+    
         <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
             <thead class="text-xs text-gray-900 uppercase bg-gray-100 dark:bg-gray-800 dark:text-gray-200">
                 <tr>
@@ -92,18 +199,6 @@ if (!isset($usuario)) {
             </thead>
             <tbody>
                 <?php
-                $secc = strtoupper(trim($seccion));
-                $sql = "SELECT estudiantes.*, seccion.nombre AS seccion_nombre, grados.nombre AS grado_nombre, 
-                            representante.nombre AS representante_nombre, representante.cedula AS cedularepre, 
-                            representante.telefono AS telefono, representante.correo AS correo
-                        FROM estudiantes 
-                        JOIN seccion ON estudiantes.idseccion = seccion.id 
-                        JOIN grados ON estudiantes.idgrado = grados.id
-                        JOIN representante ON estudiantes.idrepresentante = representante.id
-                        WHERE seccion.nombre = '$secc' AND grados.nombre = $grado
-                        ORDER BY estudiantes.nombre ASC";
-
-                $result = mysqli_query($connect, $sql);
                 if ($result && mysqli_num_rows($result) > 0) {
                   while ($row = mysqli_fetch_assoc($result)) {
                     echo '<tr class="border-b border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
@@ -140,7 +235,53 @@ if (!isset($usuario)) {
                 ?>
             </tbody>
         </table>
+
+
+         <!-- Paginación -->
+    <div class="px-6 py-4 border-t border-gray-200">
+        <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-700">
+                Mostrando <?= ($offset + 1) ?> a <?= min($offset + $perPage, $totalRows) ?> de <?= $totalRows ?> resultados
+            </span>
+            <div class="flex gap-1">
+                <?php if($page > 1): ?>
+                    <a 
+                        href="?page=<?= $page - 1 ?>&search=<?= urlencode($search) ?>" 
+                        class="px-3 py-1 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                        Anterior
+                    </a>
+                <?php endif; ?>
+
+                <?php for($i = 1; $i <= $totalPages; $i++): ?>
+                    <a 
+                        href="?page=<?= $i ?>&search=<?= urlencode($search) ?>" 
+                        class="px-3 py-1 rounded-md <?= $i == $page ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' ?>"
+                    >
+                        <?= $i ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php if($page < $totalPages): ?>
+                    <a 
+                        href="?page=<?= $page + 1 ?>&search=<?= urlencode($search) ?>" 
+                        class="px-3 py-1 rounded-md bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                        Siguiente
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
+</div>
+
+<?php
+$stmt->close();
+?>
+      </div>
+    </div>
+
+    
 
     <!-- Botón de Ayuda -->
   <button data-tooltip-target="tooltip-retiros" type="button" class="fixed right-6 bottom-14 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300">

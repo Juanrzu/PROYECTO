@@ -23,8 +23,7 @@ require_once '../contador_sesion.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Actualizar preguntas</title>
-    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
-
+<link rel="stylesheet" href="../../src/css/styles.css">
 </head>
 
 <body class="ml-64">
@@ -86,7 +85,7 @@ require_once '../contador_sesion.php';
 
         <div class="mb-6 flex gap-4">
             <button type="button" data-modal-target="default-modal" data-modal-toggle="default-modal" class="flex w-full justify-center px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Actualizar</button>
-            <button type="button" onclick="window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'" class="flex w-full justify-center px-4 py-3 text-sm font-medium text-white bg-blue-700 rounded-md shadow-sm hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">Regresar</button>
+            <button type="button" onclick="window.location='usuarios.php'" class="flex w-full justify-center px-4 py-3 text-sm font-medium text-white bg-blue-700 rounded-md shadow-sm hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">Regresar</button>
         </div>
 
             <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 left-0 right-0 bottom-0 z-50 justify-center items-center">
@@ -130,8 +129,8 @@ require_once '../contador_sesion.php';
         </div>
     </footer>
     </div>
-    <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
-    <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
+    <script src="../../src/js/script.js"></script>
+    <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
 
 
 
@@ -348,8 +347,8 @@ require_once '../contador_sesion.php';
                 if ($stmt->execute()) {
                     mostrar_mensaje("Preguntas de seguridad actualizadas correctamente.", 'success');
                     $redirect = ($usuario === 'admin') ? 
-                        'http://localhost/dashboard/Proyecto/public/usuarios/usuario.php' : 
-                        'http://localhost/dashboard/Proyecto/public/display.php';
+                        'usuario.php' : 
+                        '../display.php';
                     echo "<script>setTimeout(() => window.location.href = '$redirect', 2000);</script>";
                     exit();
                 } else {

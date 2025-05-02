@@ -38,8 +38,7 @@ include '../contador_sesion.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trabajadores</title>
-    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
-</head>
+<link rel="stylesheet" href="../../src/css/styles.css"></head>
 </head>
 
 <body class="bg-ghost ml-64">
@@ -156,16 +155,10 @@ include '../contador_sesion.php';
               window.history.back();
                   }
             </script>
-    <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
-    <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script> 
+
+<script src="../../src/js/script.js"></script>
+<script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
     <script>
-            function regresarPaginaAnterior() {
-                window.history.back();
-            }
-        </script>
-        <script src="http://localhost/dashboard/Proyecto/node_modules/flowbite/dist/flowbite.min.js"></script>
-        <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
-        <script>
 
 
     const form = document.getElementById('formulario');

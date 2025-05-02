@@ -47,7 +47,7 @@ $intentos_fallidos = $row['intentos_fallidos'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Usuario</title>
-    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
+<link rel="stylesheet" href="../../src/css/styles.css">
 </head>
 
 <body class="bg-gray-50">
@@ -171,7 +171,6 @@ $intentos_fallidos = $row['intentos_fallidos'];
         </form>
     </main>
 
-    <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
 </body>
 </html>
 <script>
@@ -179,15 +178,8 @@ $intentos_fallidos = $row['intentos_fallidos'];
               window.history.back();
                   }
             </script>
-    <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
-    <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script> 
-    <script>
-            function regresarPaginaAnterior() {
-                window.history.back();
-            }
-        </script>
-        <script src="http://localhost/dashboard/Proyecto/node_modules/flowbite/dist/flowbite.min.js"></script>
-        <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
+                <script src="../../src/js/script.js"></script>
+                <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
 <script>
 
 
@@ -500,7 +492,7 @@ if (isset($_POST['submit'])) {
 
     if ($stmt->execute()) {
         $stmt->close();
-        echo "<script>window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'</script>";
+        echo "<script>window.location='usuarios.php'</script>";
         exit;
     } else {
         die(mysqli_error($connect));
