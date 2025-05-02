@@ -17,7 +17,7 @@ include '../contador_sesion.php';
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Usuarios</title>
-	<link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
+	<link rel="stylesheet" href="../../src/css/styles.css">
 
 </head>
 
@@ -148,7 +148,7 @@ include '../contador_sesion.php';
 				class="w-full sm:w-auto px-4 py-3 rounded-md bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
 				Registrar
 				</button>
-				<button type="button" onclick="window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'"
+				<button type="button" onclick="window.location='../usuarios/usuarios.php'"
 				class="w-full sm:w-auto px-4 py-3 rounded-md bg-gray-300 text-gray-700 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
 				Regresar
 				</button>
@@ -171,8 +171,8 @@ include '../contador_sesion.php';
 		</a>
 	</footer>
 	</div>
-	<script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
-	<script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
+	<script src="../../node_modules\flowbite\dist\flowbite.min.js"></script>
+	<script src="../../src/js/script.js"></script>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -537,6 +537,6 @@ if (isset($_POST['registrar'])) {
         document.body.appendChild(notificacion);
         setTimeout(() => notificacion.remove(), 4000);
         </script>";
-    echo "<script> window.location='http://localhost/dashboard/Proyecto/public/usuarios/usuarios.php'</script>";
+    echo "<script> window.location='../usuarios/usuarios.php'</script>";
 }
 ?>

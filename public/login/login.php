@@ -17,18 +17,18 @@ require_once './../connect.php';
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		<link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
+		<link rel="stylesheet" href="../../src/css/styles.css">
 		<title>Login</title>
 	</head>
-	<script src="http://localhost/dashboard/Proyecto/node_modules/flowbite/dist/flowbite.min.js"></script>
+	<script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
 	<body class="bg-login" id="body">
 
 	<div class="min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-xl shadow-2xl 
     bg-white 
-    sm:bg-[url('http://localhost/dashboard/Proyecto/src/wave-bg.png')] sm:bg-no-repeat sm:bg-cover sm:bg-right-bottom
+    sm:bg-[url('../../src/css/wave-bg.png')] sm:bg-no-repeat sm:bg-cover sm:bg-right-bottom
     md:bg-white
-    lg:bg-[url('http://localhost/dashboard/Proyecto/src/wave-bg.png')] lg:bg-no-repeat lg:bg-cover lg:bg-right-bottom
+    lg:bg-[url('../../src/css/wave-bg.png')] lg:bg-no-repeat lg:bg-cover lg:bg-right-bottom
     overflow-hidden">
     <!-- Carousel Section -->
         <div class="hidden md:block md:w-1/2 p-8">
@@ -38,17 +38,17 @@ require_once './../connect.php';
                     <!-- Item 1 -->
                     <div class="hidden duration-900 ease-in-out" data-carousel-item>
                         <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <img src="http://localhost/dashboard/Proyecto/src/escudo.png" class="w-44" alt="Escudo de la institución">
+                            <img src="../../src/escudo.png" class="w-44" alt="Escudo de la institución">
                             <h2 class="mt-4 text-xl font-bold text-center text-gray-800">E.P.N Cesar Arteaga Castro</h2>
                         </div>
                     </div>
                     <!-- Item 2 -->
                     <div class="hidden duration-900 ease-in-out" data-carousel-item>
-                        <img src="http://localhost/dashboard/Proyecto/src/timeline.png" class="absolute inset-0 w-full h-full object-contain" alt="Línea de tiempo">
+                        <img src="../../src/timeline.png" class="absolute inset-0 w-full h-full object-contain" alt="Línea de tiempo">
                     </div>
                     <!-- Item 3 -->
                     <div class="hidden duration-900 ease-in-out" data-carousel-item>
-                        <img src="http://localhost/dashboard/Proyecto/src/3.png" class="absolute inset-0 w-full h-full object-contain" alt="Imagen informativa">
+                        <img src="../../src/3.png" class="absolute inset-0 w-full h-full object-contain" alt="Imagen informativa">
                     </div>
                 </div>
                 <!-- Slider indicators -->
@@ -93,11 +93,11 @@ require_once './../connect.php';
 
                 <!-- Campo de Contraseña -->
                 <div>
-                    <label for="contraseña" class="block text-sm font-medium text-gray-700">Contraseña</label>
+                    <label for="contrasena" class="block text-sm font-medium text-gray-700">Contraseña</label>
                     <div class="mt-1 relative">
-                        <input type="password" name="contraseña" id="contraseña" 
+                        <input type="password" name="contrasena" id="contrasena" 
                             class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
-                            placeholder="Ingrese su contraseña" maxlength="30" oninput="updateCounter('contraseña', 30)">
+                            placeholder="Ingrese su contraseña" maxlength="30" oninput="updateCounter('contrasena', 30)">
                     </div>
                 </div>
 
@@ -121,7 +121,7 @@ require_once './../connect.php';
 
                 <!-- Enlace de recuperación -->
                 <div class="flex items-center justify-between">
-                    <a href="http://localhost/dashboard/Proyecto/public/login/acciones/recuperar_clave.php" 
+                    <a href="acciones/recuperar_clave.php" 
                         class="text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors">
                         ¿Olvidó su contraseña?
                     </a>
@@ -151,13 +151,13 @@ const form = document.getElementById('formulario');
 const btn = document.getElementById('btn');
 const usuario = document.getElementById('usuario');
 const captchaInput = document.getElementById('captcha'); 
-const contraseña = document.getElementById('contraseña');
+const contrasena = document.getElementById('contrasena');
 const $minCaracteres = 14;
 
 // Configuración de límites
 const LIMITES = {
   usuario: 20,
-  contraseña: {
+  contrasena: {
             max: 25,
             min: 14
         },
@@ -201,7 +201,7 @@ function validarCampos() {
     
     // Validar campos vacíos
     if (!usuario.value.trim()) errores.push('El campo usuario no puede estar vacío');
-    if (!contraseña.value.trim()) errores.push('El campo contraseña no puede estar vacío');
+    if (!contrasena.value.trim()) errores.push('El campo contraseña no puede estar vacío');
     if (!captchaInput.value.trim()) errores.push('El campo CAPTCHA no puede estar vacío');
     
     // Validar formato usuario
@@ -213,20 +213,20 @@ function validarCampos() {
     }
     
     // Validar longitud de contraseña
-    if (contraseña.value.trim() && contraseña.value.length < $minCaracteres) {
+    if (contrasena.value.trim() && contrasena.value.length < $minCaracteres) {
         errores.push(`La contraseña debe tener al menos ${$minCaracteres} caracteres`);
-        contraseña.classList.add('border-red-500');
+        contrasena.classList.add('border-red-500');
     } else {
-        contraseña.classList.remove('border-red-500');
+        contrasena.classList.remove('border-red-500');
 
 		// Validar nueva contraseña
-        if (contraseña.value.trim()) {
-            if (contraseña.value.length < LIMITES.contraseña.min) {
-                errores.push(`La contraseña debe tener al menos ${LIMITES.contraseña.min} caracteres`);
-                contraseña.classList.add('border-red-500');
-            } else if (!REGEX.contraseña.test(contraseña.value)) {
+        if (contrasena.value.trim()) {
+            if (contrasena.value.length < LIMITES.contrasena.min) {
+                errores.push(`La contraseña debe tener al menos ${LIMITES.contrasena.min} caracteres`);
+                contrasena.classList.add('border-red-500');
+            } else if (!REGEX.contrasena.test(contrasena.value)) {
                 errores.push('La contraseña debe contener al menos una mayúscula, una minúscula y un número');
-                contraseña.classList.add('border-red-500');
+                contrasena.classList.add('border-red-500');
             }
         }
     }
@@ -250,8 +250,8 @@ form.addEventListener("submit", (e) => {
         // Enfocar el primer campo con error
         if (!usuario.value.trim() || !/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]*$/.test(usuario.value)) {
             usuario.focus();
-        } else if (!contraseña.value.trim() || contraseña.value.length < $minCaracteres) {
-            contraseña.focus();
+        } else if (!contrasena.value.trim() || contrasena.value.length < $minCaracteres) {
+            contrasena.focus();
         } else if (!captchaInput.value.trim()) {
             captchaInput.focus();
         }
@@ -294,13 +294,13 @@ function mostrar_notificacion_php($mensaje, $tipo = 'error') {
 if (isset($_POST['registrar'])) {
 	// Obtener datos del formulario
 	$usuario = $_POST['usuario'];
-	$contraseña_ingresada = $_POST['contraseña'];
+	$contrasena_ingresada = $_POST['contrasena'];
 	$captcha_input = $_POST['captcha'];
 	$limiteUsuario = 20;
-	$limiteContraseña = 30;
+	$limitecontrasena = 30;
 
 	// Verificar si el usuario, la contraseña y el captcha no están vacíos
-	if (empty($usuario) || empty($contraseña_ingresada) || empty($captcha_input)) {
+	if (empty($usuario) || empty($contrasena_ingresada) || empty($captcha_input)) {
 		mostrar_notificacion_php("Los campos no pueden estar vacíos");
 		exit();
 	}
@@ -310,7 +310,7 @@ if (isset($_POST['registrar'])) {
 		exit();
 	}
 
-	if (strlen($contraseña_ingresada) > $limiteContraseña) {
+	if (strlen($contrasena_ingresada) > $limitecontrasena) {
 		mostrar_notificacion_php("La contraseña no debe pasar los 30 caracteres");
 		exit();
 	}
@@ -336,11 +336,11 @@ if (isset($_POST['registrar'])) {
 
 	if ($array) {
 		$usuario_db = $array['nombre_usuario'];
-		$contraseña_db = $array['contraseña'];
+		$contrasena_db = $array['contraseña'];
 		$estado = $array['estado'];
 		$intentos_fallidos = $array['intentos_fallidos'];
 
-		if (password_verify($contraseña_ingresada, $contraseña_db)) {
+		if (password_verify($contrasena_ingresada, $contrasena_db)) {
 			if ($estado == "Inactivo") {
 				mostrar_notificacion_php("Este Usuario está inactivo, contacte con el administrador");
 				exit();
@@ -375,7 +375,7 @@ if (isset($_POST['registrar'])) {
 			$stmt->execute();
 			$stmt->close();
 
-			echo "<script> window.location='http://localhost/dashboard/Proyecto/public/display.php'</script>";
+			echo "<script> window.location='../display.php'</script>";
 			exit();
 		} else {
 			if ($estado == "Inactivo") {
@@ -414,6 +414,7 @@ if (isset($_POST['registrar'])) {
 					$stmt->bind_param("is", $intentos_fallidos, $usuario_db);
 					$stmt->execute();
 					$stmt->close();
+                    
 				}
 			}
 		}

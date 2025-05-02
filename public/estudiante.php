@@ -204,8 +204,8 @@ if (!isset($usuario)) {
         window.history.back();
       }
     </script>
-    <script src="http://localhost/dashboard/Proyecto/node_modules/flowbite/dist/flowbite.min.js"></script>
-    <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
+    <script src="../node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script src="../src/js/script.js"></script>
   </div>
 </body>
 

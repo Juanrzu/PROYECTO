@@ -11,17 +11,17 @@ include './../../connect.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/output.css">
-    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
+    <link rel="stylesheet" href="../../../src/css/output.css">
+    <link rel="stylesheet" href="../../../src/css/styles.css">
     <title>Recuperar Contraseña</title>
 </head>
 
-<script src="http://localhost/dashboard/Proyecto/node_modules/flowbite/dist/flowbite.min.js"></script>
+<script src="../../../node_modules/flowbite/dist/flowbite.min.js"></script>
 
 <body class="bg-login" id="body">
 
     <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-xl shadow-2xl bg-[url('http://localhost/dashboard/Proyecto/src/wave-bg.png')] bg-no-repeat bg-cover bg-right-bottom overflow-hidden">
+        <div class="w-full max-w-6xl flex flex-col md:flex-row rounded-xl shadow-2xl bg-[url('../../../src/wave-bg.png')] bg-no-repeat bg-cover bg-right-bottom overflow-hidden">
             <!-- Carousel Section -->
             <div class="hidden md:block md:w-1/2  p-8">
                 <div id="default-carousel" class="h-full relative" data-carousel="slide">
@@ -30,17 +30,17 @@ include './../../connect.php';
                         <!-- Item 1 -->
                         <div class="hidden duration-900 ease-in-out" data-carousel-item>
                             <div class="absolute inset-0 flex flex-col items-center justify-center">
-                                <img src="http://localhost/dashboard/Proyecto/src/escudo.png" class="w-44" alt="Escudo de la institución">
+                                <img src="../../../src/escudo.png" class="w-44" alt="Escudo de la institución">
                                 <h2 class="mt-4 text-xl font-bold text-center text-gray-800">E.P.N Cesar Arteaga Castro</h2>
                             </div>
                         </div>
                         <!-- Item 2 -->
                         <div class="hidden duration-900 ease-in-out" data-carousel-item>
-                            <img src="http://localhost/dashboard/Proyecto/src/timeline.png" class="absolute inset-0 w-full h-full object-contain" alt="Línea de tiempo">
+                            <img src="../../../src/timeline.png" class="absolute inset-0 w-full h-full object-contain" alt="Línea de tiempo">
                         </div>
                         <!-- Item 3 -->
                         <div class="hidden duration-900 ease-in-out" data-carousel-item>
-                            <img src="http://localhost/dashboard/Proyecto/src/3.png" class="absolute inset-0 w-full h-full object-contain" alt="Imagen informativa">
+                            <img src="../../../src/3.png" class="absolute inset-0 w-full h-full object-contain" alt="Imagen informativa">
                         </div>
                     </div>
                     <!-- Slider indicators -->
@@ -136,7 +136,7 @@ include './../../connect.php';
     </div>
 
     <div class="flex items-center justify-between">
-        <a href="http://localhost/dashboard/Proyecto/public/login/login.php" 
+        <a href="../login/login.php" 
            class="text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors">
             ¿Ya tiene una cuenta? Inicie sesión
         </a>
@@ -544,7 +544,7 @@ $stmt->bind_param("ss", $contraseña_cifrada, $usuario);
                 setTimeout(() => {
                     notificacion.classList.add("opacity-0", "transition-opacity", "duration-500");
                     setTimeout(() => {
-                        window.location.href = "http://localhost/dashboard/Proyecto/public/login/login.php";
+                        window.location.href = "../login.php";
                     }, 500);
                 }, 1500);
             });

@@ -66,7 +66,7 @@
                 if (n <= 0) { // Cuando el tiempo llega a 0
                     alert("La sesión expiró");
                     clearInterval(contador); // Detener el contador
-                    location.href = "http://localhost/dashboard/Proyecto/public/login/acciones/salir.php";
+                    location.href = "login/acciones/salir.php";
                 }
             }
         }

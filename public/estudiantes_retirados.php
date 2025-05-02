@@ -23,7 +23,7 @@ include 'contador_sesion.php';
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Favicon -->
-  <link rel="icon" href="/dashboard/Proyecto/src/img/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="../src/img/favicon.ico" type="image/x-icon">
 </head>
 
 <body class="bg-gray-100 ml-64">
@@ -396,8 +396,8 @@ $stmt->close();
   </footer>
 
   <!-- Scripts -->
-  <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
-  <script src="http://localhost/dashboard/Proyecto/node_modules/flowbite/dist/flowbite.min.js"></script>
+  <script src="../src/js/script.js"></script>
+  <script src="../node_modules/flowbite/dist/flowbite.min.js"></script>
 </div>
 
 </body>

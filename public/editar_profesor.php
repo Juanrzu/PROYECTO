@@ -59,7 +59,7 @@ if ($row = $result->fetch_assoc()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Profesor</title>
     <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
+    <link rel="stylesheet" href="../src/css/styles.css">
 </head>
 
 <body class="bg-ghost ml-64">
@@ -166,8 +166,8 @@ if ($row = $result->fetch_assoc()) {
             window.history.back();
         }
     </script>
-    <script src="http://localhost\dashboard\Proyecto\node_modules\flowbite\dist\flowbite.min.js"></script>
-    <script src="http://localhost/dashboard/Proyecto/src/js/script.js"></script>
+    <script src="../node_modules\flowbite\dist\flowbite.min.js"></script>
+    <script src="../src/js/script.js"></script>
     <script>
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById('formulario');

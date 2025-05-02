@@ -153,7 +153,7 @@
     <!-- Encabezado institucional -->
     <header class="header">
         <div style="display: flex; align-items: center; justify-content: center;">
-            <img src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" alt="Escudo" class="logo">
+            <img src="../src/escudo_contancias.jpg" alt="Escudo" class="logo">
             <div >
                 <h5>REPÚBLICA BOLIVARIANA DE VENEZUELA</h5>
                 <h5>E.P.N "CESAR ARTEAGA CASTRO"</h5>
