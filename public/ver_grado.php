@@ -113,6 +113,7 @@ include 'contador_sesion.php';
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apellido</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cédula</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grado</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sección</th>
                         <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
@@ -128,7 +129,7 @@ include 'contador_sesion.php';
                             WHERE seccion.nombre = ? AND grados.nombre = ?
                             ORDER BY profesor.nombre ASC";
                     $stmt = $connect->prepare($sql);
-                    $stmt->bind_param("ss", $secc, $grado);
+                    $stmt->bind_param("si", $secc, $grado);
                     $stmt->execute();
                     $result = $stmt->get_result();
 
@@ -138,6 +139,7 @@ include 'contador_sesion.php';
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['nombre']).'</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['apellido']).'</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['cedula']).'</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['telefono']).'</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['grado_nombre']).'</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['seccion_nombre']).'</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 flex justify-center space-x-2">
@@ -310,21 +312,14 @@ $offset = ($page - 1) * $perPage;
       <div class="overflow-auto h-full">
         <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
-          <tr>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombres</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apellidos</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">C.E.N</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nacimiento</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sexo</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Representante</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">C.I Representante</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Correo</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grado</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sección</th>
-          <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-          </tr>
-        </thead>
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombres</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apellidos</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">C.E.N</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Detalles</th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                </tr>
+            </thead>
         <tbody class="bg-white divide-y divide-gray-200">
     <?php
     if ($result->num_rows > 0) {
@@ -341,15 +336,53 @@ $offset = ($page - 1) * $perPage;
                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['nombre']).'</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['apellido']).'</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['cen']).'</td>
-                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">'.$fecha_nacimiento.'</td>
-                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['sexo']).'</td>
-                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['representante_nombre']).'</td>
-                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['cedularepre']).'</td>
-                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">'.$telefono_formateado.'</td>
-                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['correo']).'</td>
-                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['grado_nombre']).'</td>
-                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">'.htmlspecialchars($row['seccion_nombre']).'</td>
-                
+                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">
+                <button 
+                    type="button" 
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    onclick="document.getElementById(\'modal-detalles-'.$row['id'].'\').classList.remove(\'hidden\')"
+                >
+                    Ver detalles
+                </button>
+            </td>
+
+            <!-- Modal de detalles -->
+            <div id="modal-detalles-'.$row['id'].'" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+                    <!-- Header -->
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="text-xl font-bold text-gray-800">
+                            Detalles completos - '.htmlspecialchars($row['nombre']).' '.htmlspecialchars($row['apellido']).'
+                        </h3>
+                    </div>
+                    
+                    <!-- Contenido con scroll -->
+                    <div class="p-4 overflow-y-auto">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div><span class="font-medium">Nacimiento:</span> '.$fecha_nacimiento.'</div>
+                            <div><span class="font-medium">Sexo:</span> '.htmlspecialchars($row['sexo']).'</div>
+                            <div><span class="font-medium">Representante:</span> '.htmlspecialchars($row['representante_nombre']).'</div>
+                            <div><span class="font-medium">C.I. Representante:</span> '.htmlspecialchars($row['cedularepre']).'</div>
+                            <div><span class="font-medium">Teléfono:</span> '.$telefono_formateado.'</div>
+                            <div><span class="font-medium">Correo:</span> '.htmlspecialchars($row['correo']).'</div>
+                            <div><span class="font-medium">Grado:</span> '.htmlspecialchars($row['grado_nombre']).'</div>
+                            <div><span class="font-medium">Sección:</span> '.htmlspecialchars($row['seccion_nombre']).'</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div class="p-4 border-t border-gray-200 text-right">
+                        <button
+                            onclick="document.getElementById(\'modal-detalles-'.$row['id'].'\').classList.add(\'hidden\')"
+                            class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg"
+                        >
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
                 <!-- Acciones -->
                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800">
                     <div class="flex justify-center space-x-2">

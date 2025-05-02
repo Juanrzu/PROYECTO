@@ -60,7 +60,11 @@ if(isset($_GET['eliminarid'])){
     $stmt = $connect->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
-    
+    //eliminarlo de trabajadores
+    $sql = "DELETE FROM trabajadores WHERE cedula = ?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("s", $cedula);
+    $stmt->execute();
     if ($stmt->affected_rows > 0) {
         //echo "Se ha eliminado al alumno"
         header('location:ver_grado.php? gradonombre= '.$volver.' && seccion= '.$volver2.'');

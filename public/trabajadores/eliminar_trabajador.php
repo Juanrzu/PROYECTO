@@ -35,7 +35,12 @@ if (isset($_GET['eliminarid'])) {
         $resultInsert2 = $stmt2->execute();
         //aqui termina
 
-
+        if (strcasecmp(trim($rol), 'profesor') == 0) {  
+            $sql = "DELETE FROM profesor WHERE cedula = ?";
+            $stmt = $connect->prepare($sql);
+            $stmt->bind_param("s", $cedula);
+            $stmt->execute();
+        }
             $sql="delete from trabajadores where id=$id";
             $result=mysqli_query($connect,$sql);
             if($result){

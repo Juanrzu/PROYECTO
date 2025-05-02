@@ -147,7 +147,6 @@ $totalPages = ceil($totalRows / $perPage);
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
-        <th scope="col" class="px-6 py-3">ID</th>
         <th scope="col" class="px-6 py-3">Nombre</th>
         <th scope="col" class="px-6 py-3">Apellido</th>
         <th scope="col" class="px-6 py-3">Cédula</th>
@@ -160,7 +159,6 @@ $totalPages = ceil($totalRows / $perPage);
         <tbody>
           <?php while ($row = mysqli_fetch_assoc($result)): ?>
         <tr class="bg-white border-b hover:bg-gray-50">
-          <td class="px-6 py-4"><?= htmlspecialchars($row['id']) ?></td>
           <td class="px-6 py-4"><?= htmlspecialchars($row['nombre']) ?></td>
           <td class="px-6 py-4"><?= htmlspecialchars($row['apellido']) ?></td>
           <td class="px-6 py-4"><?= htmlspecialchars($row['cedula']) ?></td>

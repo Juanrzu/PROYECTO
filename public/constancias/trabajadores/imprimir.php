@@ -75,7 +75,7 @@ $row=mysqli_fetch_assoc($result);
 $html = ob_get_clean();
 
 // Generar PDF usando Dompdf
-require_once 'D:\Programas\Xammp\htdocs\dashboard\proyecto\pdf\dompdf\autoload.inc.php';
+require_once '../../pdf/dompdf/autoload.inc.php';
 
 use Dompdf\Dompdf;
 

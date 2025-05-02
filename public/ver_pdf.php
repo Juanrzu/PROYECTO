@@ -174,6 +174,7 @@
                         <th>Nombre</th>
                         <th>Apellido</th>
                         <th>Cédula</th>
+                        <th>Teléfono</th>
                         <th>Grado</th>
                         <th>Sección</th>
                     </tr>
@@ -201,6 +202,7 @@
                                 <td>'.htmlspecialchars($row['nombre']).'</td>
                                 <td>'.htmlspecialchars($row['apellido']).'</td>
                                 <td>'.htmlspecialchars($row['cedula']).'</td>
+                                <td>'.htmlspecialchars($row['telefono']).'</td>
                                 <td>'.htmlspecialchars($row['grado_nombre']).'</td>
                                 <td>'.htmlspecialchars($row['seccion_nombre']).'</td>
                             </tr>';
@@ -283,7 +285,7 @@
 $html = ob_get_clean();
 
 // Generar PDF usando Dompdf
-require_once 'D:\Programas\Xammp\htdocs\dashboard\proyecto\pdf\dompdf\autoload.inc.php';
+require_once 'pdf\dompdf\autoload.inc.php';
 use Dompdf\Dompdf;
 
 $dompdf = new Dompdf();

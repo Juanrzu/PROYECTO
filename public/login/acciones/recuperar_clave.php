@@ -117,7 +117,19 @@ include './../../connect.php';
         <div class="mt-1">
             <input id="contraseña" name="contraseña" type="password" 
                 class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
-                placeholder="Ingrese la nueva contraseña (mínimo 8 caracteres)"
+                placeholder="Ingrese la nueva contraseña "
+                maxlength="30"
+                oninput="updateCounter('contraseña', 30)">
+        </div>
+    </div>
+
+       <!-- Confirmar Nueva Contraseña -->
+       <div>
+        <label for="contraseñaConfir" class="block text-sm font-medium text-gray-700">Confirma la Contraseña</label>
+        <div class="mt-1">
+            <input id="contraseñaConfir" name="contraseñaConfir" type="password" 
+                class="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
+                placeholder="Ingrese nuevamente la contraseña "
                 maxlength="30"
                 oninput="updateCounter('contraseña', 30)">
         </div>
@@ -152,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const pregunta1 = document.getElementById('p1');
     const pregunta2 = document.getElementById('p2');
     const nuevaContraseña = document.getElementById('contraseña');
-
+    const nuevaContraseñaConfir = document.getElementById('contraseñaConfir');
     // Configuración de límites
     const LIMITES = {
         usuario: 20,
@@ -238,6 +250,13 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             nuevaContraseña.classList.remove('border-red-500');
         }
+
+        if (!nuevaContraseñaConfir.value.trim()) {
+            errores.push('Debe confirmar la contraseña');
+            nuevaContraseñaConfir.classList.add('border-red-500');
+        } else {
+            nuevaContraseñaConfir.classList.remove('border-red-500');
+        }
         
         // Validar formato usuario
         if (usuario.value.trim() && !REGEX.usuario.test(usuario.value)) {
@@ -258,6 +277,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 nuevaContraseña.classList.add('border-red-500');
             }
         }
+   // Confirmar nueva contraseña
+        if (nuevaContraseñaConfir.value.trim()) {
+            if (nuevaContraseñaConfir.value.length < LIMITES.contraseñaConfir.min) {
+                errores.push(`La contraseña debe tener al menos ${LIMITES.contraseñaConfir.min} caracteres`);
+                nuevaContraseñaConfir.classList.add('border-red-500');
+            } else if (!REGEX.contraseñaConfir.test(nuevaContraseñaConfir.value)) {
+                errores.push('La contraseña debe contener al menos una mayúscula, una minúscula y un número');
+                nuevaContraseñaConfir.classList.add('border-red-500');
+            } else if (nuevaContraseñaConfir.value.length > LIMITES.contraseñaConfir.max) {
+                errores.push(`La contraseña no puede exceder los ${LIMITES.contraseñaConfir.max} caracteres`);
+                nuevaContraseñaConfir.classList.add('border-red-500');
+            }
+        }
+        
         
         return errores;
     }
@@ -270,6 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
         pregunta1.addEventListener('input', () => updateCounter(pregunta1, LIMITES.p1));
         pregunta2.addEventListener('input', () => updateCounter(pregunta2, LIMITES.p2));
         nuevaContraseña.addEventListener('input', () => updateCounter(nuevaContraseña, LIMITES.contraseña.max));
+        nuevaContraseñaConfir.addEventListener('input', () => updateCounter(nuevaContraseñaConfir, LIMITES.contraseñaConfir.max));
         
         // Prevenir espacios en la contraseña
         nuevaContraseña.addEventListener('keypress', (e) => {
@@ -278,7 +312,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 notificaciones.mostrar('La contraseña no puede contener espacios');
             }
         });
+
+         // Prevenir espacios en la contraseña
+         nuevaContraseñaConfir.addEventListener('keypress', (e) => {
+            if (e.key === ' ') {
+                e.preventDefault();
+                notificaciones.mostrar('La contraseña no puede contener espacios');
+            }
+        });
     }
+
+    
+
+    
 
     // Manejar envío del formulario
     form.addEventListener("submit", (e) => {
@@ -348,6 +394,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registrar'])) {
     $pregunta1 = trim($_POST['pregunta1'] ?? '');
     $pregunta2 = trim($_POST['pregunta2'] ?? '');
     $nueva_contraseña = $_POST['contraseña'] ?? '';
+    $contraseñaConfir = $_POST['contraseñaConfir'] ?? '';
 
     // Expresión regular para validar solo letras y espacios (incluye acentos y ñ)
     $regexSoloLetras = '/^[A-Za-zñÑáéíóúÁÉÍÓÚüÜ\s]+$/';
@@ -367,6 +414,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registrar'])) {
     }
     if (empty($nueva_contraseña)) {
         mostrarNotificacion('Debe ingresar una nueva contraseña');
+        exit;
+    }
+    if (empty($contraseñaConfir)) {
+        mostrarNotificacion('Debe confirmar la contraseña');
         exit;
     }
 
@@ -408,9 +459,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['registrar'])) {
         exit;
     }
 
+   
     // Resto del código de validación y actualización...
     // ... (mantener el código existente de consulta a la base de datos y actualización)
 // Consulta preparada para verificar el usuario
+if ($nueva_contraseña != $contraseñaConfir) {
+    echo "<script>
+        const notificacion = document.createElement('div');
+        notificacion.className = 'fixed bottom-4 right-4 px-4 py-3 rounded shadow-lg bg-red-100 text-red-700 border flex items-center';
+        notificacion.innerHTML = `<span>La contraseña debe ser la misma en ambos campos</span>`;
+        document.body.appendChild(notificacion);
+        setTimeout(() => notificacion.remove(), 4000);
+    </script>";
+    exit();
+}
 $sql = "SELECT respuesta_seguridad1, respuesta_seguridad2 FROM usuario WHERE nombre_usuario = ?";
 $stmt = $connect->prepare($sql);
 
@@ -447,7 +509,14 @@ $opciones = [
 ];
 
 $contraseña_cifrada = password_hash($nueva_contraseña, PASSWORD_ARGON2ID, $opciones);
-
+if (strcasecmp(trim($usuario), 'admin') == 0) {  
+    $sql = "UPDATE usuario SET estado = ? WHERE nombre_usuario = ?";
+    $stmt = $connect->prepare($sql);
+    $estado = 'Activo';
+    $usuarioCambioEstado= 'admin';
+    $stmt->bind_param("ss", $estado, $usuarioCambioEstado); 
+    $stmt->execute();
+}
 $update_sql = "UPDATE usuario SET contraseña = ? WHERE nombre_usuario = ?";
 $stmt = $connect->prepare($update_sql);
 
@@ -486,6 +555,7 @@ $stmt->bind_param("ss", $contraseña_cifrada, $usuario);
     
     $stmt->close();
     $connect->close();
+
 }
 ?>
 </html>
