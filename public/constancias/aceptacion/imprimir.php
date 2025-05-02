@@ -50,7 +50,7 @@ $row=mysqli_fetch_assoc($result);
   
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="http://localhost/dashboard/Proyecto/src/css/styles.css">
+  <link rel="stylesheet" href="../../src/css/styles.css">
   <title>constancias</title>
 
 </head>
@@ -58,7 +58,7 @@ $row=mysqli_fetch_assoc($result);
     <div class="container mx-auto py-6">
         <!-- Cabecera -->
         <header class="flex justify-between items-center bg-gray-800 text-white p-4 rounded shadow-md">
-            <img src="http://localhost/dashboard/Proyecto/src/escudo_contancias.jpg" alt="Escudo" class="w-24 h-auto">
+            <img src="../../src/escudo_contancias.jpg"  class="w-24 h-auto">
             <div class="text-center">
                 <h5 class="text-lg font-semibold uppercase">REPÚBLICA BOLIVARIANA DE VENEZUELA</h5>
                 <h5 class="text-lg uppercase">E.P.N CESAR ARTEAGA CASTRO</h5>
