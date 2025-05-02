@@ -44,9 +44,9 @@ include 'contador_sesion.php';
     <!-- Header Dinámico -->
     <?php
     if ($usuario == "admin" || $usuario == "Admin") {
-      include('./header_admin.php');
+      include('header_admin.php');
     } else {
-      include('./header.php');
+      include('header.php');
     }
     ?>
 
