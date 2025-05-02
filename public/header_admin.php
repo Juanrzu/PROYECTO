@@ -4,7 +4,7 @@
         <div class="p-4 border-b border-gray-200 flex items-center justify-between">
             <h5 class="text-lg font-semibold text-gray-800 uppercase">Menú</h5>
             <div class="bg-gray-100 p-1 rounded-full">
-                <img class="w-8 h-8 object-contain" src="http://localhost/dashboard/Proyecto/src/escudo.png" alt="Escudo institucional">
+                <img class="w-8 h-8 object-contain" src="../src/escudo.png" alt="Escudo institucional">
             </div>
         </div>
 
