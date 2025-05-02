@@ -17,7 +17,7 @@ include './../../connect.php';
         .bg-login{
   width: 100%;
   background-image: linear-gradient(rgba(0, 0, 0, 0.5),rgba(0, 0, 0, 0.5)),
-  url(../../../src/bg-login.jpg);
+  url('../../../src/bg-login.jpg');
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -27,6 +27,9 @@ include './../../connect.php';
 
     .bg-wave {
         background-image: url('../../../src/wave-bg.png');
+        background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
     }
 
     </style>

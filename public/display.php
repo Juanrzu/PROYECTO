@@ -99,7 +99,7 @@ include 'contador_sesion.php';
         echo '
         <div class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-2xl hover:-translate-y-1 border border-gray-200">
           <div class="h-48 overflow-hidden">
-            <img class="w-full h-full object-cover object-right-top" src="http://localhost/dashboard/Proyecto/src/'.$grado[1].'" alt="'.$grado[0].'">
+            <img class="w-full h-full object-cover object-right-top" src="../src/'.$grado[1].'" alt="'.$grado[0].'">
           </div>
           <div class="p-4">
             <div class="flex justify-between items-center mb-3">
